@@ -1,0 +1,59 @@
+version: "3"
+
+tasks:
+  install:
+    desc: Install project dependencies
+    cmds:
+      - poetry install
+
+  serve:
+    desc: Run FastAPI app locally with auto-reload
+    cmds:
+      - poetry run uvicorn app:app --reload --host 0.0.0.0 --port 8000
+
+  test:
+    desc: Run test suite
+    cmds:
+      - poetry run pytest
+
+  lint:
+    desc: Run lint checks
+    cmds:
+      - poetry run ruff check .
+
+  fmt:
+    desc: Format code (isort + autoflake + black)
+    cmds:
+      - task: isort
+      - task: autoflake
+      - task: black
+
+  isort:
+    desc: Sort imports with isort
+    cmds:
+      - poetry run isort .
+
+  autoflake:
+    desc: Remove unused imports and variables
+    cmds:
+      - poetry run autoflake -r --in-place --remove-duplicate-keys --remove-all-unused-imports --expand-star-imports --remove-unused-variables . > /dev/null
+
+  black:
+    desc: Format code with black
+    cmds:
+      - poetry run black .
+
+  isort-lint:
+    desc: Check imports with isort
+    cmds:
+      - poetry run isort --check .
+
+  autoflake-lint:
+    desc: Check unused imports with autoflake
+    cmds:
+      - poetry run autoflake -r --in-place --remove-duplicate-keys --remove-all-unused-imports --expand-star-imports --remove-unused-variables --check .
+
+  black-lint:
+    desc: Check code format with black
+    cmds:
+      - poetry run black --check .

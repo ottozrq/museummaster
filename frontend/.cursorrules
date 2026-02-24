@@ -1,0 +1,81 @@
+# 博物通 (Museum Guide) - Cursor Rules
+
+## 项目概述
+- **名称**: 博物通
+- **类型**: React Native + Expo 移动应用
+- **功能**: 拍照识别展品，AI 生成中文讲解
+- **技术栈**: Expo SDK 54, React Native 0.81, TypeScript, FastAPI (后端)
+
+## 技术规范
+
+### 前端
+- **框架**: Expo SDK 54 + React Native 0.81
+- **路由**: expo-router v6
+- **语言**: TypeScript
+- **状态管理**: React hooks (useState, useEffect)
+- **API 调用**: 自定义 service 层
+
+### 后端
+- **框架**: FastAPI + Poetry
+- **AI**: OpenAI GPT-4o Vision (图像识别) + TTS (语音合成)
+- **端口**: http://127.0.0.1:8000
+
+## 代码规范
+
+### 文件结构
+```
+frontend/
+├── app/                    # 页面路由 (expo-router)
+│   ├── index.tsx          # 主页（相机）
+│   ├── result.tsx         # 识别结果
+│   └── history.tsx        # 历史记录
+├── src/
+│   ├── components/         # 组件
+│   └── services/          # API 服务
+└── package.json
+
+backend/
+├── app.py                  # FastAPI 入口
+├── routers/               # 路由
+│   ├── analyze.py         # 图像识别
+│   └── tts.py            # 语音合成
+└── tests/                 # 测试
+```
+
+### 命名规范
+- **组件**: PascalCase (e.g., `CameraView.tsx`)
+- **函数/变量**: camelCase
+- **常量**: UPPER_SNAKE_CASE
+- **文件**: kebab-case
+
+### React Native 注意事项
+1. 使用 `StyleSheet.create()` 定义样式
+2. 所有图片/资源放 `assets/` 目录
+3. 原生模块通过 `npx expo install` 安装
+4. iOS 构建用 `npx expo prebuild` 生成原生代码
+
+### API 规范
+- 基础 URL: `http://127.0.0.1:8000`
+- 图像识别: `POST /analyze/`
+- TTS: `POST /tts/`
+
+## 常用命令
+
+```bash
+# 前端
+npm install                    # 安装依赖
+npm start                      # 启动开发服务器
+npx expo prebuild             # 生成原生代码
+npx expo run:ios              # iOS 构建
+
+# 后端
+cd backend
+poetry install                 # 安装依赖
+poetry run uvicorn app:app --reload  # 启动后端
+```
+
+## 约束
+- 不使用 class component，全部用函数组件
+- 不使用 Redux，用 React Context 或 hooks
+- 图片压缩质量 0.8
+- 相机权限需要用户授权

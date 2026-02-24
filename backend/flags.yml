@@ -1,0 +1,37 @@
+museum:
+  debug: true
+  display_traceback: true
+  cors_urls:
+    - "http://127.0.0.1"
+    - "http://localhost"
+  namespace: museum-local
+  login_secret: change_me_in_local
+
+targets:
+  production:
+    museum:
+      namespace: museum-production
+      login_secret: change_me_in_production
+    museum_pg:
+      host: localhost
+      database: museum_prod
+      username: museum
+      ssl_mode: false
+  staging:
+    museum:
+      namespace: museum-staging
+      login_secret: change_me_in_staging
+    museum_pg:
+      host: localhost
+      database: museum_staging
+      username: museum
+      ssl_mode: false
+  local:
+    extends: production
+    museum:
+      namespace: museum-local
+      login_secret: change_me_in_local
+    museum_pg:
+      host: localhost
+      username: museum
+      ssl_mode: false
