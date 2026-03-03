@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "博物通",
+    "name": "Artiou",
     "slug": "museum-guide",
     "scheme": "museumguide",
     "version": "1.0.0",
@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "博物通需要使用相机拍摄展品图片。"
+        "NSCameraUsageDescription": "艺游需要使用相机拍摄展品图片。"
       },
       "bundleIdentifier": "com.ottozrq.museumguide"
     },
@@ -29,10 +29,17 @@
     },
     "plugins": [
       "expo-router",
-      "expo-image-picker"
+      "expo-image-picker",
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "664332f3-08d3-4125-86ff-e7f1f01c69aa"
+      }
     }
   }
 }

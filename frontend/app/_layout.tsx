@@ -5,7 +5,7 @@ export default function RootLayout() {
     <Stack>
       <Stack.Screen
         name="index"
-        options={{ title: "博物通", headerShown: false }}
+        options={{ title: "艺游", headerShown: false }}
       />
       <Stack.Screen
         name="result"

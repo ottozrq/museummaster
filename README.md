@@ -1,4 +1,4 @@
-# 博物通 (Museum Guide) MVP
+# Artiou (艺游) MVP
 
 A React Native + Expo + FastAPI MVP for a museum audio guide app.
 

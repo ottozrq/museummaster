@@ -1,8 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   Alert,
   Image,
@@ -14,6 +13,7 @@ import {
   View,
 } from "react-native";
 
+import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-audio";
 import { createSpeech } from "../src/services/api";
 import {
   Back15Icon,
@@ -63,26 +63,37 @@ export default function ResultScreen() {
   const [playing, setPlaying] = useState(false);
   const [saving, setSaving] = useState(false);
   const [showCollectedToast, setShowCollectedToast] = useState(false);
+  const playerRef = useRef<AudioPlayer | null>(null);
 
   const onPlayTTS = async () => {
     if (!text) return;
     setPlaying(true);
 
     try {
+      await setAudioModeAsync({
+        playsInSilentMode: true,
+      });
+
       const speech = await createSpeech(text);
       const filename = `${FileSystem.cacheDirectory}guide-${Date.now()}.mp3`;
       await FileSystem.writeAsStringAsync(filename, speech.audio_base64, {
         encoding: FileSystem.EncodingType.Base64,
       });
 
-      const { sound } = await Audio.Sound.createAsync({ uri: filename });
-      await sound.playAsync();
-
-      sound.setOnPlaybackStatusUpdate(async (status) => {
-        if (status.isLoaded && status.didJustFinish) {
-          await sound.unloadAsync();
+      // 清理上一个播放器
+      if (playerRef.current) {
+        try {
+          playerRef.current.pause();
+          playerRef.current.remove();
+        } catch {
+          // ignore
         }
-      });
+        playerRef.current = null;
+      }
+
+      const player = createAudioPlayer(filename);
+      playerRef.current = player;
+      player.play();
     } catch (error) {
       Alert.alert("播放失败", error instanceof Error ? error.message : "未知错误");
     } finally {

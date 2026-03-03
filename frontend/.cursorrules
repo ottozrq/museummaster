@@ -1,7 +1,7 @@
-# 博物通 (Museum Guide) - Cursor Rules
+# Artiou (艺游) - Cursor Rules
 
 ## 项目概述
-- **名称**: 博物通
+- **名称**: 艺游（英文名 Artiou）
 - **类型**: React Native + Expo 移动应用
 - **功能**: 拍照识别展品，AI 生成中文讲解
 - **技术栈**: Expo SDK 54, React Native 0.81, TypeScript, FastAPI (后端)
