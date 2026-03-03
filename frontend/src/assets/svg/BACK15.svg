@@ -1,0 +1,19 @@
+<svg id="组件_101_11" data-name="组件 101 – 11" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: #f0e7d6;
+      }
+
+      .cls-2 {
+        font-size: 12px;
+        font-family: ArtifaktElement-Bold, Artifakt Element;
+        font-weight: 700;
+      }
+    </style>
+  </defs>
+  <g id="_01.REPLAY" data-name="01.REPLAY">
+    <path id="路径_359" data-name="路径 359" class="cls-1" d="M22.4,5.305l2.371-1.176a1.032,1.032,0,0,0,.48-1.462,1.247,1.247,0,0,0-1.607-.437L18.432,4.8h-.083l-.261.129a1.1,1.1,0,0,0-.593.712,1,1,0,0,0,.2.885l3.652,4.446a1.229,1.229,0,0,0,.949.432,1.265,1.265,0,0,0,.711-.216,1.017,1.017,0,0,0,.237-1.511L21.23,7.215c6.418,1.369,10.6,7,9.6,12.932s-6.843,10.164-13.417,9.719S5.747,24.449,5.721,18.449H3.35c0,7.056,5.91,12.95,13.632,13.593S31.692,27.865,33.1,20.925,29.869,7.213,22.4,5.305Z" transform="translate(-3.35 -2.1)"/>
+  </g>
+  <text id="_15" data-name="15" class="cls-2" transform="translate(8.953 21)"><tspan x="0" y="0">15</tspan></text>
+</svg>

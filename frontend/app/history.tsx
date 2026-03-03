@@ -1,7 +1,14 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
-import { FlatList, Image, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 type HistoryItem = {
   id: string;
@@ -13,6 +20,7 @@ type HistoryItem = {
 const HISTORY_KEY = "museum_guide_history";
 
 export default function HistoryScreen() {
+  const router = useRouter();
   const [items, setItems] = useState<HistoryItem[]>([]);
 
   const load = useCallback(async () => {
@@ -29,6 +37,12 @@ export default function HistoryScreen() {
 
   return (
     <View style={styles.container}>
+      <Pressable
+        style={styles.collectionLink}
+        onPress={() => router.push("/collection")}
+      >
+        <Text style={styles.collectionLinkText}>我的收藏夹</Text>
+      </Pressable>
       <FlatList
         data={items}
         keyExtractor={(item) => item.id}
@@ -52,6 +66,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f7fb",
+  },
+  collectionLink: {
+    padding: 12,
+    marginHorizontal: 16,
+    marginTop: 8,
+    backgroundColor: "#E2461B",
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  collectionLinkText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "600",
   },
   content: {
     padding: 16,

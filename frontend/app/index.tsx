@@ -1,13 +1,13 @@
 import { useRouter } from "expo-router";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
   Pressable,
+  StatusBar,
   StyleSheet,
   Text,
   View,
-  StatusBar,
 } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
@@ -75,8 +75,8 @@ export default function CameraScreen() {
 
   if (!permission) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#fff" />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#E2461B" />
       </View>
     );
   }
@@ -84,12 +84,12 @@ export default function CameraScreen() {
   if (!permission.granted) {
     return (
       <View style={styles.permissionContainer}>
-        <Text style={styles.permissionTitle}>需要相机权限</Text>
+        <Text style={styles.permissionTitle}>Camera access needed</Text>
         <Text style={styles.permissionText}>
-          博物通需要使用相机来拍摄展品照片
+          Point at an exhibit so AI can recognize it.
         </Text>
         <Pressable style={styles.permissionButton} onPress={requestPermission}>
-          <Text style={styles.permissionButtonText}>开启相机</Text>
+          <Text style={styles.permissionButtonText}>Enable camera</Text>
         </Pressable>
       </View>
     );
@@ -97,58 +97,66 @@ export default function CameraScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#000" />
-      
+      <StatusBar barStyle="light-content" />
+
+      {/* Camera as full-screen background */}
       <CameraView
         ref={cameraRef}
         style={styles.camera}
         facing="back"
-      >
-        {/* Top Overlay */}
-        <View style={styles.topOverlay}>
-          <Text style={styles.title}>博物通</Text>
-          <Text style={styles.subtitle}>对淮展品，AI自动识别</Text>
-        </View>
+      />
 
-        {/* Focus Guide */}
-        <View style={styles.focusGuide}>
+      {/* Top hint text */}
+      <View style={styles.topSection}>
+        <Text style={styles.topHint}>Point at an exhibit for AI recognition</Text>
+      </View>
+
+      {/* Focus frame */}
+      <View style={styles.focusGuide}>
+        <View style={styles.focusBox}>
           <View style={[styles.corner, styles.topLeft]} />
           <View style={[styles.corner, styles.topRight]} />
           <View style={[styles.corner, styles.bottomLeft]} />
           <View style={[styles.corner, styles.bottomRight]} />
         </View>
+      </View>
 
-        {/* Bottom Controls */}
-        <View style={styles.bottomOverlay}>
-          <View style={styles.controlsRow}>
-            <Pressable
-              style={styles.galleryButton}
-              onPress={handlePickFromGallery}
-              disabled={loading}
-            >
-              <Text style={styles.galleryButtonText}>相册</Text>
-            </Pressable>
+      {/* Bottom controls: gallery / big scan button / artiou */}
+      <View style={styles.bottomSection}>
+        <View style={styles.bottomButtonsRow}>
+          <Pressable
+            style={styles.pillButton}
+            onPress={handlePickFromGallery}
+            disabled={loading}
+          >
+            <Text style={styles.pillButtonText}>GALLERY</Text>
+          </Pressable>
 
-            <Pressable
-              style={styles.captureButton}
-              onPress={handleTakePhoto}
-              disabled={loading}
-            >
-              {loading ? (
-                <ActivityIndicator size="small" color="#0f766e" />
-              ) : (
-                <View style={styles.captureButtonInner} />
-              )}
-            </Pressable>
+          <Pressable
+            style={styles.captureButton}
+            onPress={handleTakePhoto}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <View style={styles.captureInner} />
+            )}
+          </Pressable>
 
-            <View style={styles.galleryButton} />
-          </View>
-
-          <Text style={styles.hintText}>
-            {loading ? "识别中..." : "拍照或从相册选择"}
-          </Text>
+          <Pressable
+            style={styles.pillButton}
+            onPress={() => router.push("/collection")}
+            disabled={loading}
+          >
+            <Text style={styles.pillButtonText}>ARTIOU</Text>
+          </Pressable>
         </View>
-      </CameraView>
+
+        <Text style={styles.bottomHint}>
+          {loading ? "Recognizing..." : "Take a photo or choose from gallery"}
+        </Text>
+      </View>
     </View>
   );
 }
@@ -158,76 +166,78 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000",
   },
-  camera: {
+  loadingContainer: {
     flex: 1,
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
   },
   permissionContainer: {
     flex: 1,
-    backgroundColor: "#0f766e",
+    backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "center",
-    padding: 40,
+    paddingHorizontal: 32,
   },
   permissionTitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "700",
-    color: "#fff",
+    color: "#E2461B",
     marginBottom: 12,
+    textAlign: "center",
   },
   permissionText: {
     fontSize: 16,
-    color: "rgba(255,255,255,0.8)",
+    color: "#B07557",
     textAlign: "center",
-    marginBottom: 32,
+    marginBottom: 24,
   },
   permissionButton: {
-    backgroundColor: "#fff",
     paddingHorizontal: 32,
-    paddingVertical: 14,
-    borderRadius: 30,
+    paddingVertical: 12,
+    borderRadius: 26,
+    borderWidth: 2,
+    borderColor: "#E2461B",
   },
   permissionButtonText: {
-    color: "#0f766e",
+    color: "#E2461B",
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "700",
   },
-  // Top overlay
-  topOverlay: {
+  topSection: {
     position: "absolute",
     top: 60,
     left: 0,
     right: 0,
     alignItems: "center",
+    paddingHorizontal: 32,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: "700",
+  topHint: {
+    textAlign: "center",
     color: "#fff",
-    textShadowColor: "rgba(0,0,0,0.5)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-  },
-  subtitle: {
     fontSize: 14,
-    color: "rgba(255,255,255,0.8)",
-    marginTop: 6,
-    textShadowColor: "rgba(0,0,0,0.5)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
   },
-  // Focus guide corners
+  camera: {
+    ...StyleSheet.absoluteFillObject,
+  },
   focusGuide: {
     position: "absolute",
-    top: "30%",
-    left: "10%",
-    right: "10%",
-    bottom: "30%",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  focusBox: {
+    width: "70%",
+    aspectRatio: 1, // 正方形取景框
   },
   corner: {
     position: "absolute",
-    width: 30,
-    height: 30,
-    borderColor: "rgba(255,255,255,0.7)",
+    width: 32,
+    height: 32,
+    borderColor: "#E2461B",
   },
   topLeft: {
     top: 0,
@@ -253,57 +263,53 @@ const styles = StyleSheet.create({
     borderBottomWidth: 3,
     borderRightWidth: 3,
   },
-  // Bottom controls
-  bottomOverlay: {
+  bottomSection: {
     position: "absolute",
-    bottom: 60,
+    bottom: 40,
     left: 0,
     right: 0,
+    paddingHorizontal: 32,
     alignItems: "center",
   },
-  controlsRow: {
+  bottomButtonsRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 24,
+    justifyContent: "space-between",
+    width: "100%",
   },
-  galleryButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: "rgba(255,255,255,0.2)",
+  pillButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    borderRadius: 999,
+    borderWidth: 2,
+    borderColor: "#E2461B",
+    minWidth: 120,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.6)",
   },
-  galleryButtonText: {
-    color: "#fff",
+  pillButtonText: {
+    color: "#E2461B",
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: "700",
   },
   captureButton: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: "rgba(255,255,255,0.3)",
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    borderWidth: 4,
+    borderColor: "#E2461B",
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 4,
-    borderColor: "#fff",
   },
-  captureButtonInner: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: "#fff",
+  captureInner: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#E2461B",
   },
-  hintText: {
+  bottomHint: {
     marginTop: 16,
-    fontSize: 14,
-    color: "#fff",
-    textShadowColor: "rgba(0,0,0,0.5)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
+    fontSize: 13,
+    color: "#E2461B",
   },
 });

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30.938" height="31.89" viewBox="0 0 30.938 31.89">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #ea2e00;
+        stroke-width: 2px;
+      }
+    </style>
+  </defs>
+  <g id="组件_35_1" data-name="组件 35 – 1" transform="translate(0.719 1.195)">
+    <line id="直线_15" data-name="直线 15" class="cls-1" x2="29.5" y2="30.5" transform="translate(0 -0.5)"/>
+    <line id="直线_16" data-name="直线 16" class="cls-1" x1="29.5" y2="30.5" transform="translate(0 -0.5)"/>
+  </g>
+</svg>
