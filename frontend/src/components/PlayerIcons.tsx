@@ -1,5 +1,5 @@
 import type { SvgProps } from "react-native-svg";
-import Svg, { Circle, Path, Polygon, Text as SvgText } from "react-native-svg";
+import Svg, { Circle, Path, Polygon, Rect, Text as SvgText } from "react-native-svg";
 
 export function Back15Icon(props: SvgProps) {
   return (
@@ -48,6 +48,16 @@ export function PlayCircleIcon(props: SvgProps) {
       <Circle cx={20} cy={20} r={20} fill="#F0E7D6" />
       {/* 中间红色三角播放键 */}
       <Polygon points="15,11 15,29 30,20" fill="#E2461B" />
+    </Svg>
+  );
+}
+
+export function PauseCircleIcon(props: SvgProps) {
+  return (
+    <Svg width={40} height={40} viewBox="0 0 40 40" {...props}>
+      <Circle cx={20} cy={20} r={20} fill="#F0E7D6" />
+      <Rect x={14} y={12} width={5} height={16} rx={1} fill="#E2461B" />
+      <Rect x={21} y={12} width={5} height={16} rx={1} fill="#E2461B" />
     </Svg>
   );
 }

@@ -29,7 +29,7 @@ def text_to_speech(payload: TTSRequest) -> dict:
             model=model,
             voice=voice,
             input=payload.text,
-            format="mp3",
+            response_format="mp3",
         )
         audio_bytes = response.read()
         audio_base64 = base64.b64encode(audio_bytes).decode("utf-8")

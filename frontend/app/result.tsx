@@ -1,9 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as FileSystem from "expo-file-system";
+import { File, Paths } from "expo-file-system";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useMemo, useRef, useState } from "react";
 import {
   Alert,
+  ActivityIndicator,
   Image,
   Pressable,
   ScrollView,
@@ -13,12 +14,17 @@ import {
   View,
 } from "react-native";
 
-import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-audio";
+import {
+  setAudioModeAsync,
+  useAudioPlayer,
+  useAudioPlayerStatus,
+} from "expo-audio";
 import { createSpeech } from "../src/services/api";
 import {
   Back15Icon,
   Forward30Icon,
   PlayCircleIcon,
+  PauseCircleIcon,
   Speed2Icon,
 } from "../src/components/PlayerIcons";
 
@@ -60,44 +66,51 @@ export default function ResultScreen() {
   const text = useMemo(() => params.text ?? "", [params.text]);
   const imageUri = useMemo(() => params.imageUri ?? "", [params.imageUri]);
 
-  const [playing, setPlaying] = useState(false);
+  const [requestingSpeech, setRequestingSpeech] = useState(false);
   const [saving, setSaving] = useState(false);
   const [showCollectedToast, setShowCollectedToast] = useState(false);
-  const playerRef = useRef<AudioPlayer | null>(null);
+  const [isFastSpeed, setIsFastSpeed] = useState(false);
+  const [progressBarWidth, setProgressBarWidth] = useState(0);
+  const player = useAudioPlayer(null);
+  const status = useAudioPlayerStatus(player);
+
+  const hasAudio = Number.isFinite(status?.duration) && (status?.duration ?? 0) > 0;
 
   const onPlayTTS = async () => {
     if (!text) return;
-    setPlaying(true);
 
+    // 正在请求音频时，直接忽略点击
+    if (requestingSpeech) return;
+
+    // 已在播放时，点击即暂停
+    if (status?.playing) {
+      player.pause();
+      return;
+    }
+
+    // 已有音频但没在播，直接播放
+    if (hasAudio) {
+      player.play();
+      return;
+    }
+
+    // 首次点击，需要向后端请求 TTS
+    setRequestingSpeech(true);
     try {
       await setAudioModeAsync({
         playsInSilentMode: true,
       });
 
       const speech = await createSpeech(text);
-      const filename = `${FileSystem.cacheDirectory}guide-${Date.now()}.mp3`;
-      await FileSystem.writeAsStringAsync(filename, speech.audio_base64, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
+      const playFile = new File(Paths.cache, `guide-${Date.now()}.mp3`);
+      await playFile.write(speech.audio_base64, { encoding: "base64" });
 
-      // 清理上一个播放器
-      if (playerRef.current) {
-        try {
-          playerRef.current.pause();
-          playerRef.current.remove();
-        } catch {
-          // ignore
-        }
-        playerRef.current = null;
-      }
-
-      const player = createAudioPlayer(filename);
-      playerRef.current = player;
+      player.replace(playFile.uri);
       player.play();
     } catch (error) {
       Alert.alert("播放失败", error instanceof Error ? error.message : "未知错误");
     } finally {
-      setPlaying(false);
+      setRequestingSpeech(false);
     }
   };
 
@@ -112,11 +125,9 @@ export default function ResultScreen() {
       let audioUri: string | undefined;
       try {
         const speech = await createSpeech(text);
-        const filename = `${FileSystem.documentDirectory}collection-${id}.mp3`;
-        await FileSystem.writeAsStringAsync(filename, speech.audio_base64, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
-        audioUri = filename;
+        const collectionFile = new File(Paths.document, `collection-${id}.mp3`);
+        await collectionFile.write(speech.audio_base64, { encoding: "base64" });
+        audioUri = collectionFile.uri;
       } catch (e) {
         // 音频生成失败仍保存图片和文字
         console.warn("Collection: TTS failed", e);
@@ -140,6 +151,55 @@ export default function ResultScreen() {
       Alert.alert("收藏失败", error instanceof Error ? error.message : "未知错误");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const duration = status?.duration ?? 0;
+  const currentTime = status?.currentTime ?? 0;
+  const progress =
+    duration > 0 && Number.isFinite(duration) && Number.isFinite(currentTime)
+      ? Math.min(1, Math.max(0, currentTime / duration))
+      : 0;
+
+  const formatTime = (value: number) => {
+    if (!Number.isFinite(value) || value <= 0) return "0:00";
+    const total = Math.floor(value);
+    const m = Math.floor(total / 60);
+    const s = total % 60;
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  };
+
+  const handleSeek = async (offset: number) => {
+    if (!Number.isFinite(currentTime) || !Number.isFinite(duration) || duration <= 0) {
+      return;
+    }
+    const target = Math.min(duration, Math.max(0, currentTime + offset));
+    try {
+      await player.seekTo(target);
+    } catch (e) {
+      console.warn("seek failed", e);
+    }
+  };
+
+  const seekToRatio = (ratio: number) => {
+    if (!Number.isFinite(duration) || duration <= 0) return;
+    const clamped = Math.min(1, Math.max(0, ratio));
+    const target = clamped * duration;
+    player.seekTo(target).catch((e) => console.warn("seek failed", e));
+  };
+
+  const handleSeekBarPosition = (x: number) => {
+    if (progressBarWidth <= 0) return;
+    seekToRatio(x / progressBarWidth);
+  };
+
+  const toggleSpeed = () => {
+    try {
+      const next = !isFastSpeed;
+      setIsFastSpeed(next);
+      player.setPlaybackRate(next ? 1.5 : 1.0);
+    } catch (e) {
+      console.warn("set playback rate failed", e);
     }
   };
 
@@ -192,16 +252,38 @@ export default function ResultScreen() {
         {/* Bottom player bar */}
         <View style={styles.playerSection}>
           <View style={styles.progressRow}>
-            <Text style={styles.timeText}>1:00</Text>
-            <View style={styles.progressBar}>
-              <View style={styles.progressFill} />
+            <Text style={styles.timeText}>{formatTime(currentTime)}</Text>
+            <View
+              style={styles.progressBar}
+              onLayout={(e) => setProgressBarWidth(e.nativeEvent.layout.width)}
+              onStartShouldSetResponder={() => true}
+              onMoveShouldSetResponder={() => true}
+              onResponderGrant={(e) =>
+                handleSeekBarPosition(e.nativeEvent.locationX)
+              }
+              onResponderMove={(e) =>
+                handleSeekBarPosition(e.nativeEvent.locationX)
+              }
+              onResponderRelease={(e) =>
+                handleSeekBarPosition(e.nativeEvent.locationX)
+              }
+            >
+              <View
+                style={[
+                  styles.progressFill,
+                  { width: `${progress * 100}%` },
+                ]}
+              />
             </View>
-            <Text style={styles.timeText}>2:00</Text>
+            <Text style={styles.timeText}>{formatTime(duration)}</Text>
           </View>
 
           <View style={styles.controlsRow}>
             <View style={styles.sideControlsLeft}>
-              <Pressable style={styles.smallControl}>
+              <Pressable
+                style={styles.smallControl}
+                onPress={() => handleSeek(-15)}
+              >
                 <Back15Icon width={30} height={30} />
               </Pressable>
             </View>
@@ -209,19 +291,28 @@ export default function ResultScreen() {
             <Pressable
               style={styles.playButton}
               onPress={onPlayTTS}
-              disabled={playing || !text}
+              disabled={requestingSpeech || !text}
             >
-              <PlayCircleIcon width={32} height={32} />
+              {requestingSpeech ? (
+                <ActivityIndicator size="small" color="#E2461B" />
+              ) : status?.playing ? (
+                <PauseCircleIcon width={32} height={32} />
+              ) : (
+                <PlayCircleIcon width={32} height={32} />
+              )}
             </Pressable>
 
             <View style={styles.sideControlsRight}>
-              <Pressable style={styles.smallControl}>
+              <Pressable
+                style={styles.smallControl}
+                onPress={() => handleSeek(30)}
+              >
                 <Forward30Icon width={30} height={30} />
               </Pressable>
 
-              <View style={styles.speedBadge}>
+              <Pressable style={styles.speedBadge} onPress={toggleSpeed}>
                 <Speed2Icon width={29} height={29} />
-              </View>
+              </Pressable>
             </View>
           </View>
         </View>
