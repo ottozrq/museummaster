@@ -9,6 +9,7 @@ import {
   Text,
   View,
 } from "react-native";
+import type { GestureResponderEvent } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 
@@ -18,7 +19,47 @@ export default function CameraScreen() {
   const router = useRouter();
   const [permission, requestPermission] = useCameraPermissions();
   const [loading, setLoading] = useState(false);
+  const [zoom, setZoom] = useState(0);
   const cameraRef = useRef<CameraView>(null);
+  const pinchRef = useRef<{ baseDistance: number; baseZoom: number } | null>(null);
+
+  const getPinchDistance = (touches: { pageX: number; pageY: number }[]) => {
+    if (touches.length < 2) return 0;
+    const [a, b] = touches;
+    return Math.hypot(b.pageX - a.pageX, b.pageY - a.pageY);
+  };
+
+  const PINCH_SENSITIVITY = 0.002; // 手指距离变化量 -> zoom 变化
+
+  const handlePinchGrant = (e: GestureResponderEvent) => {
+    const touches = Array.from(e.nativeEvent.touches);
+    if (touches.length >= 2) {
+      const baseDistance = getPinchDistance(touches);
+      setZoom((prev) => {
+        pinchRef.current = { baseDistance, baseZoom: prev };
+        return prev;
+      });
+    }
+  };
+
+  const handlePinchMove = (e: GestureResponderEvent) => {
+    if (!pinchRef.current) return;
+    const touches = e.nativeEvent.touches;
+    if (touches.length < 2) return;
+    const currentDistance = getPinchDistance(Array.from(touches));
+    const { baseDistance, baseZoom } = pinchRef.current;
+    const delta = (currentDistance - baseDistance) * PINCH_SENSITIVITY;
+    setZoom((prev) => {
+      const next = baseZoom + delta;
+      if (next < 0) return 0;
+      if (next > 1) return 1;
+      return next;
+    });
+  };
+
+  const handlePinchEnd = () => {
+    pinchRef.current = null;
+  };
 
   useEffect(() => {
     // Auto request camera permission on mount
@@ -99,12 +140,23 @@ export default function CameraScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
 
-      {/* Camera as full-screen background */}
-      <CameraView
-        ref={cameraRef}
-        style={styles.camera}
-        facing="back"
-      />
+      {/* Camera with pinch-to-zoom */}
+      <View
+        style={StyleSheet.absoluteFill}
+        onStartShouldSetResponder={() => false}
+        onMoveShouldSetResponder={(e) => e.nativeEvent.touches.length === 2}
+        onResponderGrant={handlePinchGrant}
+        onResponderMove={handlePinchMove}
+        onResponderRelease={handlePinchEnd}
+        onResponderTerminate={handlePinchEnd}
+      >
+        <CameraView
+          ref={cameraRef}
+          style={styles.camera}
+          facing="back"
+          zoom={zoom}
+        />
+      </View>
 
       {/* Top hint text */}
       <View style={styles.topSection}>
