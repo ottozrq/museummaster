@@ -9,7 +9,7 @@ tasks:
   serve:
     desc: Run FastAPI app locally with auto-reload
     cmds:
-      - poetry run uvicorn app:app --reload --host 0.0.0.0 --port 8000
+      - poetry run uvicorn app:app --reload --host 0.0.0.0 --port 8000 --workers 4
 
   test:
     desc: Run test suite

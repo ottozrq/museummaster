@@ -10,7 +10,7 @@ p, user, /docs, *
 p, user, /openapi.json, *
 p, anonymous, /analyze, *
 p, anonymous, /analyze/*, *
-p, anonymous, /tts, POST
+p, anonymous, /tts, *
 p, anonymous, /, *
 p, anonymous, /docs, *
 p, anonymous, /openapi.json, *

@@ -152,6 +152,12 @@ export async function analyzeImageStream(
   };
 }
 
+export function getTtsStreamUrl(text: string): string {
+  const url = new URL(`${API_BASE_URL}/tts`);
+  url.searchParams.set("text", text);
+  return url.toString();
+}
+
 export async function createSpeech(text: string): Promise<TTSResponse> {
   const response = await fetch(`${API_BASE_URL}/tts`, {
     method: "POST",

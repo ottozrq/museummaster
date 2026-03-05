@@ -19,7 +19,12 @@ import {
   useAudioPlayer,
   useAudioPlayerStatus,
 } from "expo-audio";
-import { AnalyzeStreamHandlers, analyzeImageStream, createSpeech } from "../src/services/api";
+import {
+  AnalyzeStreamHandlers,
+  analyzeImageStream,
+  createSpeech,
+  getTtsStreamUrl,
+} from "../src/services/api";
 import {
   Back15Icon,
   Forward30Icon,
@@ -73,6 +78,9 @@ export default function ResultScreen() {
   const [showCollectedToast, setShowCollectedToast] = useState(false);
   const [isFastSpeed, setIsFastSpeed] = useState(false);
   const [progressBarWidth, setProgressBarWidth] = useState(0);
+  const [downloadedAudioUri, setDownloadedAudioUri] = useState<string | null>(null);
+  const [preloadingSpeech, setPreloadingSpeech] = useState(false);
+  const isPlayingStreamRef = useRef(false);
   const player = useAudioPlayer(null);
   const status = useAudioPlayerStatus(player);
 
@@ -115,6 +123,17 @@ export default function ResultScreen() {
     };
   }, [initialText, imageUri]);
 
+  // 后台完整音频下载完成后，若当前正在播流式，自动切到本地文件以显示总时长并保持进度
+  useEffect(() => {
+    if (!downloadedAudioUri || !isPlayingStreamRef.current) return;
+    const currentTime = status?.currentTime ?? 0;
+    const wasPlaying = status?.playing ?? false;
+    isPlayingStreamRef.current = false;
+    player.replace(downloadedAudioUri);
+    player.seekTo(currentTime);
+    if (wasPlaying) player.play();
+  }, [downloadedAudioUri]);
+
   const onPlayTTS = async () => {
     if (!text) return;
 
@@ -133,23 +152,57 @@ export default function ResultScreen() {
       return;
     }
 
-    // 首次点击，需要向后端请求 TTS
+    // 如果已经在后台预下载完成，则优先使用本地完整音频
+    if (downloadedAudioUri) {
+      isPlayingStreamRef.current = false;
+      setRequestingSpeech(true);
+      try {
+        await setAudioModeAsync({
+          playsInSilentMode: true,
+        });
+
+        player.replace(downloadedAudioUri);
+        player.play();
+      } catch (error) {
+        Alert.alert("播放失败", error instanceof Error ? error.message : "未知错误");
+      } finally {
+        setRequestingSpeech(false);
+      }
+      return;
+    }
+
+    // 首次点击：使用 /tts 的流式 URL，边生成边播放
     setRequestingSpeech(true);
     try {
       await setAudioModeAsync({
         playsInSilentMode: true,
       });
 
-      const speech = await createSpeech(text);
-      const playFile = new File(Paths.cache, `guide-${Date.now()}.mp3`);
-      await playFile.write(speech.audio_base64, { encoding: "base64" });
-
-      player.replace(playFile.uri);
+      const url = getTtsStreamUrl(text);
+      player.replace(url);
       player.play();
+      isPlayingStreamRef.current = true;
     } catch (error) {
       Alert.alert("播放失败", error instanceof Error ? error.message : "未知错误");
     } finally {
       setRequestingSpeech(false);
+    }
+
+    // 并行在后台预下载完整音频，下载完成后会自动切到本地以显示总时长
+    if (!preloadingSpeech && !downloadedAudioUri) {
+      setPreloadingSpeech(true);
+      createSpeech(text)
+        .then(async (speech) => {
+          const preloadFile = new File(Paths.cache, `tts-preload-${Date.now()}.mp3`);
+          await preloadFile.write(speech.audio_base64, { encoding: "base64" });
+          setDownloadedAudioUri(preloadFile.uri);
+        })
+        .catch((e) => {
+          console.warn("TTS preload failed", e);
+        })
+        .finally(() => {
+          setPreloadingSpeech(false);
+        });
     }
   };
 
@@ -199,6 +252,12 @@ export default function ResultScreen() {
     duration > 0 && Number.isFinite(duration) && Number.isFinite(currentTime)
       ? Math.min(1, Math.max(0, currentTime / duration))
       : 0;
+  const hasDuration = Number.isFinite(duration) && duration > 0;
+  const isTextReady = !!text && !streaming;
+  const isAudioFullyReady = !!downloadedAudioUri;
+  const playButtonDisabled = !isTextReady || requestingSpeech;
+  const sideControlsDisabled = !isAudioFullyReady || requestingSpeech;
+  const progressInteractable = isAudioFullyReady;
 
   const formatTime = (value: number) => {
     if (!Number.isFinite(value) || value <= 0) return "0:00";
@@ -297,17 +356,23 @@ export default function ResultScreen() {
             <View
               style={styles.progressBar}
               onLayout={(e) => setProgressBarWidth(e.nativeEvent.layout.width)}
-              onStartShouldSetResponder={() => true}
-              onMoveShouldSetResponder={() => true}
-              onResponderGrant={(e) =>
-                handleSeekBarPosition(e.nativeEvent.locationX)
-              }
-              onResponderMove={(e) =>
-                handleSeekBarPosition(e.nativeEvent.locationX)
-              }
-              onResponderRelease={(e) =>
-                handleSeekBarPosition(e.nativeEvent.locationX)
-              }
+              onStartShouldSetResponder={() => progressInteractable}
+              onMoveShouldSetResponder={() => progressInteractable}
+              onResponderGrant={(e) => {
+                if (progressInteractable) {
+                  handleSeekBarPosition(e.nativeEvent.locationX);
+                }
+              }}
+              onResponderMove={(e) => {
+                if (progressInteractable) {
+                  handleSeekBarPosition(e.nativeEvent.locationX);
+                }
+              }}
+              onResponderRelease={(e) => {
+                if (progressInteractable) {
+                  handleSeekBarPosition(e.nativeEvent.locationX);
+                }
+              }}
             >
               <View
                 style={[
@@ -316,13 +381,21 @@ export default function ResultScreen() {
                 ]}
               />
             </View>
-            <Text style={styles.timeText}>{formatTime(duration)}</Text>
+            {hasDuration ? (
+              <Text style={styles.timeText}>{formatTime(duration)}</Text>
+            ) : (
+              <ActivityIndicator size="small" color="#F6E7D7" />
+            )}
           </View>
 
           <View style={styles.controlsRow}>
             <View style={styles.sideControlsLeft}>
               <Pressable
-                style={styles.smallControl}
+                style={[
+                  styles.smallControl,
+                  sideControlsDisabled && styles.controlDisabled,
+                ]}
+                disabled={sideControlsDisabled}
                 onPress={() => handleSeek(-15)}
               >
                 <Back15Icon width={30} height={30} />
@@ -330,9 +403,12 @@ export default function ResultScreen() {
             </View>
 
             <Pressable
-              style={styles.playButton}
+              style={[
+                styles.playButton,
+                playButtonDisabled && styles.controlDisabled,
+              ]}
               onPress={onPlayTTS}
-              disabled={requestingSpeech || !text}
+              disabled={playButtonDisabled}
             >
               {requestingSpeech ? (
                 <ActivityIndicator size="small" color="#E2461B" />
@@ -345,13 +421,24 @@ export default function ResultScreen() {
 
             <View style={styles.sideControlsRight}>
               <Pressable
-                style={styles.smallControl}
+                style={[
+                  styles.smallControl,
+                  sideControlsDisabled && styles.controlDisabled,
+                ]}
+                disabled={sideControlsDisabled}
                 onPress={() => handleSeek(30)}
               >
                 <Forward30Icon width={30} height={30} />
               </Pressable>
 
-              <Pressable style={styles.speedBadge} onPress={toggleSpeed}>
+              <Pressable
+                style={[
+                  styles.speedBadge,
+                  sideControlsDisabled && styles.controlDisabled,
+                ]}
+                disabled={sideControlsDisabled}
+                onPress={toggleSpeed}
+              >
                 <Speed2Icon width={29} height={29} />
               </Pressable>
             </View>
@@ -527,6 +614,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#F6E7D7",
     alignItems: "center",
     justifyContent: "center",
+  },
+  controlDisabled: {
+    opacity: 0.4,
   },
   speedBadge: {
     minWidth: 44,
