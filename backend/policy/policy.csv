@@ -8,7 +8,8 @@ p, user, /tts, *
 p, user, /, *
 p, user, /docs, *
 p, user, /openapi.json, *
-p, anonymous, /analyze, POST
+p, anonymous, /analyze, *
+p, anonymous, /analyze/*, *
 p, anonymous, /tts, POST
 p, anonymous, /, *
 p, anonymous, /docs, *

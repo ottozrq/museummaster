@@ -47,29 +47,34 @@ class CasbinMiddleware:
 
     async def _enforce(self, scope: Scope, receive: Receive) -> bool:
         """
-        Enforce a request
-        :param user: user will be sent to enforcer
-        :param request: ASGI Request
-        :return: Enforce Result
+        Enforce a request (HTTP 或 WebSocket 都支持)
         """
-        request = Request(scope, receive)
-        path = request.url.path
+        if "user" not in scope:
+            raise RuntimeError(
+                "Casbin Middleware must work with an Authentication Middleware"
+            )
+
+        if scope["type"] == "websocket":
+            # WebSocket 握手不能用 Request(scope, receive)，否则会触发断言
+            path = scope.get("path", "")
+            method = "GET"
+            user = scope.get("user")
+        else:
+            request = Request(scope, receive)
+            path = request.url.path
+            method = request.method
+            user = request.user
+
         root_path = flags.MuseumFlags.get().root_path
         if root_path:
             root_path = str(root_path)
             if path.startswith(root_path):
                 prefix_length = len(root_path)
                 path = path[prefix_length:]
-        method = request.method
-        if "user" not in scope:
-            raise RuntimeError(
-                "Casbin Middleware must work with an Authentication Middleware"
-            )
-        if not request.user:
-            raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Not authenticated")
-        assert isinstance(request.user, BaseUser)
+
+        assert isinstance(user, BaseUser)
         role = (
-            request.user.role_string if request.user.is_authenticated else "anonymous"
+            user.role_string if getattr(user, "is_authenticated", False) else "anonymous"
         )
         starlette_context._enforcer = self.enforcer
         starlette_context.context["_enforcer_cache"] = {}

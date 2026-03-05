@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 
 import casbin
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.models import Server
 from fastapi.staticfiles import StaticFiles
@@ -15,6 +15,7 @@ from starlette_context.middleware import RawContextMiddleware
 from middleware.authentication import MuseumAuthBackend, authentication_on_error
 from middleware.authorization import CasbinMiddleware
 from routes import register_routes
+from routers.analyze import _handle_analyze_websocket
 from utils import flags
 
 load_dotenv()
@@ -132,6 +133,15 @@ def get_app(*_, url=None, pool_size=5, max_overflow=10, **__):
 @app.get("/")
 def health_check() -> dict:
     return {"status": "ok", "service": "museum-guide-backend"}
+
+
+@app.websocket("/analyze")
+async def analyze_websocket(ws: WebSocket) -> None:
+    """
+    顶层定义的 WebSocket 路由，路径固定为 /analyze。
+    复用 routers.analyze._handle_analyze_websocket 的核心逻辑。
+    """
+    await _handle_analyze_websocket(ws)
 
 
 # Initialize app with middleware

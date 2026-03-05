@@ -1,6 +1,7 @@
-import base64
 import os
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from typing import Any, Dict
+
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from openai import OpenAI
 
 router = APIRouter()
@@ -13,28 +14,66 @@ PROMPT = (
 )
 
 
-@router.post("")
-async def analyze_artwork(image: UploadFile = File(...)) -> dict:
+async def _send_error(ws: WebSocket, message: str) -> None:
+    """Send a structured error message over WebSocket and close."""
+    try:
+        await ws.send_json({"type": "error", "message": message})
+    finally:
+        await ws.close()
+
+
+async def _handle_analyze_websocket(ws: WebSocket) -> None:
+    """
+    WebSocket 版本的识别核心逻辑。
+
+    - 客户端连接后发送一条 JSON：
+      { "type": "start", "image_base64": "...", "mime_type": "image/jpeg" }
+    - 服务端使用 Responses API 流式调用模型，
+      并把增量结果通过 JSON 发送给前端：
+      { "type": "delta", "delta": "...", "full": "到目前为止的完整文本" }
+    - 结束时发送：
+      { "type": "done" }
+    """
+    await ws.accept()
+
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
-        raise HTTPException(status_code=500, detail="OPENAI_API_KEY is not set")
+        await _send_error(ws, "OPENAI_API_KEY is not set")
+        return
 
-    content_type = image.content_type or "image/jpeg"
-    if not content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="Uploaded file must be an image")
+    try:
+        init_msg: Dict[str, Any] = await ws.receive_json()
+    except WebSocketDisconnect:
+        return
+    except Exception:
+        await _send_error(ws, "Invalid init payload, expected JSON")
+        return
 
-    image_bytes = await image.read()
-    if not image_bytes:
-        raise HTTPException(status_code=400, detail="Image is empty")
+    if init_msg.get("type") != "start":
+        await _send_error(ws, "First message must be of type 'start'")
+        return
 
-    image_b64 = base64.b64encode(image_bytes).decode("utf-8")
-    image_url = f"data:{content_type};base64,{image_b64}"
+    image_b64 = init_msg.get("image_base64")
+    mime_type = (init_msg.get("mime_type") or "image/jpeg").strip()
+
+    if not image_b64 or not isinstance(image_b64, str):
+        await _send_error(ws, "image_base64 is required")
+        return
+
+    if not mime_type.startswith("image/"):
+        await _send_error(ws, "mime_type must start with 'image/'")
+        return
+
+    image_url = f"data:{mime_type};base64,{image_b64}"
 
     client = OpenAI(api_key=api_key)
     model = os.getenv("OPENAI_VISION_MODEL", "gpt-4o")
 
+    full_text = ""
+
     try:
-        response = client.responses.create(
+        # 使用 Responses API 的流式模式
+        with client.responses.stream(
             model=model,
             input=[
                 {
@@ -45,14 +84,26 @@ async def analyze_artwork(image: UploadFile = File(...)) -> dict:
                     ],
                 }
             ],
-        )
+        ) as stream:
+            for event in stream:
+                event_type = getattr(event, "type", None)
+                if event_type == "response.output_text.delta":
+                    delta = getattr(event, "delta", "") or ""
+                    if not delta:
+                        continue
+                    full_text += delta
+                    await ws.send_json(
+                        {"type": "delta", "delta": delta, "full": full_text}
+                    )
+                elif event_type == "response.completed":
+                    break
 
-        result_text = response.output_text.strip()
-        if not result_text:
-            raise HTTPException(status_code=502, detail="Model returned empty response")
+        await ws.send_json({"type": "done"})
+        await ws.close()
+    except WebSocketDisconnect:
+        return
+    except Exception as exc:  # pragma: no cover
+        await _send_error(ws, f"Analyze failed: {exc}")
 
-        return {"text": result_text}
-    except HTTPException:
-        raise
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Analyze failed: {exc}") from exc
+
+__all__ = ["router", "_handle_analyze_websocket"]
