@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { File, Paths } from "expo-file-system";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   ActivityIndicator,
@@ -19,7 +19,7 @@ import {
   useAudioPlayer,
   useAudioPlayerStatus,
 } from "expo-audio";
-import { createSpeech } from "../src/services/api";
+import { AnalyzeStreamHandlers, analyzeImageStream, createSpeech } from "../src/services/api";
 import {
   Back15Icon,
   Forward30Icon,
@@ -63,9 +63,11 @@ async function appendToCollection(item: CollectionItem) {
 export default function ResultScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ text?: string; imageUri?: string }>();
-  const text = useMemo(() => params.text ?? "", [params.text]);
+  const initialText = useMemo(() => params.text ?? "", [params.text]);
   const imageUri = useMemo(() => params.imageUri ?? "", [params.imageUri]);
 
+  const [text, setText] = useState(initialText);
+  const [streaming, setStreaming] = useState(false);
   const [requestingSpeech, setRequestingSpeech] = useState(false);
   const [saving, setSaving] = useState(false);
   const [showCollectedToast, setShowCollectedToast] = useState(false);
@@ -75,6 +77,43 @@ export default function ResultScreen() {
   const status = useAudioPlayerStatus(player);
 
   const hasAudio = Number.isFinite(status?.duration) && (status?.duration ?? 0) > 0;
+
+  // 当没有直接传入讲解文本但有图片时，在结果页发起流式识别
+  useEffect(() => {
+    if (initialText || !imageUri) return;
+
+    setStreaming(true);
+
+    const handlers: AnalyzeStreamHandlers = {
+      onText: (fullText) => {
+        setText(fullText);
+      },
+      onError: (error) => {
+        setStreaming(false);
+        Alert.alert("识别失败", error.message || "未知错误");
+      },
+      onDone: () => {
+        setStreaming(false);
+      },
+    };
+
+    let cleanup: (() => void) | undefined;
+
+    analyzeImageStream(imageUri, handlers)
+      .then((stop) => {
+        cleanup = stop;
+      })
+      .catch((error) => {
+        setStreaming(false);
+        Alert.alert("识别失败", error instanceof Error ? error.message : "未知错误");
+      });
+
+    return () => {
+      if (cleanup) {
+        cleanup();
+      }
+    };
+  }, [initialText, imageUri]);
 
   const onPlayTTS = async () => {
     if (!text) return;
@@ -237,7 +276,7 @@ export default function ResultScreen() {
             识别结果
           </Text>
           <Text style={styles.subtitle} numberOfLines={2}>
-            AI 为你讲解本次识别到的展品
+            {streaming ? "AI 正在为你讲解本次识别到的展品…" : "AI 为你讲解本次识别到的展品"}
           </Text>
 
           <ScrollView
@@ -245,7 +284,9 @@ export default function ResultScreen() {
             contentContainerStyle={styles.descriptionContent}
             showsVerticalScrollIndicator={false}
           >
-            <Text style={styles.body}>{text || "暂无结果"}</Text>
+            <Text style={styles.body}>
+              {text || (streaming ? "AI 正在分析这件艺术品，请稍候…" : "暂无结果")}
+            </Text>
           </ScrollView>
         </View>
 

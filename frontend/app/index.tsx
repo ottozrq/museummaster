@@ -69,20 +69,16 @@ export default function CameraScreen() {
   }, []);
 
   const analyzeAndNavigate = async (uri: string) => {
-    setLoading(true);
+    // 现在由结果页自己发起流式识别，这里只负责导航并传递图片
     try {
-      const analysis = await analyzeImage(uri);
       router.push({
         pathname: "/result",
         params: {
-          text: analysis.text,
           imageUri: uri,
         },
       });
     } catch (error) {
       Alert.alert("识别失败", error instanceof Error ? error.message : "未知错误");
-    } finally {
-      setLoading(false);
     }
   };
 

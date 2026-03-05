@@ -1,3 +1,6 @@
+// 使用 expo-file-system 的 legacy API，以便在新版本中继续使用 readAsStringAsync
+import * as FileSystem from "expo-file-system/legacy";
+
 const API_BASE_URL =
   process.env.EXPO_PUBLIC_API_BASE_URL?.trim() || "https://museumapi.ottozhang.com";
 const USE_FAKE_ANALYZE = process.env.EXPO_PUBLIC_USE_FAKE_ANALYZE === "true";
@@ -10,6 +13,12 @@ type TTSResponse = {
   audio_base64: string;
   mime_type: string;
   voice: string;
+};
+
+export type AnalyzeStreamHandlers = {
+  onText: (fullText: string) => void;
+  onError?: (error: Error) => void;
+  onDone?: () => void;
 };
 
 function sleep(ms: number) {
@@ -67,6 +76,80 @@ export async function analyzeImage(uri: string): Promise<AnalyzeResponse> {
   }
 
   return response.json();
+}
+
+export async function analyzeImageStream(
+  uri: string,
+  handlers: AnalyzeStreamHandlers,
+): Promise<() => void> {
+  if (USE_FAKE_ANALYZE) {
+    const result = await fakeAnalyzeImage(uri);
+    handlers.onText(result.text);
+    handlers.onDone?.();
+    return () => {};
+  }
+
+  const fileName = uri.split("/").pop() || "photo.jpg";
+  const ext = fileName.split(".").pop()?.toLowerCase();
+  const mimeType = ext === "png" ? "image/png" : "image/jpeg";
+
+  const base64 = await FileSystem.readAsStringAsync(uri, {
+    // 某些 SDK 版本不再导出 EncodingType 枚举，直接使用字符串更兼容
+    encoding: "base64" as FileSystem.EncodingType,
+  });
+
+  // WebSocket 路径与后端 prefix=\"/analyze\" + websocket(\"\") 对应 => /analyze
+  const wsUrl = API_BASE_URL.replace(/^http/, "ws") + "/analyze";
+  const ws = new WebSocket(wsUrl);
+
+  let closedManually = false;
+
+  ws.onopen = () => {
+    ws.send(
+      JSON.stringify({
+        type: "start",
+        image_base64: base64,
+        mime_type: mimeType,
+      }),
+    );
+  };
+
+  ws.onmessage = (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      if (data.type === "delta") {
+        handlers.onText(data.full ?? "");
+      } else if (data.type === "done") {
+        handlers.onDone?.();
+        ws.close();
+      } else if (data.type === "error") {
+        handlers.onError?.(new Error(data.message || "Analyze failed"));
+        ws.close();
+      }
+    } catch (e) {
+      handlers.onError?.(
+        e instanceof Error ? e : new Error("Invalid message from analyze stream"),
+      );
+      ws.close();
+    }
+  };
+
+  ws.onerror = () => {
+    handlers.onError?.(new Error("Analyze WebSocket error"));
+  };
+
+  ws.onclose = () => {
+    if (!closedManually) {
+      handlers.onDone?.();
+    }
+  };
+
+  return () => {
+    closedManually = true;
+    if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+      ws.close();
+    }
+  };
 }
 
 export async function createSpeech(text: string): Promise<TTSResponse> {
