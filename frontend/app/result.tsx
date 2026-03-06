@@ -80,9 +80,17 @@ export default function ResultScreen() {
   const [progressBarWidth, setProgressBarWidth] = useState(0);
   const [downloadedAudioUri, setDownloadedAudioUri] = useState<string | null>(null);
   const [preloadingSpeech, setPreloadingSpeech] = useState(false);
+  const [streamLoading, setStreamLoading] = useState(false);
   const isPlayingStreamRef = useRef(false);
   const player = useAudioPlayer(null);
   const status = useAudioPlayerStatus(player);
+
+  // 流式播放已发起但尚未开始出声时，保持播放按钮显示加载
+  useEffect(() => {
+    if (streamLoading && status?.playing) {
+      setStreamLoading(false);
+    }
+  }, [streamLoading, status?.playing]);
 
   const hasAudio = Number.isFinite(status?.duration) && (status?.duration ?? 0) > 0;
 
@@ -129,6 +137,7 @@ export default function ResultScreen() {
     const currentTime = status?.currentTime ?? 0;
     const wasPlaying = status?.playing ?? false;
     isPlayingStreamRef.current = false;
+    setStreamLoading(false);
     player.replace(downloadedAudioUri);
     player.seekTo(currentTime);
     if (wasPlaying) player.play();
@@ -148,6 +157,7 @@ export default function ResultScreen() {
 
     // 已有音频但没在播，直接播放
     if (hasAudio) {
+      activateLockScreen();
       player.play();
       return;
     }
@@ -159,8 +169,10 @@ export default function ResultScreen() {
       try {
         await setAudioModeAsync({
           playsInSilentMode: true,
+          shouldPlayInBackground: true,
         });
 
+        activateLockScreen();
         player.replace(downloadedAudioUri);
         player.play();
       } catch (error) {
@@ -173,16 +185,20 @@ export default function ResultScreen() {
 
     // 首次点击：使用 /tts 的流式 URL，边生成边播放
     setRequestingSpeech(true);
+    setStreamLoading(true);
     try {
       await setAudioModeAsync({
         playsInSilentMode: true,
+        shouldPlayInBackground: true,
       });
 
       const url = getTtsStreamUrl(text);
       player.replace(url);
+      activateLockScreen();
       player.play();
       isPlayingStreamRef.current = true;
     } catch (error) {
+      setStreamLoading(false);
       Alert.alert("播放失败", error instanceof Error ? error.message : "未知错误");
     } finally {
       setRequestingSpeech(false);
@@ -255,7 +271,7 @@ export default function ResultScreen() {
   const hasDuration = Number.isFinite(duration) && duration > 0;
   const isTextReady = !!text && !streaming;
   const isAudioFullyReady = !!downloadedAudioUri;
-  const playButtonDisabled = !isTextReady || requestingSpeech;
+  const playButtonDisabled = !isTextReady || requestingSpeech || streamLoading;
   const sideControlsDisabled = !isAudioFullyReady || requestingSpeech;
   const progressInteractable = isAudioFullyReady;
 
@@ -265,6 +281,33 @@ export default function ResultScreen() {
     const m = Math.floor(total / 60);
     const s = total % 60;
     return `${m}:${s.toString().padStart(2, "0")}`;
+  };
+
+  // 锁屏/控制中心「正在播放」：开始播放时激活，离开页面时清除
+  const lockScreenMetadata = useMemo(
+    () => ({
+      title: "作品讲解",
+      artist: "Artiou",
+      ...(imageUri ? { artworkUrl: imageUri } : {}),
+    }),
+    [imageUri]
+  );
+  const lockScreenOptions = { showSeekBackward: true, showSeekForward: true };
+
+  useEffect(() => {
+    return () => {
+      try {
+        player.setActiveForLockScreen(false);
+      } catch (_) {}
+    };
+  }, [player]);
+
+  const activateLockScreen = () => {
+    try {
+      player.setActiveForLockScreen(true, lockScreenMetadata, lockScreenOptions);
+    } catch (e) {
+      console.warn("setActiveForLockScreen failed", e);
+    }
   };
 
   const handleSeek = async (offset: number) => {
@@ -410,7 +453,7 @@ export default function ResultScreen() {
               onPress={onPlayTTS}
               disabled={playButtonDisabled}
             >
-              {requestingSpeech ? (
+              {requestingSpeech || streamLoading ? (
                 <ActivityIndicator size="small" color="#E2461B" />
               ) : status?.playing ? (
                 <PauseCircleIcon width={32} height={32} />

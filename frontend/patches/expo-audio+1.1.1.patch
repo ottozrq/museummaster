@@ -1,0 +1,18 @@
+diff --git a/node_modules/expo-audio/ios/MediaController.swift b/node_modules/expo-audio/ios/MediaController.swift
+index 2dd3fb2..9247c4c 100644
+--- a/node_modules/expo-audio/ios/MediaController.swift
++++ b/node_modules/expo-audio/ios/MediaController.swift
+@@ -22,6 +22,13 @@ class MediaController {
+ 
+     DispatchQueue.main.async {
+       if let player {
++        #if os(iOS)
++        do {
++          try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
++        } catch {
++          print("[ExpoAudio] Failed to set audio session category for lock screen: \(error)")
++        }
++        #endif
+         self.enableRemoteCommands(options: options)
+         self.updateNowPlayingInfo(for: player)
+       } else {

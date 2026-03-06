@@ -1,6 +1,15 @@
+import { useEffect } from "react";
 import { Stack } from "expo-router";
+import { setAudioModeAsync } from "expo-audio";
 
 export default function RootLayout() {
+  useEffect(() => {
+    setAudioModeAsync({
+      playsInSilentMode: true,
+      shouldPlayInBackground: true,
+    }).catch((e) => console.warn("Audio mode setup failed", e));
+  }, []);
+
   return (
     <Stack>
       <Stack.Screen

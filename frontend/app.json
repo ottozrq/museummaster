@@ -17,7 +17,8 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "艺游需要使用相机拍摄展品图片。"
+        "NSCameraUsageDescription": "艺游需要使用相机拍摄展品图片。",
+        "UIBackgroundModes": ["audio"]
       },
       "bundleIdentifier": "com.ottozrq.museumguide"
     },
