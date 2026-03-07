@@ -16,6 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
+      "usesAppleSignIn": true,
       "infoPlist": {
         "NSCameraUsageDescription": "艺游需要使用相机拍摄展品图片。",
         "UIBackgroundModes": ["audio"]
@@ -32,7 +33,8 @@
     "plugins": [
       "expo-router",
       "expo-image-picker",
-      "expo-audio"
+      "expo-audio",
+      "expo-apple-authentication"
     ],
     "experiments": {
       "typedRoutes": true

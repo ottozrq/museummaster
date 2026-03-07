@@ -25,6 +25,14 @@ export default function RootLayout() {
         name="collection"
         options={{ title: "我的收藏夹", headerShown: false }}
       />
+      <Stack.Screen
+        name="privacy"
+        options={{ title: "Privacy Policy", headerShown: false }}
+      />
+      <Stack.Screen
+        name="terms"
+        options={{ title: "Terms of Service", headerShown: false }}
+      />
     </Stack>
   );
 }

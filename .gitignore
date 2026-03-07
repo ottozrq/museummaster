@@ -2,6 +2,7 @@
 .env
 .env.local
 .env.*.local
+flags.yml
 
 # === Backend (Python) ===
 __pycache__/
@@ -54,6 +55,7 @@ web-build/
 # iOS
 frontend/ios/Pods/
 frontend/ios/build/
+*.ipa
 *.xcworkspace
 !default.xcworkspace
 

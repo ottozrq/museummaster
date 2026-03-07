@@ -224,6 +224,23 @@ export default function ResultScreen() {
 
   const onAddToCollection = async () => {
     if (!text) return;
+
+    // 未登录时先引导登录（当前使用 Apple 登录，token 保存在 AsyncStorage）
+    const authToken = await AsyncStorage.getItem("museum_auth_token");
+    if (!authToken) {
+      Alert.alert("需要登录", "登录后才能收藏作品", [
+        { text: "取消", style: "cancel" },
+        {
+          text: "去登录",
+          onPress: () => {
+            // 跳转到收藏页，在顶部使用 Apple 登录
+            router.push("/collection");
+          },
+        },
+      ]);
+      return;
+    }
+
     setSaving(true);
     try {
       const id = `${Date.now()}`;

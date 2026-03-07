@@ -14,8 +14,8 @@ from starlette_context.middleware import RawContextMiddleware
 
 from middleware.authentication import MuseumAuthBackend, authentication_on_error
 from middleware.authorization import CasbinMiddleware
-from routes import register_routes
 from routers.analyze import _handle_analyze_websocket
+from routes import register_routes
 from utils import flags
 
 load_dotenv()
@@ -25,10 +25,13 @@ MF = flags.MuseumFlags.get()
 # Setup logging
 logging.basicConfig(level=logging.DEBUG if MF.debug else logging.INFO)
 
+
 # Create Casbin enforcer
 def get_enforcer():
     policy_dir = Path(__file__).parent / "policy"
-    return casbin.Enforcer(str(policy_dir / "model.conf"), str(policy_dir / "policy.csv"))
+    return casbin.Enforcer(
+        str(policy_dir / "model.conf"), str(policy_dir / "policy.csv")
+    )
 
 
 enforcer = get_enforcer()
@@ -100,7 +103,7 @@ def origin(server: Server) -> str:
 
 def get_app(*_, url=None, pool_size=5, max_overflow=10, **__):
     global app
-    
+
     # Add CORS middleware
     app.add_middleware(
         CORSMiddleware,
@@ -113,14 +116,14 @@ def get_app(*_, url=None, pool_size=5, max_overflow=10, **__):
 
     # Add Casbin middleware
     app.add_middleware(CasbinMiddleware, enforcer=enforcer)
-    
+
     # Add authentication middleware
     app.add_middleware(
         AuthenticationMiddleware,
         backend=MuseumAuthBackend(),
         on_error=authentication_on_error,
     )
-    
+
     # Add RawContextMiddleware
     app.add_middleware(RawContextMiddleware)
 

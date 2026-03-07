@@ -9,17 +9,15 @@ import uuid
 from dataclasses import dataclass
 from types import SimpleNamespace
 from typing import Optional
-from unittest.mock import MagicMock
 
-import pytest
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
 import jwt
-
+import pytest
+from fastapi.testclient import TestClient
 
 # Set test environment variables before importing app
+os.environ.setdefault("MUSEUMFLAGS_FILE", "flags.yml")
 os.environ["OPENAI_API_KEY"] = "test-key"
-os.environ["OPENAI_VISION_MODEL"] = "gpt-4o"
+os.environ["OPENAI_MUSEUM_MODEL"] = "gpt-4o"
 os.environ["OPENAI_TTS_MODEL"] = "gpt-4o-mini-tts"
 os.environ["OPENAI_TTS_VOICE"] = "alloy"
 
@@ -40,7 +38,7 @@ class FakeOpenAI:
 
 
 # Import app after setting environment variables
-from app import app, get_app
+from app import get_app
 
 
 @pytest.fixture(scope="session")
@@ -59,10 +57,12 @@ def client(test_app) -> TestClient:
 # Authentication Fixtures (similar to gagaou)
 # ============================================
 
+
 @pytest.fixture
 def test_secret():
     """Get the login secret for JWT token generation"""
     from utils import flags
+
     return flags.MuseumFlags.get().login_secret
 
 
@@ -70,15 +70,15 @@ def test_secret():
 def user_admin(test_secret):
     """Create admin user token - similar to gagaou's user_admin fixture"""
     token = jwt.encode(
-        {"user_id": str(uuid.uuid4()), "role": "admin"},
-        test_secret,
-        algorithm="HS256"
+        {"user_id": str(uuid.uuid4()), "role": "admin"}, test_secret, algorithm="HS256"
     )
     return {
-        "user_id": uuid.UUID(jwt.decode(token, test_secret, algorithms=["HS256"])["user_id"]),
+        "user_id": uuid.UUID(
+            jwt.decode(token, test_secret, algorithms=["HS256"])["user_id"]
+        ),
         "role": "admin",
         "token": token,
-        "email": "admin@example.com"
+        "email": "admin@example.com",
     }
 
 
@@ -86,15 +86,15 @@ def user_admin(test_secret):
 def user_client_user(test_secret):
     """Create regular client user token"""
     token = jwt.encode(
-        {"user_id": str(uuid.uuid4()), "role": "client"},
-        test_secret,
-        algorithm="HS256"
+        {"user_id": str(uuid.uuid4()), "role": "client"}, test_secret, algorithm="HS256"
     )
     return {
-        "user_id": uuid.UUID(jwt.decode(token, test_secret, algorithms=["HS256"])["user_id"]),
+        "user_id": uuid.UUID(
+            jwt.decode(token, test_secret, algorithms=["HS256"])["user_id"]
+        ),
         "role": "client",
         "token": token,
-        "email": "user@example.com"
+        "email": "user@example.com",
     }
 
 
@@ -114,6 +114,7 @@ def auth_headers_client(user_client_user):
 # OpenAI Mock Fixtures
 # ============================================
 
+
 @pytest.fixture
 def mock_openai_success(monkeypatch):
     """Mock successful OpenAI responses - similar to existing fixture"""
@@ -126,11 +127,14 @@ def mock_openai_success(monkeypatch):
 @pytest.fixture
 def mock_openai_failure(monkeypatch):
     """Mock OpenAI failure for error testing"""
+
     class FailedOpenAI:
         def __init__(self, api_key: str) -> None:
             self.api_key = api_key
             self.responses = SimpleNamespace(create=self._fail_response)
-            self.audio = SimpleNamespace(speech=SimpleNamespace(create=self._fail_speech))
+            self.audio = SimpleNamespace(
+                speech=SimpleNamespace(create=self._fail_speech)
+            )
 
         def _fail_response(self, **_: object) -> object:
             raise Exception("OpenAI API error")
@@ -148,9 +152,11 @@ def mock_openai_failure(monkeypatch):
 # API Client Wrapper (similar to gagaou)
 # ============================================
 
+
 @dataclass
 class ApiClient:
     """Wrapper around TestClient providing convenient methods - similar to gagaou's ApiClient"""
+
     client: TestClient
     user: Optional[dict] = None
 
@@ -172,10 +178,7 @@ class ApiClient:
             headers.setdefault("Authorization", f"Bearer {self.user['token']}")
 
         response = self.client.request(
-            method=method,
-            url=url,
-            headers=headers,
-            **kwargs
+            method=method, url=url, headers=headers, **kwargs
         )
         return response
 
@@ -195,6 +198,7 @@ def api_client_auth(client, user_admin) -> ApiClient:
 # ============================================
 # Test Data Fixtures
 # ============================================
+
 
 @pytest.fixture
 def sample_image_bytes():
@@ -217,6 +221,7 @@ def long_text():
 # ============================================
 # Query Counter (from gagaou)
 # ============================================
+
 
 class QueryCounter:
     """

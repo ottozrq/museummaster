@@ -10,10 +10,11 @@ Tests cover:
 """
 
 import base64
-import pytest
+
 from fastapi.testclient import TestClient
 
 from tests.conftest import ApiClient
+from utils.flags import OpenAIFlags
 
 
 class TestTTSEndpoint:
@@ -99,6 +100,9 @@ class TestTTSEndpoint:
     def test_tts_missing_api_key(self, client: TestClient, monkeypatch, sample_text):
         """Test TTS endpoint requires API key"""
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+        monkeypatch.setattr(
+            OpenAIFlags, "_default", None
+        )  # force next get() to read env
         response = client.post("/tts", json={"text": sample_text})
 
         assert response.status_code == 500

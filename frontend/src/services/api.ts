@@ -1,7 +1,7 @@
 // 使用 expo-file-system 的 legacy API，以便在新版本中继续使用 readAsStringAsync
 import * as FileSystem from "expo-file-system/legacy";
 
-const API_BASE_URL =
+export const API_BASE_URL =
   process.env.EXPO_PUBLIC_API_BASE_URL?.trim() || "https://museumapi.ottozhang.com";
 const USE_FAKE_ANALYZE = process.env.EXPO_PUBLIC_USE_FAKE_ANALYZE === "true";
 

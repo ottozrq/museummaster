@@ -3,8 +3,6 @@ from typing import Optional
 
 from fastapi import Depends, Request
 from fastapi.security import OAuth2PasswordBearer
-from pydantic import PositiveInt, StringConstraints
-from typing_extensions import Annotated
 
 from middleware.authentication import MuseumAuthUser
 from utils import flags

@@ -8,12 +8,10 @@ Tests cover:
 - Response formats
 """
 
-import base64
-import io
-import pytest
 from fastapi.testclient import TestClient
 
 from tests.conftest import ApiClient
+from utils.flags import OpenAIFlags
 
 
 class TestAnalyzeEndpoint:
@@ -79,9 +77,7 @@ class TestAnalyzeEndpoint:
 
         assert response.status_code == 422  # FastAPI validation error
 
-    def test_analyze_with_openai_failure(
-        self, client: TestClient, mock_openai_failure
-    ):
+    def test_analyze_with_openai_failure(self, client: TestClient, mock_openai_failure):
         """Test analyze endpoint handles OpenAI failures gracefully"""
         files = {"image": ("art.png", b"fake-image", "image/png")}
         response = client.post("/analyze", files=files)
@@ -92,6 +88,9 @@ class TestAnalyzeEndpoint:
     def test_analyze_missing_api_key(self, client: TestClient, monkeypatch):
         """Test analyze endpoint requires API key"""
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+        monkeypatch.setattr(
+            OpenAIFlags, "_default", None
+        )  # force next get() to read env
         files = {"image": ("art.png", b"fake-image", "image/png")}
         response = client.post("/analyze", files=files)
 
@@ -114,9 +113,7 @@ class TestAnalyzeEndpoint:
 class TestAnalyzeWithAuth:
     """Tests for analyze endpoint with authentication - similar to gagaou's auth tests"""
 
-    def test_analyze_works_without_auth(
-        self, client: TestClient, mock_openai_success
-    ):
+    def test_analyze_works_without_auth(self, client: TestClient, mock_openai_success):
         """Test analyze endpoint works without authentication"""
         files = {"image": ("art.png", b"fake-image", "image/png")}
         response = client.post("/analyze", files=files)
@@ -145,9 +142,7 @@ class TestAnalyzeWithAuth:
 class TestAnalyzeApiClient:
     """Tests using the ApiClient wrapper - following gagaou's pattern"""
 
-    def test_post_using_api_client(
-        self, api_client: ApiClient, mock_openai_success
-    ):
+    def test_post_using_api_client(self, api_client: ApiClient, mock_openai_success):
         """Test using ApiClient wrapper for POST requests"""
         files = {"image": ("art.png", b"fake-image", "image/png")}
         response = api_client.post("/analyze", files=files)

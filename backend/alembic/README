@@ -1,0 +1,8 @@
+Generic single-database configuration for museum-guide-backend.
+
+Run from backend directory:
+  poetry run alembic upgrade head   # apply all migrations
+  poetry run alembic revision --autogenerate -m "description"  # create new migration
+  poetry run alembic downgrade -1   # rollback one revision
+
+DATABASE_URL is read from environment (default: sqlite:///./museum.db).

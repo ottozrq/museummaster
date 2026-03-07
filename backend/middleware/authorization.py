@@ -74,7 +74,9 @@ class CasbinMiddleware:
 
         assert isinstance(user, BaseUser)
         role = (
-            user.role_string if getattr(user, "is_authenticated", False) else "anonymous"
+            user.role_string
+            if getattr(user, "is_authenticated", False)
+            else "anonymous"
         )
         starlette_context._enforcer = self.enforcer
         starlette_context.context["_enforcer_cache"] = {}

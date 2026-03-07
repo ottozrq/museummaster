@@ -1,3 +1,4 @@
+# Top-level defaults (overridden by targets when MUSEUMFLAGS_TARGET is set)
 museum:
   debug: true
   display_traceback: true
@@ -7,11 +8,34 @@ museum:
   namespace: museum-local
   login_secret: change_me_in_local
 
+# Env-driven config: set via env (e.g. OPENAI_API_KEY) or here per target
+database:
+  url: sqlite:///./museum.db
+  sql_echo: false
+
+openai:
+  api_key: ""
+  museum_model: gpt-4o
+  tts_model: gpt-4o-mini-tts
+  tts_voice: alloy
+
+apple:
+  client_id: ""
+
 targets:
   production:
     museum:
       namespace: museum-production
       login_secret: change_me_in_production
+    database:
+      url: sqlite:///./museum.db
+      # url: postgresql://user:pass@localhost:5432/museum
+    openai:
+      museum_model: gpt-4o
+      tts_model: gpt-4o-mini-tts
+      tts_voice: alloy
+    apple:
+      client_id: ""
     museum_pg:
       host: localhost
       database: museum_prod
@@ -21,6 +45,13 @@ targets:
     museum:
       namespace: museum-staging
       login_secret: change_me_in_staging
+    database:
+      url: sqlite:///./museum.db
+    openai:
+      museum_model: gpt-4o
+      tts_model: gpt-4o-mini-tts
+    apple:
+      client_id: ""
     museum_pg:
       host: localhost
       database: museum_staging
@@ -31,6 +62,16 @@ targets:
     museum:
       namespace: museum-local
       login_secret: change_me_in_local
+    database:
+      url: sqlite:///./museum.db
+      sql_echo: false
+    openai:
+      api_key: ""
+      museum_model: gpt-4o
+      tts_model: gpt-4o-mini-tts
+      tts_voice: alloy
+    apple:
+      client_id: ""
     museum_pg:
       host: localhost
       username: museum

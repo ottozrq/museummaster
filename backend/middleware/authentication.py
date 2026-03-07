@@ -113,7 +113,7 @@ class MuseumAuthBackend(AuthenticationBackend):
         public_paths = ["/analyze", "/tts", "/docs", "/openapi.json", "/redoc"]
         if any(request.url.path.startswith(p) for p in public_paths):
             return None
-        
+
         if superuser_email := _superuser_email():
             return MuseumAuthUser.from_superuser(superuser_email)
         if "Authorization" not in request.headers or request.url.path == "/token/":

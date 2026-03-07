@@ -1,8 +1,17 @@
-import os
+import base64
 from typing import Any, Dict
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import (
+    APIRouter,
+    File,
+    HTTPException,
+    UploadFile,
+    WebSocket,
+    WebSocketDisconnect,
+)
 from openai import OpenAI
+
+from utils.flags import OpenAIFlags
 
 router = APIRouter()
 
@@ -12,6 +21,70 @@ PROMPT = (
     "1) 作品标题，2) 艺术家，3) 创作年份，4) 艺术风格，5) 历史背景，6) 艺术意义。"
     "如果信息不确定，请明确说明‘可能’并给出依据。"
 )
+
+
+@router.post("")
+async def analyze_artwork(image: UploadFile = File(...)) -> Dict[str, str]:
+    """
+    非流式 analyze 接口，供现有单元测试和同步调用使用。
+
+    - 接收图片文件
+    - 使用 OpenAI Responses API 生成完整讲解文本
+    - 返回 {"text": "..."} JSON
+    """
+    openai_flags = OpenAIFlags.get()
+    if not openai_flags.api_key:
+        raise HTTPException(status_code=500, detail="OPENAI_API_KEY is not set")
+
+    content_type = image.content_type or "image/jpeg"
+    if not content_type.startswith("image/"):
+        raise HTTPException(
+            status_code=400,
+            detail="Uploaded file must be an image",
+        )
+
+    image_bytes = await image.read()
+    if not image_bytes:
+        raise HTTPException(
+            status_code=400,
+            detail="Image is empty",
+        )
+
+    image_b64 = base64.b64encode(image_bytes).decode("utf-8")
+    image_url = f"data:{content_type};base64,{image_b64}"
+
+    client = OpenAI(api_key=openai_flags.api_key)
+    model = openai_flags.museum_model
+
+    try:
+        response = client.responses.create(
+            model=model,
+            input=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "input_text", "text": PROMPT},
+                        {"type": "input_image", "image_url": image_url},
+                    ],
+                }
+            ],
+        )
+
+        result_text = response.output_text.strip()
+        if not result_text:
+            raise HTTPException(
+                status_code=502,
+                detail="Model returned empty response",
+            )
+
+        return {"text": result_text}
+    except HTTPException:
+        raise
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(
+            status_code=500,
+            detail=f"Analyze failed: {exc}",
+        ) from exc
 
 
 async def _send_error(ws: WebSocket, message: str) -> None:
@@ -36,8 +109,8 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
     """
     await ws.accept()
 
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
+    openai_flags = OpenAIFlags.get()
+    if not openai_flags.api_key:
         await _send_error(ws, "OPENAI_API_KEY is not set")
         return
 
@@ -66,8 +139,8 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
 
     image_url = f"data:{mime_type};base64,{image_b64}"
 
-    client = OpenAI(api_key=api_key)
-    model = os.getenv("OPENAI_VISION_MODEL", "gpt-4o")
+    client = OpenAI(api_key=openai_flags.api_key)
+    model = openai_flags.museum_model
 
     full_text = ""
 
@@ -106,4 +179,4 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
         await _send_error(ws, f"Analyze failed: {exc}")
 
 
-__all__ = ["router", "_handle_analyze_websocket"]
+__all__ = ["router", "analyze_artwork", "_handle_analyze_websocket"]

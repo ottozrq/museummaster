@@ -29,6 +29,8 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
+  - ExpoAppleAuthentication (55.0.8):
+    - ExpoModulesCore
   - ExpoAsset (12.0.12):
     - ExpoModulesCore
   - ExpoAudio (1.1.1):
@@ -1900,6 +1902,7 @@ DEPENDENCIES:
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - EXImageLoader (from `../node_modules/expo-image-loader/ios`)
   - Expo (from `../node_modules/expo`)
+  - ExpoAppleAuthentication (from `../node_modules/expo-apple-authentication/ios`)
   - ExpoAsset (from `../node_modules/expo-asset/ios`)
   - ExpoAudio (from `../node_modules/expo-audio/ios`)
   - ExpoCamera (from `../node_modules/expo-camera/ios`)
@@ -1994,6 +1997,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-image-loader/ios"
   Expo:
     :path: "../node_modules/expo"
+  ExpoAppleAuthentication:
+    :path: "../node_modules/expo-apple-authentication/ios"
   ExpoAsset:
     :path: "../node_modules/expo-asset/ios"
   ExpoAudio:
@@ -2162,6 +2167,7 @@ SPEC CHECKSUMS:
   EXConstants: fce59a631a06c4151602843667f7cfe35f81e271
   EXImageLoader: 189e3476581efe3ad4d1d3fb4735b7179eb26f05
   Expo: aadbcc8c6c14ff3105a9154f1683cb1424ff0d2a
+  ExpoAppleAuthentication: 86e97b24bd6687c156c55bb448f570bc29081ace
   ExpoAsset: f867e55ceb428aab99e1e8c082b5aee7c159ea18
   ExpoAudio: e4cfe3a2f3317b8487460685385a9867a07fb4fb
   ExpoCamera: 6a326deb45ba840749652e4c15198317aa78497e

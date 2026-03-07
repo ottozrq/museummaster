@@ -8,7 +8,6 @@ Tests cover:
 - Error handling for invalid tokens
 """
 
-import pytest
 import jwt
 from fastapi.testclient import TestClient
 
@@ -37,7 +36,10 @@ class TestAuthentication:
         response = client.get("/", headers=headers)
 
         # Should return 401 for invalid token
-        assert response.status_code in [200, 401]  # Depends on endpoint auth requirements
+        assert response.status_code in [
+            200,
+            401,
+        ]  # Depends on endpoint auth requirements
 
     def test_expired_jwt_token(self, client: TestClient, test_secret):
         """Test expired JWT token is rejected"""
@@ -151,9 +153,7 @@ class TestTokenValidation:
 
     def test_token_with_invalid_user_id_format(self, client: TestClient, test_secret):
         """Test token with invalid user_id format"""
-        token = jwt.encode(
-            {"user_id": "not-a-uuid"}, test_secret, algorithm="HS256"
-        )
+        token = jwt.encode({"user_id": "not-a-uuid"}, test_secret, algorithm="HS256")
 
         headers = {"Authorization": f"Bearer {token}"}
         response = client.get("/", headers=headers)

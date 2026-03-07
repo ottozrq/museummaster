@@ -30,13 +30,13 @@ def Secret(secret: str) -> pydantic.Field:
 
 class _Meta(type(BaseSettings)):
     def __new__(cls, name, bases, dct):
-        if key := dct.get("_visionflags_key"):
+        if key := dct.get("_museumflags_key"):
             dct.setdefault("model_config", {})["env_prefix"] = f"{key}_"
         return super().__new__(cls, name, bases, dct)
 
 
-class _Visionflags(BaseSettings, metaclass=_Meta):
-    _visionflags_key = "visionflags"
+class _Museumflags(BaseSettings, metaclass=_Meta):
+    _museumflags_key = "museumflags"
     file: Optional[Path] = None
     contents: Optional[str] = None
     contents_json: Optional[str] = None
@@ -92,9 +92,9 @@ class YamlConfigSettingsSource(PydanticBaseSettingsSource):
         self, field: FieldInfo, field_name: str
     ) -> Tuple[Any, str, bool]:
         self.config.get("env_file_encoding")
-        spec = _Visionflags().spec
-        visionflags_key = self.settings_cls._visionflags_key.get_default()
-        flags = spec.get(visionflags_key if visionflags_key else "unkeyed", {})
+        spec = _Museumflags().spec
+        museumflags_key = self.settings_cls._museumflags_key.get_default()
+        flags = spec.get(museumflags_key if museumflags_key else "unkeyed", {})
         field_value = flags.get(field_name)
         return field_value, field_name, False
 
@@ -122,42 +122,40 @@ class YamlConfigSettingsSource(PydanticBaseSettingsSource):
 def fix(x):
     x.__doc__ = f"""{x.__doc__ or Flags.__doc__ or ''}
 
-`visionflags_key` = *`{x._visionflags_key.default}`*
+`museumflags_key` = *`{x._museumflags_key.default}`*
 """
     return x
 
 
 class Flags(BaseSettings, metaclass=_Meta):
-    """Visionflags settings."""
+    """Museumflags settings."""
 
     model_config = SettingsConfigDict(validate_default=False, env_file_encoding="utf-8")
     _default: _T = None
-    _visionflags_key: str = None
+    _museumflags_key: str = None
     _registry: Optional[Set[_T]] = set()
 
-    def _visionflags_log(self):
+    def _museumflags_log(self):
         if logging.root.level > logging.INFO:
             logging.basicConfig(level=logging.INFO)
-        logger.info(
-            f"""
+        logger.info(f"""
 
         {self.__class__.__name__}
 
 {self.model_dump_json(indent=2)}
 
-"""
-        )
+""")
 
     @classmethod
     def __pydantic_init_subclass__(cls):
         if cls.__base__._registry and hasattr(cls.__base__._registry, "get_default"):
             cls.__base__._registry = set()
-        if cls._visionflags_key:
+        if cls._museumflags_key:
             for c in cls.__base__._registry:
-                if c._visionflags_key == cls._visionflags_key:
+                if c._museumflags_key == cls._museumflags_key:
                     raise Exception(
-                        f"Cannot register Visionflags {cls}."
-                        + f"_visionflags_key {cls._visionflags_key}"
+                        f"Cannot register Museumflags {cls}."
+                        + f"_museumflags_key {cls._museumflags_key}"
                         + f" already registered by {c}"
                     )
         cls.__base__._registry.add(cls)
@@ -165,7 +163,7 @@ class Flags(BaseSettings, metaclass=_Meta):
     @classmethod
     def full_schema(cls) -> str:
         return pydantic.create_model(
-            "Visionflags",
+            "Museumflags",
             **{x.__name__: (fix(x), ...) for x in cls._registry},
         ).model_json_schema()
 
@@ -183,7 +181,7 @@ class Flags(BaseSettings, metaclass=_Meta):
             file_secret_settings,
             init_settings,
         )
-        if _Visionflags().use_env_settings:
+        if _Museumflags().use_env_settings:
             return (env_settings, *base)
         return base
 
@@ -197,8 +195,8 @@ class Flags(BaseSettings, metaclass=_Meta):
         else:
             warnings.simplefilter("ignore", UserWarning)
             cls._default = cls()
-        if _Visionflags().verbose:
-            cls._default._visionflags_log()
+        if _Museumflags().verbose:
+            cls._default._museumflags_log()
         return cls._default
 
     def export_to_env(self):
@@ -213,15 +211,13 @@ class Flags(BaseSettings, metaclass=_Meta):
             "_".join(
                 filter(
                     bool,
-                    (self._visionflags_key, k),
+                    (self._museumflags_key, k),
                 )
             ).upper(): (
                 int(v)
                 if isinstance(v, bool)
                 else (
-                    json.dumps(v)
-                    if isinstance(v, (dict, list, BaseModel))
-                    else str(v)
+                    json.dumps(v) if isinstance(v, (dict, list, BaseModel)) else str(v)
                 )
             )
             for k, v in self.model_dump(

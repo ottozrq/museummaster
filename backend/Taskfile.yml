@@ -16,6 +16,42 @@ tasks:
     cmds:
       - poetry run pytest
 
+  # DB migrations
+  migrate_generate:
+    desc: Generate new Alembic migration from sql_models (autogenerate)
+    cmds:
+      - poetry run alembic revision --autogenerate
+
+  migrate_apply:
+    desc: Apply migrations (current env from .env / MUSEUMFLAGS_TARGET)
+    cmds:
+      - poetry run alembic upgrade heads
+
+  migrate_apply_staging:
+    desc: Apply migrations to staging DB (MUSEUMFLAGS_TARGET=staging)
+    cmds:
+      - MUSEUMFLAGS_TARGET=staging poetry run alembic upgrade heads
+
+  migrate_apply_production:
+    desc: Apply migrations to production DB (MUSEUMFLAGS_TARGET=production)
+    cmds:
+      - MUSEUMFLAGS_TARGET=production poetry run alembic upgrade heads
+
+  migrate_rollback:
+    desc: Rollback one revision (current env)
+    cmds:
+      - poetry run alembic downgrade -1
+
+  migrate_rollback_staging:
+    desc: Rollback one revision on staging
+    cmds:
+      - MUSEUMFLAGS_TARGET=staging poetry run alembic downgrade -1
+
+  migrate_rollback_production:
+    desc: Rollback one revision on production
+    cmds:
+      - MUSEUMFLAGS_TARGET=production poetry run alembic downgrade -1
+
   lint:
     desc: Run lint checks
     cmds:

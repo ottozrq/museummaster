@@ -1,11 +1,12 @@
 import base64
-import os
 from typing import Iterable
 
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from openai import OpenAI
 from pydantic import BaseModel
+
+from utils.flags import OpenAIFlags
 
 router = APIRouter()
 
@@ -14,11 +15,11 @@ class TTSRequest(BaseModel):
     text: str
 
 
-def _ensure_api_key() -> str:
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
+def _openai_flags() -> OpenAIFlags:
+    flags = OpenAIFlags.get()
+    if not flags.api_key:
         raise HTTPException(status_code=500, detail="OPENAI_API_KEY is not set")
-    return api_key
+    return flags
 
 
 def _sanitize_text(text: str) -> str:
@@ -28,12 +29,12 @@ def _sanitize_text(text: str) -> str:
 
 
 def _stream_speech_bytes(text: str) -> Iterable[bytes]:
-    api_key = _ensure_api_key()
+    flags = _openai_flags()
     clean_text = _sanitize_text(text)
 
-    client = OpenAI(api_key=api_key)
-    model = os.getenv("OPENAI_TTS_MODEL", "gpt-4o-mini-tts")
-    voice = os.getenv("OPENAI_TTS_VOICE", "alloy")
+    client = OpenAI(api_key=flags.api_key)
+    model = flags.tts_model
+    voice = flags.tts_voice
 
     try:
         # 使用 OpenAI 的流式 TTS 接口，边生成边返回字节
@@ -68,12 +69,12 @@ def text_to_speech(payload: TTSRequest) -> dict:
     兼容旧行为的 JSON 接口：
     - 仍然返回 base64 编码的 MP3，用于“收藏到本地文件”等需要完整音频的场景。
     """
-    api_key = _ensure_api_key()
+    flags = _openai_flags()
     clean_text = _sanitize_text(payload.text)
 
-    client = OpenAI(api_key=api_key)
-    model = os.getenv("OPENAI_TTS_MODEL", "gpt-4o-mini-tts")
-    voice = os.getenv("OPENAI_TTS_VOICE", "alloy")
+    client = OpenAI(api_key=flags.api_key)
+    model = flags.tts_model
+    voice = flags.tts_voice
 
     try:
         response = client.audio.speech.create(
