@@ -1,95 +1,57 @@
 version: "3"
 
-tasks:
-  install:
-    desc: Install project dependencies
-    cmds:
-      - poetry install
+dotenv:
+  - .env
 
-  serve:
-    desc: Run FastAPI app locally with auto-reload
-    cmds:
-      - poetry run uvicorn app:app --reload --host 0.0.0.0 --port 8000 --workers 4
+vars:
+  ci:
+    sh: "[[ -z $CI ]] && echo 0 || echo 1"
+
+tasks:
+  install: poetry install
+  serve: uvicorn app:get_app --factory --reload
+
+  migrate_generate: alembic revision --autogenerate
+  migrate_apply: alembic upgrade head
+  migrate_rollback: alembic downgrade -1
 
   test:
-    desc: Run test suite
+    summary: run tests
+    desc: run tests
+    env:
+      NAMESPACE: museum-testing
+      PYTHONPATH:
+        sh: pwd
+      MUSEUMFLAGS_FILE: flags.test.yml
+    vars:
+      parallel: '{{ if .parallel }} -n {{ .parallel }} {{ end }}'
+      ignore_test: '{{ if .ignore_test }} -k "not ({{ .ignore_test }})" {{ end }}'
+      specific_test: '{{ if .specific_test }} -k "({{ .specific_test }})" {{ end }}'
+      without_coverage: '{{ if .without_coverage }} --no-cov {{ end }}'
+      with_coverage: '{{ if not .without_coverage }} --cov-fail-under 80 --cov-report html:.cov_html --cov-report xml:coverage.xml --junit-xml tests/report_unit.xml {{ end }}'
     cmds:
-      - poetry run pytest
-
-  # DB migrations
-  migrate_generate:
-    desc: Generate new Alembic migration from sql_models (autogenerate)
-    cmds:
-      - poetry run alembic revision --autogenerate
-
-  migrate_apply:
-    desc: Apply migrations (current env from .env / MUSEUMFLAGS_TARGET)
-    cmds:
-      - poetry run alembic upgrade heads
-
-  migrate_apply_staging:
-    desc: Apply migrations to staging DB (MUSEUMFLAGS_TARGET=staging)
-    cmds:
-      - MUSEUMFLAGS_TARGET=staging poetry run alembic upgrade heads
-
-  migrate_apply_production:
-    desc: Apply migrations to production DB (MUSEUMFLAGS_TARGET=production)
-    cmds:
-      - MUSEUMFLAGS_TARGET=production poetry run alembic upgrade heads
-
-  migrate_rollback:
-    desc: Rollback one revision (current env)
-    cmds:
-      - poetry run alembic downgrade -1
-
-  migrate_rollback_staging:
-    desc: Rollback one revision on staging
-    cmds:
-      - MUSEUMFLAGS_TARGET=staging poetry run alembic downgrade -1
-
-  migrate_rollback_production:
-    desc: Rollback one revision on production
-    cmds:
-      - MUSEUMFLAGS_TARGET=production poetry run alembic downgrade -1
-
-  lint:
-    desc: Run lint checks
-    cmds:
-      - poetry run ruff check .
+      - |-
+        poetry run pytest {{ default "tests/unit"  .filename }} -vvv --ff -x {{ .parallel }} -s \
+        {{ .ignore_test }} {{ .specific_test }} \
+        -W ignore::sqlalchemy.exc.SAWarning \
+        --capture=no \
+        {{ .without_coverage }} \
+        {{ .with_coverage }} \
+        {{.CLI_ARGS}}
 
   fmt:
-    desc: Format code (isort + autoflake + black)
     cmds:
       - task: isort
       - task: autoflake
       - task: black
-
-  isort:
-    desc: Sort imports with isort
+  isort: isort .
+  autoflake: autoflake -r --in-place --remove-duplicate-keys  --remove-all-unused-imports  --expand-star-imports --remove-unused-variables . > /dev/null
+  black: black .
+  isort-lint: isort --check .
+  autoflake-lint: autoflake -r --in-place --remove-duplicate-keys  --remove-all-unused-imports  --expand-star-imports --remove-unused-variables --check .
+  black-lint: black --check .
+  lint:
     cmds:
-      - poetry run isort .
-
-  autoflake:
-    desc: Remove unused imports and variables
-    cmds:
-      - poetry run autoflake -r --in-place --remove-duplicate-keys --remove-all-unused-imports --expand-star-imports --remove-unused-variables . > /dev/null
-
-  black:
-    desc: Format code with black
-    cmds:
-      - poetry run black .
-
-  isort-lint:
-    desc: Check imports with isort
-    cmds:
-      - poetry run isort --check .
-
-  autoflake-lint:
-    desc: Check unused imports with autoflake
-    cmds:
-      - poetry run autoflake -r --in-place --remove-duplicate-keys --remove-all-unused-imports --expand-star-imports --remove-unused-variables --check .
-
-  black-lint:
-    desc: Check code format with black
-    cmds:
-      - poetry run black --check .
+      - task: isort-lint
+      - task: autoflake-lint
+      - task: black-lint

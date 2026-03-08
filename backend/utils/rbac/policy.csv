@@ -1,0 +1,48 @@
+# ROLES
+g, admin, role_base
+g, admin, admin
+g, admin, producer
+g, admin, writer
+
+# Content editor
+g, editor, role_base
+g, editor, writer
+
+# Tourist account
+g, visitor, role_base
+
+# POLICIES
+p, *, /*, OPTION
+p, *, /, GET
+p, *, /docs, GET
+p, *, /openapi.json, GET
+p, *, /register, POST
+p, *, /token, POST
+p, *, /analyze, .*
+p, *, /analyze/*, .*
+p, *, /tts, .*
+p, *, /auth, .*
+p, *, /auth/*, .*
+p, *, /static, .*
+p, *, /static/*, .*
+p, *, /landmarks*, GET
+p, *, /artworks*, GET
+p, *, /images*, GET
+p, *, /detect, POST
+p, *, /search*, GET
+p, *, /activities*, GET
+p, *, /geometries*, GET
+
+p, role_base, /reset_password, POST
+p, role_base, /images*, POST 
+p, role_base, /series*, GET
+p, role_base, /introductions*, GET
+
+p, admin, /*, (GET)|(POST)|(DELETE)|(PATCH)
+p, admin, /images*, DELETE
+
+p, producer, /landmarks*, (POST)|(DELETE)|(PATCH)
+p, producer, /artworks*, (POST)|(DELETE)|(PATCH)
+
+p, writer, /series*, (POST)|(DELETE)|(PATCH)
+p, writer, /introductions*, (POST)|(DELETE)|(PATCH)

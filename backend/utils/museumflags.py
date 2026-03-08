@@ -16,6 +16,9 @@ from pydantic_settings import (
     SettingsConfigDict,
 )
 
+from utils import config
+from utils.json_dumps import museum_json_dumps
+
 logger = logging.getLogger(__name__)
 
 _SECRETS_DIR = ".secrets"
@@ -23,8 +26,8 @@ _SECRETS_DIR = ".secrets"
 
 def Secret(secret: str) -> pydantic.Field:
     return Field(
-        default_factory=lambda: os.environ.get(secret, ""),
-        description=f"Secret '{secret}'",
+        default_factory=lambda: config.secrets.get(secret),
+        description=f"AWS Secret '`{secret}`'",
     )
 
 
@@ -53,6 +56,12 @@ class _Museumflags(BaseSettings, metaclass=_Meta):
         if len([x for x in check_values.values() if x]) > 1:
             raise Exception(f"Only 1 configuration may be specified: {check_values}")
         return values
+
+    @classmethod
+    def secrets_dir(cls) -> Path:
+        base = Path(_SECRETS_DIR)
+        extended = base / (cls().target or "")
+        return extended if extended.is_dir() else base
 
     @property
     def spec(self) -> Dict[str, Any]:
@@ -128,7 +137,7 @@ def fix(x):
 
 
 class Flags(BaseSettings, metaclass=_Meta):
-    """Museumflags settings."""
+    """Museumflags settings. See `/museumflags.md`."""
 
     model_config = SettingsConfigDict(validate_default=False, env_file_encoding="utf-8")
     _default: _T = None
@@ -138,13 +147,15 @@ class Flags(BaseSettings, metaclass=_Meta):
     def _museumflags_log(self):
         if logging.root.level > logging.INFO:
             logging.basicConfig(level=logging.INFO)
-        logger.info(f"""
+        logger.info(
+            f"""
 
         {self.__class__.__name__}
 
 {self.model_dump_json(indent=2)}
 
-""")
+"""
+        )
 
     @classmethod
     def __pydantic_init_subclass__(cls):
@@ -194,7 +205,7 @@ class Flags(BaseSettings, metaclass=_Meta):
             return cls._default
         else:
             warnings.simplefilter("ignore", UserWarning)
-            cls._default = cls()
+            cls._default = cls(_secrets_dir=_Museumflags().secrets_dir())
         if _Museumflags().verbose:
             cls._default._museumflags_log()
         return cls._default
@@ -217,7 +228,9 @@ class Flags(BaseSettings, metaclass=_Meta):
                 int(v)
                 if isinstance(v, bool)
                 else (
-                    json.dumps(v) if isinstance(v, (dict, list, BaseModel)) else str(v)
+                    museum_json_dumps(v)
+                    if isinstance(v, (dict, list, BaseModel))
+                    else str(v)
                 )
             )
             for k, v in self.model_dump(

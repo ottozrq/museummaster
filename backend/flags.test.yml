@@ -1,0 +1,19 @@
+sqlalchemy:
+  echo: false
+museum:
+  debug: true
+  testing_mode: true
+  display_traceback: true
+  namespace: museum-test
+  login_secret: test111
+openai:
+  api_key: ""
+  museum_model: gpt-4o
+  tts_model: gpt-4o-mini-tts
+  tts_voice: alloy
+apple:
+  client_id: ""
+museum_pg:
+  password: test-password
+  ssl_mode: false
+  host: test-host

@@ -1,253 +1,305 @@
-"""Configuration setup for pytest - museummaster backend tests
+"""Configuration setup for pytest"""
 
-This conftest.py provides fixtures similar to gagaou but adapted for museummaster's
-API-only architecture (no database, just analyze and tts endpoints).
-"""
-
-import os
-import uuid
-from dataclasses import dataclass
 from types import SimpleNamespace
-from typing import Optional
 
-import jwt
+import postgis
 import pytest
-from fastapi.testclient import TestClient
+import sqlalchemy
+import testing.postgresql
+from fastapi import testclient
+from passlib.context import CryptContext
+from sqlalchemy.orm import scoped_session
 
-# Set test environment variables before importing app
-os.environ.setdefault("MUSEUMFLAGS_FILE", "flags.yml")
-os.environ["OPENAI_API_KEY"] = "test-key"
-os.environ["OPENAI_MUSEUM_MODEL"] = "gpt-4o"
-os.environ["OPENAI_TTS_MODEL"] = "gpt-4o-mini-tts"
-os.environ["OPENAI_TTS_VOICE"] = "alloy"
+import depends as d
+import sql_models as sm
+from app import get_app
+from tests import fixtures as fixts
+from tests import utils
+from utils.utils import MuseumDb
+
+from .sqlalchemy_fixture_factory.sqla_fix_fact import SqlaFixFact
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+# ---------------------------------------------------------------------------
+# Raw TestClient and OpenAI/API mocks (for analyze, tts, auth tests)
+# ---------------------------------------------------------------------------
+
+
+class _FakeStreamingResponse:
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        pass
+
+    def iter_bytes(self):
+        return iter([b"fake-mp3-bytes"])
 
 
 class FakeOpenAI:
-    """Mock OpenAI client for testing"""
+    """Mock OpenAI client for analyze and TTS tests."""
 
-    def __init__(self, api_key: str) -> None:
+    def __init__(self, api_key: str = ""):
         self.api_key = api_key
         self.responses = SimpleNamespace(create=self._create_response)
-        self.audio = SimpleNamespace(speech=SimpleNamespace(create=self._create_speech))
+        self.audio = SimpleNamespace(
+            speech=SimpleNamespace(
+                create=self._create_speech,
+                with_streaming_response=SimpleNamespace(
+                    create=lambda **kw: _FakeStreamingResponse()
+                ),
+            )
+        )
 
-    def _create_response(self, **_: object) -> object:
+    def _create_response(self, **kw):
         return SimpleNamespace(output_text="Mocked analyze output")
 
-    def _create_speech(self, **_: object) -> object:
+    def _create_speech(self, **kw):
         return SimpleNamespace(read=lambda: b"fake-mp3-bytes")
 
 
-# Import app after setting environment variables
-from app import get_app
+class FakeAsyncOpenAI(FakeOpenAI):
+    """Async OpenAI mock; same as FakeOpenAI for create, stream uses sync-style."""
 
+    async def __aenter__(self):
+        return self
 
-@pytest.fixture(scope="session")
-def test_app():
-    """Create test FastAPI application"""
-    return get_app()
-
-
-@pytest.fixture
-def client(test_app) -> TestClient:
-    """Create test client - similar to gagaou's api_client fixture"""
-    return TestClient(test_app, base_url="http://127.0.0.1")
-
-
-# ============================================
-# Authentication Fixtures (similar to gagaou)
-# ============================================
+    async def __aexit__(self, *args):
+        pass
 
 
 @pytest.fixture
-def test_secret():
-    """Get the login secret for JWT token generation"""
-    from utils import flags
-
-    return flags.MuseumFlags.get().login_secret
-
-
-@pytest.fixture
-def user_admin(test_secret):
-    """Create admin user token - similar to gagaou's user_admin fixture"""
-    token = jwt.encode(
-        {"user_id": str(uuid.uuid4()), "role": "admin"}, test_secret, algorithm="HS256"
-    )
-    return {
-        "user_id": uuid.UUID(
-            jwt.decode(token, test_secret, algorithms=["HS256"])["user_id"]
-        ),
-        "role": "admin",
-        "token": token,
-        "email": "admin@example.com",
-    }
-
-
-@pytest.fixture
-def user_client_user(test_secret):
-    """Create regular client user token"""
-    token = jwt.encode(
-        {"user_id": str(uuid.uuid4()), "role": "client"}, test_secret, algorithm="HS256"
-    )
-    return {
-        "user_id": uuid.UUID(
-            jwt.decode(token, test_secret, algorithms=["HS256"])["user_id"]
-        ),
-        "role": "client",
-        "token": token,
-        "email": "user@example.com",
-    }
-
-
-@pytest.fixture
-def auth_headers_admin(user_admin):
-    """Get authorization headers for admin user"""
-    return {"Authorization": f"Bearer {user_admin['token']}"}
-
-
-@pytest.fixture
-def auth_headers_client(user_client_user):
-    """Get authorization headers for regular user"""
-    return {"Authorization": f"Bearer {user_client_user['token']}"}
-
-
-# ============================================
-# OpenAI Mock Fixtures
-# ============================================
+def client(app):
+    """Raw TestClient for endpoints that need file upload or no auth (e.g. analyze, tts, auth)."""
+    return testclient.TestClient(app, base_url="http://127.0.0.1")
 
 
 @pytest.fixture
 def mock_openai_success(monkeypatch):
-    """Mock successful OpenAI responses - similar to existing fixture"""
-    from routers import analyze, tts
+    """Mock OpenAI and AsyncOpenAI so analyze and tts succeed without real API key."""
+    from src.routes import analyze, tts
 
     monkeypatch.setattr(analyze, "OpenAI", FakeOpenAI)
+    monkeypatch.setattr(analyze, "AsyncOpenAI", FakeAsyncOpenAI)
     monkeypatch.setattr(tts, "OpenAI", FakeOpenAI)
 
 
 @pytest.fixture
 def mock_openai_failure(monkeypatch):
-    """Mock OpenAI failure for error testing"""
+    """Mock OpenAI to raise so we can test 500 handling."""
+
+    def _raise(*a, **k):
+        raise Exception("OpenAI error")
 
     class FailedOpenAI:
-        def __init__(self, api_key: str) -> None:
-            self.api_key = api_key
-            self.responses = SimpleNamespace(create=self._fail_response)
+        def __init__(self, api_key: str = ""):
+            self.responses = SimpleNamespace(create=_raise)
             self.audio = SimpleNamespace(
-                speech=SimpleNamespace(create=self._fail_speech)
+                speech=SimpleNamespace(create=_raise),
+                with_streaming_response=SimpleNamespace(create=_raise),
             )
 
-        def _fail_response(self, **_: object) -> object:
-            raise Exception("OpenAI API error")
-
-        def _fail_speech(self, **_: object) -> object:
-            raise Exception("OpenAI TTS error")
-
-    from routers import analyze, tts
+    from src.routes import analyze, tts
 
     monkeypatch.setattr(analyze, "OpenAI", FailedOpenAI)
+    monkeypatch.setattr(analyze, "AsyncOpenAI", FailedOpenAI)
     monkeypatch.setattr(tts, "OpenAI", FailedOpenAI)
-
-
-# ============================================
-# API Client Wrapper (similar to gagaou)
-# ============================================
-
-
-@dataclass
-class ApiClient:
-    """Wrapper around TestClient providing convenient methods - similar to gagaou's ApiClient"""
-
-    client: TestClient
-    user: Optional[dict] = None
-
-    def get(self, url: str, **kwargs):
-        return self._request("GET", url, **kwargs)
-
-    def post(self, url: str, **kwargs):
-        return self._request("POST", url, **kwargs)
-
-    def delete(self, url: str, **kwargs):
-        return self._request("DELETE", url, **kwargs)
-
-    def patch(self, url: str, **kwargs):
-        return self._request("PATCH", url, **kwargs)
-
-    def _request(self, method: str, url: str, **kwargs):
-        headers = kwargs.pop("headers", {})
-        if self.user:
-            headers.setdefault("Authorization", f"Bearer {self.user['token']}")
-
-        response = self.client.request(
-            method=method, url=url, headers=headers, **kwargs
-        )
-        return response
-
-
-@pytest.fixture
-def api_client(client) -> ApiClient:
-    """Create API client wrapper - similar to gagaou's api_client fixture"""
-    return ApiClient(client=client)
-
-
-@pytest.fixture
-def api_client_auth(client, user_admin) -> ApiClient:
-    """Create authenticated API client - similar to gagaou's api_client fixture"""
-    return ApiClient(client=client, user=user_admin)
-
-
-# ============================================
-# Test Data Fixtures
-# ============================================
 
 
 @pytest.fixture
 def sample_image_bytes():
-    """Create sample image bytes for testing"""
     return b"fake-png-image-bytes"
 
 
 @pytest.fixture
 def sample_text():
-    """Create sample text for TTS testing"""
     return "Hello, welcome to the museum."
 
 
 @pytest.fixture
-def long_text():
-    """Create longer text for TTS testing"""
-    return "This is a longer text that can be used for testing TTS. " * 10
+def test_secret():
+    from utils import flags
+    return flags.MuseumFlags.get().login_secret
 
 
-# ============================================
-# Query Counter (from gagaou)
-# ============================================
+@pytest.fixture(scope="session")
+def app():
+    with testing.postgresql.Postgresql() as p:
+        app = get_app(url=p.url(), pool_size=20, max_overflow=50)
+        session = app.postgres_sessionmaker.SessionLocal()
+
+        for extension in (
+            "postgis",
+            "uuid-ossp",
+        ):
+            session.execute(f'create extension if not exists "{extension}";')
+        for schema in {
+            schema
+            for schema, _ in (
+                table.split(".", 1) for table in sm.PsqlBase.metadata.tables
+            )
+        }:
+            session.execute(f'create schema if not exists "{schema}";')
+        session.commit()
+        sm.PsqlBase.metadata.create_all(session.bind)
+        session.close()
+        yield app
 
 
 class QueryCounter:
     """
-    Counter for tracking API queries.
-    Usage:
-        query_counter.query_count = 0
-        # ... make API call ...
-        assert query_counter.query_count <= expected
+    Example usage:
+    In your unit test :
+
+    # Initialize the query counter
+    query_counter.query_count = 0
+
+    # Make the call/action that you want to count the queries for
+    reports = reports_m.ReportCollection.from_response(cl(zone_model.reports))
+
+    # Assert that the number of queries is what you expect
+    assert query_counter.query_count <= 10
     """
 
     def __init__(self):
         self.query_count = 0
 
-    def count(self):
+    def count_queries(self, conn, cursor, statement, parameters, context, executemany):
+        # Remove the following line if you want to see the queries while running tests
+        # It help understands why so many queries are run sometimes
+        # print(statement)
         self.query_count += 1
-
-    def reset(self):
-        self.query_count = 0
 
 
 query_counter = QueryCounter()
 
 
 @pytest.fixture
-def _query_counter():
-    """Reset query counter before each test"""
-    query_counter.reset()
-    yield query_counter
-    query_counter.reset()
+def _api_client(app, monkeypatch, mocker):
+    # Start a transaction
+    connection = app.postgres_sessionmaker.engine.connect()
+    transaction = connection.begin()
+
+    session = scoped_session(
+        app.postgres_sessionmaker.SessionLocal, scopefunc=lambda: ""
+    )
+    postgis.psycopg.register(session.bind.raw_connection())
+    connection.force_close = connection.close
+    transaction.force_rollback = transaction.rollback
+
+    connection.close = lambda: None
+    transaction.rollback = lambda: None
+    session.close = lambda: None
+    # Begin a nested transaction (any new transactions created in the codebase
+    # will be held until this outer transaction is committed or closed)
+    session.begin_nested()
+
+    # Each time the SAVEPOINT for the nested transaction ends, reopen it
+    @sqlalchemy.event.listens_for(session, "after_transaction_end")
+    def restart_savepoint(session, trans):
+        if trans.nested and not trans._parent.nested:
+            # ensure that state is expired the way
+            # session.commit() at the top level normally does
+            session.expire_all()
+
+            session.begin_nested()
+
+    # Force the connection to use nested transactions
+    connection.begin = connection.begin_nested
+
+    # If an object gets moved to the 'detached' state by a call to flush the session,
+    # add it back into the session (this allows us to see changes made to objects
+    # in the context of a test, even when the change was made elsewhere in
+    # the codebase)
+    @sqlalchemy.event.listens_for(session, "persistent_to_detached")
+    @sqlalchemy.event.listens_for(session, "deleted_to_detached")
+    def rehydrate_object(session, obj):
+        session.add(obj)
+
+    @sqlalchemy.event.listens_for(
+        app.postgres_sessionmaker.engine, "before_cursor_execute"
+    )
+    def receive_before_cursor_execute(
+        conn, cursor, statement, params, context, executemany
+    ):
+        query_counter.count_queries(
+            conn, cursor, statement, params, context, executemany
+        )
+        return statement, params
+
+    try:
+        fix = SqlaFixFact(session)
+
+        def override_get_db():
+            session.begin_nested()
+            yield MuseumDb(session, app.postgres_sessionmaker.engine)
+            session.commit()
+            session.close()
+
+        app.dependency_overrides[d.get_psql] = override_get_db
+        mocks = utils.Mocks.make(mocker)
+        yield utils.ApiClient(
+            db=MuseumDb(session, app.postgres_sessionmaker.engine),
+            app=app,
+            # base_url is added to get around le-village WIFI problem.
+            client=testclient.TestClient(app, base_url="http://127.0.0.1"),
+            fix=fix,
+            session=session,
+            mocks=mocks,
+            user=None,
+            default_user=None,
+        )
+    finally:
+        session.expire_all()
+        session.remove()
+        transaction.force_rollback()
+        connection.force_close()
+        assert not session.query(sm.User).count()
+        sqlalchemy.event.remove(
+            app.postgres_sessionmaker.engine,
+            "before_cursor_execute",
+            receive_before_cursor_execute,
+        )
+
+
+@pytest.fixture
+def fix(_api_client: utils.ApiClient):
+    return _api_client.fix
+
+
+@pytest.fixture
+def cl(api_client) -> utils.ApiClient:
+    return api_client
+
+
+@pytest.fixture
+def api_client(_api_client: utils.ApiClient, user_admin) -> utils.ApiClient:
+    _api_client.user = user_admin
+    _api_client.default_user = _api_client.user
+    _api_client.login(user_admin, superuser=True)
+    yield _api_client
+
+
+@pytest.fixture
+def user_admin(fix):
+    return fixts.User(
+        fix,
+        user_email="otto@ottozhang.com",
+        password=pwd_context.hash("666666"),
+        user_id="00000000-0000-0000-0000-000000000001",
+        role=sm.UserRole.admin,
+    ).create()
+
+
+@pytest.fixture
+def user_editor(fix):
+    return fixts.User(
+        fix,
+        user_email="editor@ottozhang.com",
+        password=pwd_context.hash("666666"),
+        user_id="00000000-0000-0000-0000-000000000002",
+        role=sm.UserRole.editor,
+        extras={},
+    ).create()

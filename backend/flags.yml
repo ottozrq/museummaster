@@ -1,78 +1,50 @@
-# Top-level defaults (overridden by targets when MUSEUMFLAGS_TARGET is set)
+sqlalchemy:
+  echo: false
 museum:
   debug: true
   display_traceback: true
-  cors_urls:
-    - "http://127.0.0.1"
-    - "http://localhost"
   namespace: museum-local
   login_secret: change_me_in_local
-
-# Env-driven config: set via env (e.g. OPENAI_API_KEY) or here per target
-database:
-  url: sqlite:///./museum.db
-  sql_echo: false
-
-openai:
-  api_key: ""
-  museum_model: gpt-4o
-  tts_model: gpt-4o-mini-tts
-  tts_voice: alloy
-
-apple:
-  client_id: ""
-
+  cors_urls:
+    - "http://127.0.0.1"
+  google_client_id: "577788424612-2h0ieo00jefmrspm7g72jdcshth2fnk2.apps.googleusercontent.com"
+wechat:
+  app_id: "wx4dce10b30d26f844"
+  app_secret: "f60fb4416a41d1e2bcbf07096983bd87"
 targets:
   production:
-    museum:
-      namespace: museum-production
-      login_secret: change_me_in_production
-    database:
-      url: sqlite:///./museum.db
-      # url: postgresql://user:pass@localhost:5432/museum
-    openai:
-      museum_model: gpt-4o
-      tts_model: gpt-4o-mini-tts
-      tts_voice: alloy
-    apple:
-      client_id: ""
     museum_pg:
-      host: localhost
+      host: 192.168.0.12
       database: museum_prod
       username: museum
       ssl_mode: false
-  staging:
     museum:
-      namespace: museum-staging
-      login_secret: change_me_in_staging
-    database:
-      url: sqlite:///./museum.db
-    openai:
-      museum_model: gpt-4o
-      tts_model: gpt-4o-mini-tts
-    apple:
-      client_id: ""
+      namespace: museum-production
+      login_secret: fa1aab5276e103861841a3e75bc29533acaab53e0b27195be2210d48e5ce1795
+      google_client_id: "577788424612-2h0ieo00jefmrspm7g72jdcshth2fnk2.apps.googleusercontent.com"
+  staging:
     museum_pg:
-      host: localhost
+      host: 192.168.0.12
       database: museum_staging
       username: museum
       ssl_mode: false
+    museum:
+      namespace: museum-staging
+      login_secret: dc61dc4677ecb3671950f1b6233de07763e85f3ec1e219ad93e23e740f100dbd
+      google_client_id: "577788424612-2h0ieo00jefmrspm7g72jdcshth2fnk2.apps.googleusercontent.com"
   local:
     extends: production
-    museum:
-      namespace: museum-local
-      login_secret: change_me_in_local
-    database:
-      url: sqlite:///./museum.db
-      sql_echo: false
-    openai:
-      api_key: ""
-      museum_model: gpt-4o
-      tts_model: gpt-4o-mini-tts
-      tts_voice: alloy
-    apple:
-      client_id: ""
     museum_pg:
       host: localhost
       username: museum
       ssl_mode: false
+    museum:
+      namespace: museum-local
+      login_secret: change_me_in_local
+    sqlalchemy:
+      echo: 1
+  museum_staging:
+    extends: staging
+  scrape:
+    extends: production
+

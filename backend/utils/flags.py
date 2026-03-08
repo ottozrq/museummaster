@@ -1,24 +1,46 @@
 import pathlib
 import re
-from typing import Annotated, List, Optional
+from typing import Annotated, Any, Dict, List, Optional
 
-from pydantic import Field
-from pydantic.networks import HttpUrl
+from pydantic import Field, model_validator
+from pydantic.networks import EmailStr, HttpUrl
 
-from utils.museumflags import Flags
-
-# ---------------------------------------------------------------------------
-# Environment / service flags (gagaou-style: one place for all env-driven config)
-# ---------------------------------------------------------------------------
+from utils.museumflags import Flags, Secret
 
 
-class DatabaseFlags(Flags):
-    """Database connection and behavior. Env: DATABASE_* (e.g. DATABASE_URL)."""
+class PostgresqlFlags(Flags):
+    _museumflags_key = "museum_pg"
 
-    _museumflags_key = "database"
+    host: str
 
-    url: str = "sqlite:///./museum.db"
-    sql_echo: bool = False
+    password: str = Secret("aurora_cluster_master_password")
+
+    database: str = "museum"
+    schema_prefix: str = "museum_sources"
+    username: str = "museum"
+
+    ssl_mode: bool = True
+
+    @property
+    def url(self):
+        from sqlalchemy.engine.url import URL
+
+        return URL.create(
+            drivername="postgresql",
+            username=self.username,
+            host=self.host,
+            database=self.database,
+            port=5432,
+            password=self.password,
+        )
+
+
+class SqlAlchemyFlags(Flags):
+    _museumflags_key = "sqlalchemy"
+
+    echo: bool = False
+    track_modifications: bool = False
+    alembic_env: Optional[str] = None
 
 
 class OpenAIFlags(Flags):
@@ -40,23 +62,38 @@ class AppleFlags(Flags):
     client_id: str = ""
 
 
-# ---------------------------------------------------------------------------
-# App / auth flags (existing)
-# ---------------------------------------------------------------------------
+class MuseumSuperuserFlags(Flags):
+    _museumflags_key = "museum_superuser"
+    email: EmailStr = ""
+
+
+class MuseumTestingFlags(Flags):
+    _museumflags_key = "museum_testing"
+    mode: bool = False
 
 
 class MuseumFlags(Flags):
     _museumflags_key = "museum"
 
-    namespace: Annotated[str, Field(alias="namespace")]
-    login_secret: str = "default_secret_change_me"
-    google_client_id: str = ""
+    namespace: Annotated[str, Field(alias="namespace")] = "museum-local"
+    login_secret: str = "change_me_in_local"
 
+    # cognito_cert_1: str = Secret("jwt_public_key_cognito_1")
+    # cognito_cert_2: str = Secret("jwt_public_key_cognito_2")
+    # salt: str = Secret("salt")
+
+    # eb_endpoint: str = "http://localhost:4572"
+    # lambda_endpoint: str = "https://lambda.eu-central-1.amazonaws.com"
+    # sm_endpoint: str = "https://secretsmanager.eu-central-1.amazonaws.com"
     cors_urls: List[HttpUrl] = []
 
     display_traceback: bool = False
     debug: bool = False
     testing_mode: bool = False
+
+    @classmethod
+    def get_testing_mode(cls) -> bool:
+        return MuseumTestingFlags.get().mode
 
     root_path: Optional[pathlib.Path] = None
 
@@ -64,29 +101,27 @@ class MuseumFlags(Flags):
         r"^(http://(.*\.)?localhost:\d+|https://.*\.museum\.(dev|io))/?$"
     )
 
+    @model_validator(mode="before")
+    @classmethod
+    def compatible_testing_mode(cls, values: Dict[str, Any]):
+        testing_mode = cls.get_testing_mode()
+        namespace = values.get("namespace")
+        if testing_mode and any(k in namespace for k in ("staging", "production")):
+            raise ValueError(
+                "`testing_mode` cannot be true when "
+                + "('staging', 'production') in `NAMESPACE`"
+            )
+        return values
+
     @property
     def superuser_email(self) -> str:
         return MuseumSuperuserFlags.get().email
 
 
-class MuseumSuperuserFlags(Flags):
-    _museumflags_key = "museum_superuser"
-    email: str = ""
-
-
-class MuseumTestingFlags(Flags):
-    _museumflags_key = "museum_testing"
-    mode: bool = False
+class BulkSettings(Flags):
+    _museumflags_key = "bulk_settings"
+    fast_save: bool = False
 
     @classmethod
-    def get_testing_mode(cls) -> bool:
-        return cls.get().mode
-
-
-# ---------------------------------------------------------------------------
-# Convenience: export env var names for documentation / .env.example
-# ---------------------------------------------------------------------------
-# DatabaseFlags -> DATABASE_URL, DATABASE_SQL_ECHO
-# OpenAIFlags   -> OPENAI_API_KEY, OPENAI_MUSEUM_MODEL, OPENAI_TTS_MODEL, OPENAI_TTS_VOICE
-# AppleFlags    -> APPLE_CLIENT_ID
-# MuseumFlags   -> MUSEUM_* (namespace, login_secret, ...)
+    def use_fast_save(cls, creations: List):
+        return cls.get().fast_save or len(creations) >= 1000

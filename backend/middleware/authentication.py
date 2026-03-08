@@ -14,7 +14,10 @@ from starlette.authentication import (
 from starlette.requests import HTTPConnection
 from starlette.responses import JSONResponse, Response
 
+import models as m
+import sql_models as sm
 from utils import flags
+from utils.utils import postgres_session
 
 
 @dataclass
@@ -31,18 +34,30 @@ def authentication_on_error(
 
 @dataclass(frozen=True)
 class MuseumAuthUser(BaseUser):
-    role: str
+    role: sm.UserRole
     email: str
     user_uuid: uuid.UUID
 
     @classmethod
     def from_uuid(cls, user_uuid: uuid.UUID):
-        # Simplified version - in production, would query database
-        return cls(role="user", email="user@example.com", user_uuid=user_uuid)
+        try:
+            with postgres_session() as db:
+                return cls.from_user(m.User.db(db).from_id(user_uuid))
+        except HTTPException:
+            return cls(None, None, user_uuid)
 
     @classmethod
     def from_superuser(cls, superuser_email: str):
-        return cls(role="superuser", email=superuser_email, user_uuid=uuid.uuid4())
+        with postgres_session() as db:
+            return cls.from_user(
+                m.User.from_db(
+                    m.User.db(db).query.filter_by(user_email=superuser_email).one()
+                )
+            )
+
+    @classmethod
+    def from_user(cls, user: m.User):
+        return cls(role=user.role, email=user.user_email, user_uuid=user.user_id)
 
     @property
     def is_authenticated(self) -> bool:
@@ -57,16 +72,21 @@ class MuseumAuthUser(BaseUser):
         return self.role or "uninitialized"
 
 
-def handle_invalid_token_error(e: jwt.InvalidTokenError):
+def handle_invalid_token_error(e: jwt.exceptions.InvalidTokenError):
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail=next(
             v
             for k, v in {
-                jwt.InvalidTokenError: "Invalid JWT token",
-                jwt.ExpiredSignatureError: "Token expired",
-                jwt.InvalidSignatureError: "Invalid signature",
-                jwt.DecodeError: "Token decode error",
+                jwt.exceptions.ExpiredSignatureError: "Token expired",
+                jwt.exceptions.InvalidAudienceError: "Invalid audience",
+                jwt.exceptions.InvalidIssuerError: "Invalid issuer",
+                jwt.exceptions.InvalidIssuedAtError: "Invalid issued-at",
+                jwt.exceptions.ImmatureSignatureError: "Immature signature",
+                jwt.exceptions.InvalidAlgorithmError: "Invalid algorithm",
+                jwt.exceptions.MissingRequiredClaimError: "Missing required claim: "
+                + str(getattr(e, "claim", "")),
+                jwt.exceptions.InvalidTokenError: "Invalid JWT token",
             }.items()
             if isinstance(e, k)
         ),
@@ -82,7 +102,7 @@ def _get_user_uuid(token):
             )
         except jwt.InvalidSignatureError:
             pass
-    except jwt.InvalidTokenError as e:
+    except jwt.exceptions.InvalidTokenError as e:
         handle_invalid_token_error(e)
     except Exception as e:
         logging.getLogger(__name__).exception("Failed to parse JWT", exc_info=e)
@@ -110,10 +130,9 @@ class MuseumAuthBackend(AuthenticationBackend):
 
     async def museum_user(self, request) -> MuseumAuthUser:
         # Public endpoints that don't require authentication
-        public_paths = ["/analyze", "/tts", "/docs", "/openapi.json", "/redoc"]
+        public_paths = ["/analyze", "/tts", "/auth", "/docs", "/openapi.json", "/redoc", "/static"]
         if any(request.url.path.startswith(p) for p in public_paths):
             return None
-
         if superuser_email := _superuser_email():
             return MuseumAuthUser.from_superuser(superuser_email)
         if "Authorization" not in request.headers or request.url.path == "/token/":
@@ -123,5 +142,5 @@ class MuseumAuthBackend(AuthenticationBackend):
         )
 
 
-def _superuser_email() -> str:
+def _superuser_email():
     return flags.MuseumFlags.get().superuser_email

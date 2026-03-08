@@ -3,9 +3,13 @@ from typing import Optional
 
 from fastapi import Depends, Request
 from fastapi.security import OAuth2PasswordBearer
+from pydantic import PositiveInt, StringConstraints
+from typing_extensions import Annotated
 
-from middleware.authentication import MuseumAuthUser
+import models as m
+import sql_models as sm
 from utils import flags
+from utils.utils import MuseumDb, postgres_session
 
 
 class _Bearer(OAuth2PasswordBearer):
@@ -21,6 +25,19 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
+def get_psql() -> MuseumDb:
+    with postgres_session() as psql:
+        yield psql
+
+
+def get_pagination(
+    request: Request,
+    page_token: Optional[Annotated[str, StringConstraints(pattern=r"\d+")]] = None,
+    page_size: PositiveInt = None,
+):
+    return m.Pagination(request=request, page_size=page_size, page_token=page_token)
+
+
 def get_user_id(
     request: Request,
     _=Depends(security),
@@ -32,26 +49,14 @@ def get_user_email(
     request: Request,
     _=Depends(security),
 ) -> str:
-    return str(request.user.email)
+    return str(request.user.user_email)
 
 
 def get_logged_in_user(
     user_id=Depends(get_user_id),
-) -> Optional[MuseumAuthUser]:
-    """获取当前登录用户"""
-    return request.user if hasattr(request, "user") else None
-
-
-def get_logged_in_user_or_none(
-    request: Request = None,
-) -> Optional[MuseumAuthUser]:
-    """获取当前登录用户，如果未登录则返回None"""
-    try:
-        if hasattr(request, "user") and request.user:
-            return request.user
-    except Exception:
-        pass
-    return None
+    db=Depends(get_psql),
+) -> sm.User:
+    return m.User.db(db).get_or_404(user_id)
 
 
 def superuser_email() -> str:

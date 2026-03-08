@@ -1,67 +1,80 @@
-"""
-Alembic migration environment.
-Uses DatabaseFlags (flags.yml + DATABASE_* env); discovers tables from sql_models.
-"""
-
 from logging.config import fileConfig
 
-from dotenv import load_dotenv
+import sqlalchemy
 from sqlalchemy import engine_from_config, pool
+from sqlalchemy.sql.sqltypes import JSON
 
+import sql_models
 from alembic import context
-
-# Load .env so MUSEUMFLAGS_* and DATABASE_* are set before Flags are used
-load_dotenv()
-
-# Import Base and all models so metadata is populated
-from sql_models import Base  # noqa: F401
-from sql_models import CollectionItem, User  # noqa: F401
-from utils.flags import DatabaseFlags
+from utils.flags import MuseumFlags, PostgresqlFlags, SqlAlchemyFlags
 
 config = context.config
-if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
+alembic_env = SqlAlchemyFlags.get().alembic_env or MuseumFlags.get().namespace
+context.script.version_locations = [f"alembic/versions/{alembic_env}"]
+context.script.__dict__.pop("_version_locations", None)
+fileConfig(config.config_file_name)
 
-# Set sqlalchemy.url from DatabaseFlags (single source of truth for DB config)
-database_url = DatabaseFlags.get().url
-config.set_main_option("sqlalchemy.url", database_url)
+exclusions = {
+    k: set(config.get_section("alembic:exclude")[k].split(","))
+    for k in ("tables", "schemas")
+}
+inclusions = set(config.get_section("alembic:include")["schemas"].split(","))
 
-target_metadata = Base.metadata
+
+def include_object(object, name, type_, reflected, compare_to):
+    if type_ != "table":
+        return True
+    return (
+        name not in exclusions["tables"]
+        and object.schema not in exclusions["schemas"]
+        and object.schema in inclusions
+    )
 
 
-def run_migrations_offline() -> None:
-    """Run migrations in 'offline' mode (generate SQL only)."""
-    url = config.get_main_option("sqlalchemy.url")
+def include_name(name, type_, parent_names):
+    if type_ == "schema":
+        return name in inclusions and name not in exclusions["schemas"]
+    if type_ == "table":
+        return name not in exclusions["tables"]
+    return True
+
+
+section = config.get_section(config.config_ini_section)
+section["sqlalchemy.url"] = str(PostgresqlFlags.get().url)
+connectable = engine_from_config(
+    section,
+    prefix="sqlalchemy.",
+    poolclass=pool.NullPool,
+)
+
+
+def my_compare_server_default(
+    context,
+    inspector_column: sqlalchemy.Column,
+    metadata_column,
+    rendered_inspector_default,
+    inspector_clause,
+    rendered_metadata_default,
+):
+    if isinstance(inspector_column.type, JSON):
+        return False
+    return context.impl.compare_server_default(
+        inspector_column,
+        metadata_column,
+        rendered_metadata_default,
+        rendered_inspector_default,
+    )
+
+
+with connectable.connect() as connection:
     context.configure(
-        url=url,
-        target_metadata=target_metadata,
-        literal_binds=True,
-        dialect_opts={"paramstyle": "named"},
+        connection=connection,
+        target_metadata=sql_models.PsqlBase.metadata,
+        include_schemas=True,
+        include_object=include_object,
+        include_name=include_name,
+        compare_server_default=my_compare_server_default,
     )
 
     with context.begin_transaction():
         context.run_migrations()
-
-
-def run_migrations_online() -> None:
-    """Run migrations in 'online' mode (connect to DB)."""
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
-
-    with connectable.connect() as connection:
-        context.configure(
-            connection=connection,
-            target_metadata=target_metadata,
-        )
-
-        with context.begin_transaction():
-            context.run_migrations()
-
-
-if context.is_offline_mode():
-    run_migrations_offline()
-else:
-    run_migrations_online()

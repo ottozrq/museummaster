@@ -1,0 +1,59 @@
+sqlalchemy:
+  echo: false
+museum:
+  debug: true
+  display_traceback: true
+
+openai:
+  api_key: ""
+  museum_model: gpt-4o
+  tts_model: gpt-4o-mini-tts
+  tts_voice: alloy
+
+apple:
+  client_id: ""
+  # cors_urls:
+  #   - "https://cityscope.staging.museum.dev"
+  #   - "https://museum-staging-museum-explorer.s3-website.eu-central-1.amazonaws.com"
+  #   - "https://museum.gitlab.io"
+
+##########
+# TARGETS
+##########
+
+# Targets allow you to override defaults set above
+# You choose a target by setting MUSEUMFLAGS_TARGET=my_target in your .env file.
+targets:
+  # Base production override
+  # Selects PRODUCTION DB for SF and PG, and Cognito settings for Prod
+  production:
+    museum:
+      host: ""
+    museum:
+      namespace: museum-production
+  # Base staging override
+  # Selects STAGING DB for SF and PG, and Cognito settings for Staging
+  staging:
+    museum_pg:
+      host: localhost
+      username: museum
+      ssl_mode: false
+    museum:
+      namespace: museum-staging
+    user_notifications:
+      lambda_name: museum-staging-user-notifications
+  local:
+    extends: production
+    museum_pg:
+      host: localhost
+      username: museum
+      ssl_mode: false
+    sqlalchemy:
+      echo: 1
+  # Use museum user for staging
+  museum_staging:
+    # Inherits the settings from `staging` target.
+    extends: staging
+  # For running the `scrape` command locally.
+  scrape:
+    extends: production
