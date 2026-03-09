@@ -236,9 +236,15 @@ class LoginResponse(Model):
 
 
 class AppleLoginRequest(Model):
-    """Body for POST /auth/apple."""
+    """Body for POST /auth/apple.
+
+    Apple 只在用户第一次同意时返回 fullName，之后多次登录时 fullName 可能为空，
+    所以 first_name/last_name 为可选，仅在创建新用户时使用。
+    """
 
     identity_token: str
+    first_name: str | None = None
+    last_name: str | None = None
 
 
 class TokenResponse(Model):

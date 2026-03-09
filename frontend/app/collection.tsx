@@ -78,12 +78,19 @@ export default function CollectionScreen() {
         return;
       }
 
+      const firstName = credential.fullName?.givenName ?? "";
+      const lastName = credential.fullName?.familyName ?? "";
+
       const response = await fetch(`${API_BASE_URL}/auth/apple`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ identity_token: credential.identityToken }),
+        body: JSON.stringify({
+          identity_token: credential.identityToken,
+          first_name: firstName,
+          last_name: lastName,
+        }),
       });
 
       if (!response.ok) {

@@ -6,12 +6,15 @@ import uuid
 from datetime import datetime, timedelta
 
 import jwt
-from fastapi import HTTPException, status
+from fastapi import Depends, HTTPException, status
 
-from src.routes import TAG, app
+import depends as d
 import models as m
+import sql_models as sm
+from src.routes import TAG, app
 from utils import flags
 from utils.flags import AppleFlags
+from utils.utils import MuseumDb
 
 APPLE_KEYS_URL = "https://appleid.apple.com/auth/keys"
 
@@ -85,7 +88,10 @@ def _decode_apple_identity_token(identity_token: str) -> dict:
 
 
 @app.post("/auth/apple", response_model=m.TokenResponse, tags=[TAG.Auth])
-def login_with_apple(payload: m.AppleLoginRequest) -> m.TokenResponse:
+def login_with_apple(
+    payload: m.AppleLoginRequest,
+    db: MuseumDb = Depends(d.get_psql),
+) -> m.TokenResponse:
     """
     使用 Apple 登录：
     - 验证 Apple identity token
@@ -100,7 +106,28 @@ def login_with_apple(payload: m.AppleLoginRequest) -> m.TokenResponse:
             detail="Apple identity token missing 'sub' claim",
         )
 
-    user_uuid = uuid.uuid5(uuid.NAMESPACE_URL, f"apple:{apple_sub}")
+    # Find or create a local User linked to this Apple account.
+    # We use a pseudo email "apple:{sub}" to avoid touching the normal email/password flow.
+    pseudo_email = f"apple:{apple_sub}"
+    session = db.session
+    user = (
+        session.query(sm.User)
+        .filter(sm.User.user_email == pseudo_email)
+        .one_or_none()
+    )
+    if not user:
+        user = sm.User(
+            user_email=pseudo_email,
+            password="",
+            first_name=payload.first_name or "",
+            last_name=payload.last_name or "",
+            extras={"provider": "apple", "apple_sub": apple_sub},
+        )
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+
+    user_uuid = user.user_id
     MF = flags.MuseumFlags.get()
     now = datetime.utcnow()
     exp = now + timedelta(days=30)
