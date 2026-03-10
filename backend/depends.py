@@ -69,10 +69,13 @@ def get_optional_logged_in_user(
     request: Request,
     db: MuseumDb = Depends(get_psql),
 ) -> Optional[sm.User]:
-    user_uuid = getattr(getattr(request, "user", None), "user_uuid", None)
-    if not user_uuid:
-        return None
     try:
+        # 在本地开发或未挂载 AuthenticationMiddleware 时，
+        # 访问 request.user 可能直接抛出 RuntimeError，这里统一视为匿名用户。
+        user = getattr(request, "user", None)
+        user_uuid = getattr(user, "user_uuid", None)
+        if not user_uuid:
+            return None
         return m.User.db(db).get_or_none(user_uuid)
     except Exception:
         logger.debug("optional user lookup failed", exc_info=True)
