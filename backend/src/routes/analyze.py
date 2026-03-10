@@ -201,7 +201,21 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
         if full_text.strip():
             from utils.utils import postgres_session
 
-            user_uuid = getattr(getattr(ws, "user", None), "user_uuid", None)
+            # 在某些部署环境里 WebSocket 可能没有挂载 AuthenticationMiddleware，
+            # 此时访问 ws.user 会直接抛出 RuntimeError，这里统一视为匿名用户。
+            user_obj = None
+            try:
+                if hasattr(ws, "scope"):
+                    user_obj = ws.scope.get("user")  # type: ignore[assignment]
+            except Exception:
+                user_obj = None
+            if not user_obj:
+                try:
+                    user_obj = getattr(ws, "user", None)
+                except Exception:
+                    user_obj = None
+
+            user_uuid = getattr(user_obj, "user_uuid", None)
             with postgres_session() as db:
                 record = sm.ScanRecord(
                     user_id=str(user_uuid) if user_uuid else None,
