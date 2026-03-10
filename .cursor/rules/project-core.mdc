@@ -1,0 +1,83 @@
+---
+description: Museummaster 项目的通用约定与后端风格
+alwaysApply: true
+---
+
+## 项目整体结构（后端）
+
+- **入口与应用配置**：
+  - `backend/app.py`：应用入口与 FastAPI/Flask app 初始化、路由挂载、中间件注册等。
+  - `backend/routes.py` / `backend/src/routes/*.py`：按域划分的路由模块（如 `root`、`users`、`auth`、`analyze`、`tts` 等）。
+  - `backend/middleware/*.py`：认证与授权等中间件逻辑。
+
+- **数据与持久化**：
+  - `backend/sql_models.py`：SQLAlchemy ORM / `PsqlBase` 模型。
+  - `backend/models.py`：对外暴露的 API 模型与 `Entity` / `EntityCollection` 等领域模型。
+  - `backend/data/*.csv`：静态数据源。
+  - `backend/alembic/*`：数据库迁移脚本与版本管理。
+
+- **配置与工具**：
+  - `backend/utils/*.py`：工具函数、配置、RBAC、JSON 序列化、模型基类等。
+  - `backend/flags.yml` / `backend/flags.test.yml`：运行时特性开关与环境配置。
+
+- **静态资源与上传**：
+  - `backend/static/scans/**`：扫描图片等静态资源。
+  - `backend/static/uploads/**`：用户上传文件（如头像）。
+
+- **测试**：
+  - `backend/tests/**`：测试用例、fixtures 与测试工具，保持与生产代码结构一一对应。
+
+## 通用约定
+
+- **语言**：对话与代码注释默认使用中文（必要时可夹带英文术语）。
+- **类型安全**：优先使用带类型提示的函数签名与数据模型，保持与现有 `pydantic` / `sqlalchemy` 模型风格一致。
+- **错误处理**：在后端 API 中返回结构清晰的错误，避免裸露内部异常信息。
+
+## Python / FastAPI / 后端约定
+
+- **导入顺序**：
+  - 先标准库，再三方库，再本项目内部模块。
+  - 对本项目模块使用显式导入路径，例如 `from backend import sql_models as sm` 或 `from utils.museummodels import Model`。
+
+- **数据模型**：
+  - 继续沿用当前的 `Model` / `Entity` / `EntityCollection` 模式。
+  - 新增实体时：
+    - 在 `sql_models.py` 中先定义 `PsqlBase` / ORM 模型。
+    - 在 `models.py` 中添加对应的 `Entity` / 请求与响应 `Model`，并配置 `model_config` / `kind` / `db_model` 等。
+
+- **分页与集合**：
+  - 对列表型接口优先使用 `EntityCollection`，通过类方法 `paginate` / `from_list` 生成。
+  - 分页参数结构要与现有 `Pagination` / `Kind` 约定保持一致。
+
+## 代码风格
+
+- **函数与类命名**：
+  - 领域模型类使用名词（例如 `User`、`CollectionItemOut`）。
+  - 工具函数使用动宾结构（例如 `get_user_by_email`、`create_access_token`）。
+
+- **注释与文档字符串**：
+  - 仅在业务逻辑不直观、存在隐含约束或有重要边界条件时添加注释。
+  - 使用简洁中文说明真实业务含义，而不是复述代码本身在做什么。
+
+- **异常与校验**：
+  - HTTP 相关错误统一使用 `fastapi.HTTPException`，并选择合适的 `status`。
+  - 输入校验尽量交给 `pydantic` 模型完成，必要时在路由层增加业务校验。
+
+## 与 Cursor 协作
+
+- **保持文件结构**：在现有文件结构内扩展功能，避免随意新建顶层目录。
+- **遵守现有模式**：
+  - 新增 API 时优先参考已有路由、模型与 `Entity` 实现。
+  - 处理分页、集合、用户系统时，尽量复用 `EntityCollection`、`User` 等已有模式。
+- **避免多余注释**：不要添加“解释这次改动”的注释，代码应自解释；真正复杂的业务逻辑用简要中文注释说明目的与关键约束即可。
+
+## 测试与质量
+
+- **测试优先级**：
+  - 为关键业务路径（认证、收藏、TTS 分析等）优先补充单元测试或集成测试。
+  - 新增路由/模型时，参考 `backend/tests/unit/test_*.py` 的写法补充对应测试。
+
+- **一致性**：
+  - 测试中的数据构造优先使用已有 fixtures / 工厂方法，而不是手写散落的数据常量。
+  - 当修改现有行为时，优先更新/补充现有测试用例，而不是新建重复测试文件。
+

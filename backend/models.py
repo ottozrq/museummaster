@@ -3,7 +3,7 @@ import uuid
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Union
+from typing import Any, Dict, List, Literal
 
 from fastapi import Request, status
 from fastapi.exceptions import HTTPException
@@ -184,6 +184,8 @@ class Entity(Model):
         )
 
 
+
+
 class UserPatch(Model):
     first_name: str = None
     last_name: str = None
@@ -258,37 +260,3 @@ class TTSRequest(Model):
     """Body for POST /tts."""
 
     text: str
-
-
-# ---------------------------------------------------------------------------
-# Collection (favorites) - API request/response models
-# ---------------------------------------------------------------------------
-
-
-class CollectionItemCreate(Model):
-    """Create a new collection item (favorite)."""
-
-    image_uri: str | None = None
-    text: str
-    audio_uri: str | None = None
-
-
-class CollectionItemUpdate(Model):
-    """Partial update for a collection item."""
-
-    image_uri: str | None = None
-    text: str | None = None
-    audio_uri: str | None = None
-
-
-class CollectionItemOut(Model):
-    """Collection item as returned by API."""
-
-    id: str
-    user_id: str
-    image_uri: str | None
-    text: str
-    audio_uri: str | None
-    created_at: datetime
-
-    model_config = ConfigDict(from_attributes=True)

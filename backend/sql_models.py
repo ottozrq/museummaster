@@ -2,17 +2,7 @@
 import re
 import uuid
 
-from sqlalchemy import (
-    BigInteger,
-    Boolean,
-    Column,
-    DateTime,
-    Enum,
-    ForeignKey,
-    String,
-    Text,
-    func,
-)
+from sqlalchemy import BigInteger, Boolean, Column, DateTime, Enum, ForeignKey, String, func
 from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy.orm import relationship
@@ -47,7 +37,13 @@ rel = relationship
 
 
 def seq(name):
-    return Column(name, BigInteger, primary_key=True, autoincrement=True, unique=True)
+    return Column(
+        name,
+        BigInteger,
+        primary_key=True,
+        autoincrement=True,
+        unique=True,
+    )
 
 
 def enum_field(klass, nullable=False, **kwargs):
@@ -81,10 +77,7 @@ def fk(foreign_field, nullable=False, index=True, ondelete="CASCADE", **kwargs):
 
 
 def name_field(nullable=False):
-    return Column(
-        String,
-        nullable=nullable,
-    )
+    return Column(String, nullable=nullable)
 
 
 class UserRole(AutoEnum):
@@ -94,11 +87,7 @@ class UserRole(AutoEnum):
 
 class User(PsqlBase):
     user_id = uuid_field(primary_key=True)
-    user_email = Column(
-        String,
-        unique=True,
-        nullable=False,
-    )
+    user_email = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
     first_name = name_field()
     last_name = name_field()
@@ -108,17 +97,3 @@ class User(PsqlBase):
     extras = Column(JSON, nullable=True)
 
 
-class CollectionItem(PsqlBase):
-    """A single favorite/saved artwork for a user."""
-
-    id = uuid_field(primary_key=True)
-    user_id = Column(
-        UUID(as_uuid=False),
-        ForeignKey("museum_sources.user.user_id", ondelete="CASCADE"),
-        nullable=False,
-        index=True,
-    )
-    image_uri = Column(String(2048), nullable=True)
-    text = Column(Text, nullable=False)
-    audio_uri = Column(String(2048), nullable=True)
-    created_at = Column(DateTime(True), nullable=False, server_default=func.now())
