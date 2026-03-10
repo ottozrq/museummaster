@@ -45,8 +45,9 @@ def test_analyze_openai_failure(client, mock_openai_failure, sample_image_bytes)
 
 def test_analyze_missing_api_key(client, monkeypatch, sample_image_bytes):
     """When OpenAI api_key is empty, endpoint returns 500 with API_KEY in detail."""
-    from utils.flags import OpenAIFlags
     from types import SimpleNamespace
+
+    from utils.flags import OpenAIFlags
 
     fake_flags = SimpleNamespace(api_key="", museum_model="gpt-4o")
     monkeypatch.setattr(OpenAIFlags, "get", classmethod(lambda cls: fake_flags))

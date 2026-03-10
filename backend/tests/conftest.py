@@ -121,6 +121,7 @@ def sample_text():
 @pytest.fixture
 def test_secret():
     from utils import flags
+
     return flags.MuseumFlags.get().login_secret
 
 

@@ -3,7 +3,6 @@
 from unittest.mock import MagicMock
 
 import jwt
-
 from fastapi import HTTPException
 
 

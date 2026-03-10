@@ -2,7 +2,6 @@
 
 import json
 import urllib.request
-import uuid
 from datetime import datetime, timedelta
 
 import jwt
@@ -111,9 +110,7 @@ def login_with_apple(
     pseudo_email = f"apple:{apple_sub}"
     session = db.session
     user = (
-        session.query(sm.User)
-        .filter(sm.User.user_email == pseudo_email)
-        .one_or_none()
+        session.query(sm.User).filter(sm.User.user_email == pseudo_email).one_or_none()
     )
     if not user:
         user = sm.User(

@@ -7,8 +7,8 @@ from fastapi import HTTPException, Query
 from fastapi.responses import StreamingResponse
 from openai import OpenAI
 
-from src.routes import TAG, app
 import models as m
+from src.routes import TAG, app
 from utils.flags import OpenAIFlags
 
 

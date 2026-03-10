@@ -130,7 +130,15 @@ class MuseumAuthBackend(AuthenticationBackend):
 
     async def museum_user(self, request) -> MuseumAuthUser:
         # Public endpoints that don't require authentication
-        public_paths = ["/analyze", "/tts", "/auth", "/docs", "/openapi.json", "/redoc", "/static"]
+        public_paths = [
+            "/analyze",
+            "/tts",
+            "/auth",
+            "/docs",
+            "/openapi.json",
+            "/redoc",
+            "/static",
+        ]
         if any(request.url.path.startswith(p) for p in public_paths):
             return None
         if superuser_email := _superuser_email():

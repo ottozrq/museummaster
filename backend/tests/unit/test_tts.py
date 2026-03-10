@@ -61,6 +61,7 @@ def test_tts_get_openai_failure(client, mock_openai_failure, sample_text):
 def test_tts_post_missing_api_key(client, monkeypatch, sample_text):
     """When OpenAI api_key is empty, endpoint returns 500 with API_KEY in detail."""
     from types import SimpleNamespace
+
     from utils.flags import OpenAIFlags
 
     fake_flags = SimpleNamespace(

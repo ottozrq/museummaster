@@ -3,7 +3,7 @@ import uuid
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Literal
+from typing import Any, Dict, List, Literal, Union
 
 from fastapi import Request, status
 from fastapi.exceptions import HTTPException
@@ -182,8 +182,6 @@ class Entity(Model):
                 }
             },
         )
-
-
 
 
 class UserPatch(Model):

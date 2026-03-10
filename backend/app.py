@@ -72,7 +72,6 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Delayed import to avoid circularity
 import routes  # noqa
-
 from src.routes.analyze import _handle_analyze_websocket
 
 

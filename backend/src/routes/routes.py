@@ -1,4 +1,4 @@
-from src.routes import auth, analyze, root, tts, users
+from src.routes import analyze, auth, root, tts, users
 
 __all__ = (
     auth,

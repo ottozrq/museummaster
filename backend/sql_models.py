@@ -2,7 +2,16 @@
 import re
 import uuid
 
-from sqlalchemy import BigInteger, Boolean, Column, DateTime, Enum, ForeignKey, String, func
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    Column,
+    DateTime,
+    Enum,
+    ForeignKey,
+    String,
+    func,
+)
 from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy.orm import relationship
@@ -95,5 +104,3 @@ class User(PsqlBase):
     is_superuser = Column(Boolean, server_default="FALSE", nullable=False)
     role = enum_field(UserRole, server_default=UserRole.client, nullable=False)
     extras = Column(JSON, nullable=True)
-
-
