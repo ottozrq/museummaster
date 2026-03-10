@@ -72,6 +72,7 @@ export default function ResultScreen() {
   const imageUri = useMemo(() => params.imageUri ?? "", [params.imageUri]);
 
   const [text, setText] = useState(initialText);
+  const [scanId, setScanId] = useState<string | null>(null);
   const [streaming, setStreaming] = useState(false);
   const [requestingSpeech, setRequestingSpeech] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -108,8 +109,11 @@ export default function ResultScreen() {
         setStreaming(false);
         Alert.alert("识别失败", error.message || "未知错误");
       },
-      onDone: () => {
+      onDone: (id) => {
         setStreaming(false);
+        if (id) {
+          setScanId(id);
+        }
       },
     };
 
@@ -207,7 +211,7 @@ export default function ResultScreen() {
     // 并行在后台预下载完整音频，下载完成后会自动切到本地以显示总时长
     if (!preloadingSpeech && !downloadedAudioUri) {
       setPreloadingSpeech(true);
-      createSpeech(text)
+      createSpeech(text, { scanId: scanId || undefined })
         .then(async (speech) => {
           const preloadFile = new File(Paths.cache, `tts-preload-${Date.now()}.mp3`);
           await preloadFile.write(speech.audio_base64, { encoding: "base64" });
@@ -249,7 +253,7 @@ export default function ResultScreen() {
       // 生成讲解音频并保存到本地持久化目录
       let audioUri: string | undefined;
       try {
-        const speech = await createSpeech(text);
+        const speech = await createSpeech(text, { scanId: scanId || undefined });
         const collectionFile = new File(Paths.document, `collection-${id}.mp3`);
         await collectionFile.write(speech.audio_base64, { encoding: "base64" });
         audioUri = collectionFile.uri;
@@ -266,7 +270,6 @@ export default function ResultScreen() {
         audioUri,
       };
       await appendToCollection(item);
-
       // 中间半透明 Toast 提示
       setShowCollectedToast(true);
       setTimeout(() => {

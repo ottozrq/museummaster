@@ -1,21 +1,26 @@
 """Text-to-speech: streaming and JSON (base64) endpoints."""
 
 import base64
-from typing import Iterable
+from pathlib import Path
+from typing import Iterable, Optional
 
-from fastapi import HTTPException, Query
+from fastapi import Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from openai import OpenAI
 
 import models as m
-from src.routes import TAG, app
+import sql_models as sm
+from src.routes import TAG, app, d, MuseumDb
 from utils.flags import OpenAIFlags
 
 
 def _openai_flags() -> OpenAIFlags:
     flags = OpenAIFlags.get()
     if not flags.api_key:
-        raise HTTPException(status_code=500, detail="OPENAI_API_KEY is not set")
+        raise HTTPException(
+            status_code=500,
+            detail="OPENAI_API_KEY is not set",
+        )
     return flags
 
 
@@ -47,6 +52,19 @@ def _stream_speech_bytes(text: str) -> Iterable[bytes]:
         raise HTTPException(status_code=500, detail=f"TTS failed: {exc}") from exc
 
 
+AUDIO_DIR = Path("static") / "uploads" / "audio"
+AUDIO_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def _save_audio_bytes(audio_bytes: bytes) -> str:
+    prefix = base64.urlsafe_b64encode(audio_bytes[:8]).decode("ascii").rstrip("=")
+    filename = f"tts_{prefix}.mp3"
+    target_path = AUDIO_DIR / filename
+    target_path.write_bytes(audio_bytes)
+    relative = target_path.relative_to("static")
+    return f"/static/{relative.as_posix()}"
+
+
 @app.get("/tts", tags=[TAG.TTS])
 def text_to_speech_stream(
     text: str = Query(..., min_length=1),
@@ -59,7 +77,10 @@ def text_to_speech_stream(
 
 
 @app.post("/tts", tags=[TAG.TTS])
-def text_to_speech(payload: m.TTSRequest) -> dict:
+def text_to_speech(
+    payload: m.TTSRequest,
+    db: MuseumDb = Depends(d.get_psql),
+) -> dict:
     """POST /tts：JSON body {"text": "..."}，返回 base64 MP3。"""
     flags = _openai_flags()
     clean_text = _sanitize_text(payload.text)
@@ -75,10 +96,23 @@ def text_to_speech(payload: m.TTSRequest) -> dict:
         )
         audio_bytes = response.read()
         audio_base64 = base64.b64encode(audio_bytes).decode("utf-8")
+        audio_path = _save_audio_bytes(audio_bytes)
+
+        # 可选：将音频路径写回对应的 ScanRecord
+        if payload.scan_id is not None:
+            record: Optional[sm.ScanRecord] = db.session.get(
+                sm.ScanRecord, str(payload.scan_id)
+            )
+            if record:
+                record.audio_path = audio_path
+                db.session.add(record)
+                db.session.commit()
+
         return {
             "audio_base64": audio_base64,
             "mime_type": "audio/mpeg",
             "voice": voice,
+            "audio_path": audio_path,
         }
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"TTS failed: {exc}") from exc

@@ -28,6 +28,7 @@ class OpenAPITag(AutoEnum):
 
 class Kind(AutoEnum):
     user = auto()
+    scan_record = auto()
 
     @property
     def plural(self) -> str:
@@ -258,3 +259,30 @@ class TTSRequest(Model):
     """Body for POST /tts."""
 
     text: str
+    scan_id: uuid.UUID | None = None
+
+
+class ScanRecordCreate(Model):
+    artwork_code: str
+    image_path: str
+    text: str
+    audio_path: str | None = None
+
+
+class ScanRecord(Entity, ScanRecordCreate):
+    scan_id: uuid.UUID
+
+    class Config:
+        db_model = sm.ScanRecord
+        kind = Kind.scan_record
+
+    @classmethod
+    def from_db(cls, rec: sm.ScanRecord):
+        return cls(
+            scan_id=rec.scan_id,
+            artwork_code=rec.artwork_code,
+            image_path=rec.image_path,
+            text=rec.text,
+            audio_path=rec.audio_path,
+            **cls.links(rec),
+        )

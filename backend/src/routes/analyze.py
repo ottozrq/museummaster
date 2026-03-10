@@ -2,13 +2,41 @@
 
 import asyncio
 import base64
-from typing import Any, Dict
+import os
+import uuid
+from pathlib import Path
+from typing import Any, Dict, Optional
 
-from fastapi import File, HTTPException, UploadFile, WebSocket, WebSocketDisconnect
+from fastapi import (
+    Depends,
+    File,
+    HTTPException,
+    UploadFile,
+    WebSocket,
+    WebSocketDisconnect,
+)
 from openai import AsyncOpenAI, OpenAI
 
-from src.routes import TAG, app
+import sql_models as sm
+from src.routes import TAG, app, d, MuseumDb
 from utils.flags import OpenAIFlags
+
+
+IMAGE_DIR = Path("static") / "uploads" / "scans"
+IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def _save_image_bytes(image_bytes: bytes, mime_type: str) -> str:
+    ext = ".jpg"
+    if mime_type.endswith("png"):
+        ext = ".png"
+    elif mime_type.endswith("jpeg"):
+        ext = ".jpg"
+    filename = f"scan_{uuid.uuid4().hex}{ext}"
+    target_path = IMAGE_DIR / filename
+    target_path.write_bytes(image_bytes)
+    relative = target_path.relative_to("static")
+    return f"/static/{relative.as_posix()}"
 
 PROMPT = (
     "你是一位专业的博物馆讲解员。请分析这张艺术品图片，并用中文输出详细讲解。"
@@ -19,7 +47,11 @@ PROMPT = (
 
 
 @app.post("/analyze", tags=[TAG.Analyze])
-async def analyze_artwork(image: UploadFile = File(...)) -> Dict[str, str]:
+async def analyze_artwork(
+    image: UploadFile = File(...),
+    db: MuseumDb = Depends(d.get_psql),
+    user: Optional[sm.User] = Depends(d.get_optional_logged_in_user),
+) -> Dict[str, str]:
     """
     非流式 analyze：接收图片，用 OpenAI Responses API 生成讲解，返回 {"text": "..."}。
     """
@@ -37,6 +69,8 @@ async def analyze_artwork(image: UploadFile = File(...)) -> Dict[str, str]:
     image_bytes = await image.read()
     if not image_bytes:
         raise HTTPException(status_code=400, detail="Image is empty")
+    # 保存原始图片到本地文件系统
+    image_path = _save_image_bytes(image_bytes, content_type)
 
     image_b64 = base64.b64encode(image_bytes).decode("utf-8")
     image_url = f"data:{content_type};base64,{image_b64}"
@@ -62,7 +96,17 @@ async def analyze_artwork(image: UploadFile = File(...)) -> Dict[str, str]:
                 status_code=502,
                 detail="Model returned empty response",
             )
-        return {"text": result_text}
+        # 将本次扫描保存到数据库（图片 + 文本，语音后续可选）
+        record = sm.ScanRecord(
+            user_id=getattr(user, "user_id", None),
+            artwork_code="unknown",
+            image_path=image_path,
+            text=result_text,
+            audio_path=None,
+        )
+        db.session.add(record)
+        db.session.commit()
+        return {"text": result_text, "scan_id": str(record.scan_id)}
     except HTTPException:
         raise
     except Exception as exc:
@@ -110,6 +154,14 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
     if not mime_type.startswith("image/"):
         await _send_error(ws, "mime_type must start with 'image/'")
         return
+    try:
+        image_bytes = base64.b64decode(image_b64)
+    except Exception:
+        await _send_error(ws, "image_base64 is not valid base64")
+        return
+
+    # 保存图片到本地，供后续扫描记录使用
+    image_path = _save_image_bytes(image_bytes, mime_type)
 
     image_url = f"data:{mime_type};base64,{image_b64}"
     client = AsyncOpenAI(api_key=openai_flags.api_key)
@@ -142,7 +194,27 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
                     await asyncio.sleep(0)  # yield so WebSocket flushes immediately
                 elif event_type == "response.completed":
                     break
-        await ws.send_json({"type": "done"})
+
+        scan_id_str: Optional[str] = None
+
+        # 将本次扫描保存到数据库（图片 + 文本）
+        if full_text.strip():
+            from utils.utils import postgres_session
+
+            user_uuid = getattr(getattr(ws, "user", None), "user_uuid", None)
+            with postgres_session() as db:
+                record = sm.ScanRecord(
+                    user_id=str(user_uuid) if user_uuid else None,
+                    artwork_code="unknown",
+                    image_path=image_path,
+                    text=full_text,
+                    audio_path=None,
+                )
+                db.session.add(record)
+                db.session.commit()
+                scan_id_str = str(record.scan_id)
+
+        await ws.send_json({"type": "done", "scan_id": scan_id_str})
         await ws.close()
     except WebSocketDisconnect:
         return

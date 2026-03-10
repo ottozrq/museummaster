@@ -10,6 +10,9 @@ def test_tts_post_success(client, mock_openai_success, sample_text):
     assert "audio_base64" in data
     assert data["mime_type"] == "audio/mpeg"
     assert data["voice"] == "alloy"
+    assert "audio_path" in data
+    assert isinstance(data["audio_path"], str)
+    assert data["audio_path"].startswith("/static/uploads/audio/")
     raw = base64.b64decode(data["audio_base64"])
     assert raw == b"fake-mp3-bytes"
 
@@ -49,7 +52,7 @@ def test_tts_post_openai_failure(client, mock_openai_failure, sample_text):
 
 
 def test_tts_get_openai_failure(client, mock_openai_failure, sample_text):
-    """GET /tts when OpenAI fails: stream raises before/during send (client may get 500 or exception)."""
+    """GET /tts when OpenAI fails: generator may raise."""
     try:
         response = client.get("/tts", params={"text": sample_text})
         assert response.status_code >= 500
@@ -59,7 +62,7 @@ def test_tts_get_openai_failure(client, mock_openai_failure, sample_text):
 
 
 def test_tts_post_missing_api_key(client, monkeypatch, sample_text):
-    """When OpenAI api_key is empty, endpoint returns 500 with API_KEY in detail."""
+    """When api_key is empty, endpoint returns 500 including API_KEY."""
     from types import SimpleNamespace
 
     from utils.flags import OpenAIFlags

@@ -8,6 +8,8 @@ def test_analyze_success(client, mock_openai_success, sample_image_bytes):
     data = response.json()
     assert "text" in data
     assert data["text"] == "Mocked analyze output"
+    assert "scan_id" in data
+    assert isinstance(data["scan_id"], str)
 
 
 def test_analyze_accepts_jpeg(client, mock_openai_success):

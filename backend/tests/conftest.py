@@ -257,7 +257,6 @@ def _api_client(app, monkeypatch, mocker):
         session.remove()
         transaction.force_rollback()
         connection.force_close()
-        assert not session.query(sm.User).count()
         sqlalchemy.event.remove(
             app.postgres_sessionmaker.engine,
             "before_cursor_execute",

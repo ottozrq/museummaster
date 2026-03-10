@@ -7,18 +7,20 @@ const USE_FAKE_ANALYZE = process.env.EXPO_PUBLIC_USE_FAKE_ANALYZE === "true";
 
 type AnalyzeResponse = {
   text: string;
+  scan_id?: string;
 };
 
 type TTSResponse = {
   audio_base64: string;
   mime_type: string;
   voice: string;
+  audio_path?: string;
 };
 
 export type AnalyzeStreamHandlers = {
   onText: (fullText: string) => void;
   onError?: (error: Error) => void;
-  onDone?: () => void;
+  onDone?: (scanId?: string) => void;
 };
 
 function sleep(ms: number) {
@@ -120,7 +122,7 @@ export async function analyzeImageStream(
       if (data.type === "delta") {
         handlers.onText(data.full ?? "");
       } else if (data.type === "done") {
-        handlers.onDone?.();
+        handlers.onDone?.(data.scan_id || undefined);
         ws.close();
       } else if (data.type === "error") {
         handlers.onError?.(new Error(data.message || "Analyze failed"));
@@ -158,13 +160,19 @@ export function getTtsStreamUrl(text: string): string {
   return url.toString();
 }
 
-export async function createSpeech(text: string): Promise<TTSResponse> {
+export async function createSpeech(
+  text: string,
+  opts?: { scanId?: string },
+): Promise<TTSResponse> {
   const response = await fetch(`${API_BASE_URL}/tts`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ text }),
+    body: JSON.stringify({
+      text,
+      ...(opts?.scanId ? { scan_id: opts.scanId } : {}),
+    }),
   });
 
   if (!response.ok) {
@@ -174,3 +182,4 @@ export async function createSpeech(text: string): Promise<TTSResponse> {
 
   return response.json();
 }
+

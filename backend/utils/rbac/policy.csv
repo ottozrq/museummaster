@@ -25,6 +25,7 @@ p, *, /auth, .*
 p, *, /auth/*, .*
 p, *, /static, .*
 p, *, /static/*, .*
+p, *, /scan-records*, .*
 p, *, /landmarks*, GET
 p, *, /artworks*, GET
 p, *, /images*, GET

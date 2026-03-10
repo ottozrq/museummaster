@@ -32,11 +32,17 @@ class _tablemixin:
 
             return f"_{word.lower()}"
 
-        return re.compile(r"([A-Z]+)(?=[a-z0-9])").sub(_join, cls.__name__).lstrip("_")
+        return re.compile(r"([A-Z]+)(?=[a-z0-9])").sub(
+            _join, cls.__name__
+        ).lstrip("_")
 
 
 class _postgresql_tablemixin(_tablemixin):
-    inserted_at = Column(DateTime(True), server_default=func.now(), nullable=False)
+    inserted_at = Column(
+        DateTime(True),
+        server_default=func.now(),
+        nullable=False,
+    )
 
 
 PsqlBase = declarative_base(cls=_postgresql_tablemixin)
@@ -104,3 +110,12 @@ class User(PsqlBase):
     is_superuser = Column(Boolean, server_default="FALSE", nullable=False)
     role = enum_field(UserRole, server_default=UserRole.client, nullable=False)
     extras = Column(JSON, nullable=True)
+
+
+class ScanRecord(PsqlBase):
+    scan_id = uuid_field(primary_key=True)
+    user_id = fk("museum_sources.user.user_id", nullable=True)
+    artwork_code = Column(String, nullable=True)
+    image_path = Column(String, nullable=False)
+    text = Column(String, nullable=False)
+    audio_path = Column(String, nullable=True)

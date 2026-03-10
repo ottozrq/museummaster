@@ -94,5 +94,5 @@ yarn-error.log*
 .cache/
 
 # === Project specific ===
-# Uploaded images (app creates directory at runtime)
-backend/static/images/
+# Uploaded/static files generated at runtime
+backend/static/
