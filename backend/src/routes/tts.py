@@ -10,7 +10,7 @@ from openai import OpenAI
 
 import models as m
 import sql_models as sm
-from src.routes import TAG, app, d, MuseumDb
+from src.routes import TAG, MuseumDb, app, d
 from utils.flags import OpenAIFlags
 
 

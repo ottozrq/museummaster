@@ -159,7 +159,8 @@ class Entity(Model):
             if isinstance(instance, Request):
                 self_link_str = instance.url.path.rstrip("/")
                 if root_path := flags.MuseumFlags.get().root_path:
-                    self_link_str = re.sub(rf"^{str(root_path)}", "", self_link_str)
+                    pattern = rf"^{str(root_path)}"
+                    self_link_str = re.sub(pattern, "", self_link_str)
                 self_link = Path(self_link_str)
             else:
                 instance_id = cls._extract_id(instance)
@@ -183,6 +184,15 @@ class Entity(Model):
                 }
             },
         )
+
+
+class EntityCollection(Model):
+    items: List[Entity]
+    kind: Kind
+    self_link: Link
+    total: int | None = None
+    page: int | None = None
+    page_size: int | None = None
 
 
 class UserPatch(Model):
@@ -285,4 +295,38 @@ class ScanRecord(Entity, ScanRecordCreate):
             text=rec.text,
             audio_path=rec.audio_path,
             **cls.links(rec),
+        )
+
+    @classmethod
+    def _id_fields(cls):
+        # ScanRecord 的主键字段名是 scan_id，而不是默认推导的 scan_record_id
+        return ("scan_id",)
+
+
+class ScanRecordCollection(Model):
+    items: List[ScanRecord]
+    kind: Kind = Kind.scan_record
+    self_link: Link = Kind.scan_record.root
+    total: int | None = None
+    page: int | None = None
+    page_size: int | None = None
+
+    @classmethod
+    def paginate(cls, pagination: Pagination, query):
+        """
+        使用通用 SQL 分页工具，对 ScanRecord 列表进行分页并返回集合。
+        """
+        from utils import pagination as pg
+
+        page = int(pagination.page_token or 1)
+        page_size = int(pagination.page_size or 20)
+        page_obj = pg.paginate(query, page=page, per_page=page_size)
+        items = ScanRecord.from_db_list(page_obj.items)
+        return cls(
+            items=items,
+            kind=Kind.scan_record,
+            self_link=Kind.scan_record.root,
+            total=page_obj.total,
+            page=page_obj.page,
+            page_size=page_obj.per_page,
         )

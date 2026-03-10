@@ -23,7 +23,10 @@ import {
   AnalyzeStreamHandlers,
   analyzeImageStream,
   createSpeech,
+  favoriteScanRecord,
+  fetchScanRecordById,
   getTtsStreamUrl,
+  unfavoriteScanRecord,
 } from "../src/services/api";
 import {
   Back15Icon,
@@ -33,23 +36,14 @@ import {
   Speed2Icon,
 } from "../src/components/PlayerIcons";
 
+const HISTORY_KEY = "museum_guide_history";
+
 type HistoryItem = {
   id: string;
   createdAt: string;
   imageUri?: string;
   text: string;
 };
-
-type CollectionItem = {
-  id: string;
-  createdAt: string;
-  imageUri?: string;
-  text: string;
-  audioUri?: string;
-};
-
-const HISTORY_KEY = "museum_guide_history";
-const COLLECTION_KEY = "museum_guide_collection";
 
 async function appendHistory(item: HistoryItem) {
   const raw = await AsyncStorage.getItem(HISTORY_KEY);
@@ -58,25 +52,19 @@ async function appendHistory(item: HistoryItem) {
   await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(list.slice(0, 30)));
 }
 
-async function appendToCollection(item: CollectionItem) {
-  const raw = await AsyncStorage.getItem(COLLECTION_KEY);
-  const list: CollectionItem[] = raw ? JSON.parse(raw) : [];
-  list.unshift(item);
-  await AsyncStorage.setItem(COLLECTION_KEY, JSON.stringify(list));
-}
-
 export default function ResultScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ text?: string; imageUri?: string }>();
+  const params = useLocalSearchParams<{ text?: string; imageUri?: string; scanId?: string }>();
   const initialText = useMemo(() => params.text ?? "", [params.text]);
-  const imageUri = useMemo(() => params.imageUri ?? "", [params.imageUri]);
+  const [imageUri, setImageUri] = useState(() => params.imageUri ?? "");
 
   const [text, setText] = useState(initialText);
-  const [scanId, setScanId] = useState<string | null>(null);
+  const [scanId, setScanId] = useState<string | null>(() => params.scanId ?? null);
   const [streaming, setStreaming] = useState(false);
   const [requestingSpeech, setRequestingSpeech] = useState(false);
   const [saving, setSaving] = useState(false);
   const [showCollectedToast, setShowCollectedToast] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(() => !!params.scanId);
   const [isFastSpeed, setIsFastSpeed] = useState(false);
   const [progressBarWidth, setProgressBarWidth] = useState(0);
   const [downloadedAudioUri, setDownloadedAudioUri] = useState<string | null>(null);
@@ -95,9 +83,32 @@ export default function ResultScreen() {
 
   const hasAudio = Number.isFinite(status?.duration) && (status?.duration ?? 0) > 0;
 
+  // 有 scanId（来自收藏列表）但没有文本时，从后端加载该扫描记录
+  useEffect(() => {
+    if (text || !scanId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const rec = await fetchScanRecordById(scanId);
+        if (cancelled) return;
+        setText(rec.text);
+        if (rec.image_path) {
+          setImageUri(`${process.env.EXPO_PUBLIC_API_BASE_URL?.trim() || "https://museumapi.ottozhang.com"}${rec.image_path}`);
+        }
+      } catch (e) {
+        if (!cancelled) {
+          Alert.alert("加载失败", e instanceof Error ? e.message : "无法加载收藏内容");
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [scanId, text]);
+
   // 当没有直接传入讲解文本但有图片时，在结果页发起流式识别
   useEffect(() => {
-    if (initialText || !imageUri) return;
+    if (initialText || !imageUri || scanId) return;
 
     setStreaming(true);
 
@@ -247,36 +258,27 @@ export default function ResultScreen() {
 
     setSaving(true);
     try {
-      const id = `${Date.now()}`;
-      const createdAt = new Date().toISOString();
-
-      // 生成讲解音频并保存到本地持久化目录
-      let audioUri: string | undefined;
-      try {
-        const speech = await createSpeech(text, { scanId: scanId || undefined });
-        const collectionFile = new File(Paths.document, `collection-${id}.mp3`);
-        await collectionFile.write(speech.audio_base64, { encoding: "base64" });
-        audioUri = collectionFile.uri;
-      } catch (e) {
-        // 音频生成失败仍保存图片和文字
-        console.warn("Collection: TTS failed", e);
+      if (!scanId) {
+        Alert.alert("暂不可收藏", "当前识别记录尚未完成，请稍后重试。");
+        return;
       }
 
-      const item: CollectionItem = {
-        id,
-        createdAt,
-        imageUri: imageUri || undefined,
-        text,
-        audioUri,
-      };
-      await appendToCollection(item);
-      // 中间半透明 Toast 提示
-      setShowCollectedToast(true);
-      setTimeout(() => {
-        setShowCollectedToast(false);
-      }, 1500);
+      if (!isFavorite) {
+        await favoriteScanRecord(scanId, authToken);
+        setIsFavorite(true);
+        setShowCollectedToast(true);
+        setTimeout(() => {
+          setShowCollectedToast(false);
+        }, 1500);
+      } else {
+        await unfavoriteScanRecord(scanId, authToken);
+        setIsFavorite(false);
+      }
     } catch (error) {
-      Alert.alert("收藏失败", error instanceof Error ? error.message : "未知错误");
+      Alert.alert(
+        isFavorite ? "取消收藏失败" : "收藏失败",
+        error instanceof Error ? error.message : "未知错误",
+      );
     } finally {
       setSaving(false);
     }
@@ -386,7 +388,7 @@ export default function ResultScreen() {
             onPress={onAddToCollection}
             disabled={saving || !text}
           >
-            <Text style={styles.iconText}>★</Text>
+            <Text style={styles.iconText}>{isFavorite ? "★" : "☆"}</Text>
           </Pressable>
         </View>
       </View>

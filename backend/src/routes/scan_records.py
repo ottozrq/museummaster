@@ -1,4 +1,3 @@
-import os
 import uuid
 from pathlib import Path
 from typing import Optional
@@ -6,7 +5,6 @@ from typing import Optional
 from fastapi import File, Form, UploadFile
 
 from src.routes import TAG, Depends, MuseumDb, app, d, m, sm, status
-
 
 BASE_UPLOAD_DIR = Path("static") / "uploads"
 IMAGE_DIR = BASE_UPLOAD_DIR / "scans"

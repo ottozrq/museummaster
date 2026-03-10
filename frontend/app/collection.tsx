@@ -13,21 +13,11 @@ import {
 } from "react-native";
 import * as AppleAuthentication from "expo-apple-authentication";
 
-import { API_BASE_URL } from "../src/services/api";
-
-type CollectionItem = {
-  id: string;
-  createdAt: string;
-  imageUri?: string;
-  text: string;
-  audioUri?: string;
-};
-
-const COLLECTION_KEY = "museum_guide_collection";
+import { API_BASE_URL, ScanRecord, fetchMyFavorites } from "../src/services/api";
 
 export default function CollectionScreen() {
   const router = useRouter();
-  const [items, setItems] = useState<CollectionItem[]>([]);
+  const [items, setItems] = useState<ScanRecord[]>([]);
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [appleAvailable, setAppleAvailable] = useState(false);
@@ -58,11 +48,22 @@ export default function CollectionScreen() {
     };
   }, []);
 
-  const load = useCallback(async () => {
-    const raw = await AsyncStorage.getItem(COLLECTION_KEY);
-    const parsed: CollectionItem[] = raw ? JSON.parse(raw) : [];
-    setItems(parsed);
-  }, []);
+  const load = useCallback(
+    async (token: string | null) => {
+      if (!token) {
+        setItems([]);
+        return;
+      }
+      try {
+        const coll = await fetchMyFavorites(token, { pageToken: "1", pageSize: 100 });
+        setItems(coll.items ?? []);
+        console.log(coll);
+      } catch (e) {
+        console.warn("Fetch favorites failed", e);
+      }
+    },
+    [],
+  );
 
   const handleAppleSignIn = async () => {
     try {
@@ -122,14 +123,14 @@ export default function CollectionScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      load();
-    }, [load])
+      load(authToken);
+    }, [authToken, load]),
   );
 
   const sections = useMemo(() => {
-    const byDate: Record<string, CollectionItem[]> = {};
+    const byDate: Record<string, ScanRecord[]> = {};
     for (const item of items) {
-      const d = new Date(item.createdAt);
+      const d = new Date(item.inserted_at ?? Date.now());
       const key = d.toISOString().slice(0, 10); // yyyy-mm-dd
       if (!byDate[key]) byDate[key] = [];
       byDate[key].push(item);
@@ -255,19 +256,24 @@ export default function CollectionScreen() {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.thumbScrollContent}
             >
-              {section.items.map((item) => (
+              {section.items.map((item, index) => (
                 <Pressable
-                  key={item.id}
+                  key={`${section.dateKey}-${item.scan_id ?? index}`}
                   style={styles.thumbWrapper}
                   onPress={() =>
                     router.push({
                       pathname: "/result",
-                      params: { text: item.text, imageUri: item.imageUri ?? "" },
+                      params: {
+                        scanId: item.scan_id,
+                      },
                     })
                   }
                 >
-                  {item.imageUri ? (
-                    <Image source={{ uri: item.imageUri }} style={styles.thumb} />
+                  {item.image_path ? (
+                    <Image
+                      source={{ uri: `${API_BASE_URL}${item.image_path}` }}
+                      style={styles.thumb}
+                    />
                   ) : (
                     <View style={[styles.thumb, styles.thumbPlaceholder]} />
                   )}

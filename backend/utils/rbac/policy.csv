@@ -33,6 +33,8 @@ p, *, /detect, POST
 p, *, /search*, GET
 p, *, /activities*, GET
 p, *, /geometries*, GET
+p, *, /scan_records/*/favorite, (POST)|(DELETE)
+p, *, /users/me/favorites, GET
 
 p, role_base, /reset_password, POST
 p, role_base, /images*, POST 

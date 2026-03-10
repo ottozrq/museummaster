@@ -17,6 +17,22 @@ type TTSResponse = {
   audio_path?: string;
 };
 
+export type ScanRecord = {
+  scan_id: string;
+  artwork_code: string;
+  image_path: string;
+  text: string;
+  audio_path?: string | null;
+  inserted_at?: string;
+};
+
+export type ScanRecordCollection = {
+  items: ScanRecord[];
+  total?: number;
+  page?: number;
+  page_size?: number;
+};
+
 export type AnalyzeStreamHandlers = {
   onText: (fullText: string) => void;
   onError?: (error: Error) => void;
@@ -178,6 +194,72 @@ export async function createSpeech(
   if (!response.ok) {
     const err = await response.text();
     throw new Error(`TTS failed (${response.status}): ${err}`);
+  }
+
+  return response.json();
+}
+
+export async function favoriteScanRecord(scanId: string, token: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/scan_records/${scanId}/favorite`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`Favorite failed (${response.status}): ${err}`);
+  }
+}
+
+export async function unfavoriteScanRecord(scanId: string, token: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/scan_records/${scanId}/favorite`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`Unfavorite failed (${response.status}): ${err}`);
+  }
+}
+
+export async function fetchMyFavorites(
+  token: string,
+  opts?: { pageToken?: string; pageSize?: number },
+): Promise<ScanRecordCollection> {
+  const pageToken = opts?.pageToken ?? "1";
+  const pageSize = opts?.pageSize ?? 50;
+  const url = new URL(`${API_BASE_URL}/users/me/favorites`);
+  url.searchParams.set("page_token", pageToken);
+  url.searchParams.set("page_size", String(pageSize));
+
+  const response = await fetch(url.toString(), {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`Fetch favorites failed (${response.status}): ${err}`);
+  }
+
+  return response.json();
+}
+
+export async function fetchScanRecordById(scanId: string): Promise<ScanRecord> {
+  const response = await fetch(`${API_BASE_URL}/scan-records/${scanId}`, {
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`Fetch scan record failed (${response.status}): ${err}`);
   }
 
   return response.json();

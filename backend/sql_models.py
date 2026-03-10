@@ -32,9 +32,7 @@ class _tablemixin:
 
             return f"_{word.lower()}"
 
-        return re.compile(r"([A-Z]+)(?=[a-z0-9])").sub(
-            _join, cls.__name__
-        ).lstrip("_")
+        return re.compile(r"([A-Z]+)(?=[a-z0-9])").sub(_join, cls.__name__).lstrip("_")
 
 
 class _postgresql_tablemixin(_tablemixin):
@@ -77,7 +75,13 @@ def uuid_field(name=None, primary_key=False, default=False):
     )
 
 
-def fk(foreign_field, nullable=False, index=True, ondelete="CASCADE", **kwargs):
+def fk(
+    foreign_field,
+    nullable: bool = False,
+    index: bool = True,
+    ondelete: str = "CASCADE",
+    **kwargs,
+):
     return Column(
         None,
         ForeignKey(
@@ -106,7 +110,11 @@ class User(PsqlBase):
     password = Column(String, nullable=False)
     first_name = name_field()
     last_name = name_field()
-    date_joined = Column(DateTime(True), nullable=False, server_default=func.now())
+    date_joined = Column(
+        DateTime(True),
+        nullable=False,
+        server_default=func.now(),
+    )
     is_superuser = Column(Boolean, server_default="FALSE", nullable=False)
     role = enum_field(UserRole, server_default=UserRole.client, nullable=False)
     extras = Column(JSON, nullable=True)
@@ -119,3 +127,9 @@ class ScanRecord(PsqlBase):
     image_path = Column(String, nullable=False)
     text = Column(String, nullable=False)
     audio_path = Column(String, nullable=True)
+
+
+class FavoriteScan(PsqlBase):
+    favorite_scan_id = uuid_field(primary_key=True)
+    user_id = fk("museum_sources.user.user_id", nullable=False)
+    scan_id = fk("museum_sources.scan_record.scan_id", nullable=False)

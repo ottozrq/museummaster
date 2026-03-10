@@ -2,7 +2,6 @@
 
 import asyncio
 import base64
-import os
 import uuid
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -18,9 +17,8 @@ from fastapi import (
 from openai import AsyncOpenAI, OpenAI
 
 import sql_models as sm
-from src.routes import TAG, app, d, MuseumDb
+from src.routes import TAG, MuseumDb, app, d
 from utils.flags import OpenAIFlags
-
 
 IMAGE_DIR = Path("static") / "uploads" / "scans"
 IMAGE_DIR.mkdir(parents=True, exist_ok=True)
@@ -37,6 +35,7 @@ def _save_image_bytes(image_bytes: bytes, mime_type: str) -> str:
     target_path.write_bytes(image_bytes)
     relative = target_path.relative_to("static")
     return f"/static/{relative.as_posix()}"
+
 
 PROMPT = (
     "你是一位专业的博物馆讲解员。请分析这张艺术品图片，并用中文输出详细讲解。"

@@ -32,9 +32,7 @@ def get_psql() -> MuseumDb:
 
 def get_pagination(
     request: Request,
-    page_token: Optional[
-        Annotated[str, StringConstraints(pattern=r"\d+")]
-    ] = None,
+    page_token: Optional[Annotated[str, StringConstraints(pattern=r"\d+")]] = None,
     page_size: PositiveInt = None,
 ):
     return m.Pagination(
