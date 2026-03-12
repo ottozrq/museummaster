@@ -1,0 +1,91 @@
+name: Semantic Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      force_release:
+        description: "Force release even if no changes detected"
+        required: false
+        default: false
+        type: boolean
+
+env:
+  EXPO_PROJECT_ID: 664332f3-08d3-4125-86ff-e7f1f01c69aa
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    outputs:
+      new_release_published: ${{ steps.semantic.outputs.new_release_published }}
+      new_release_version: ${{ steps.semantic.outputs.new_release_version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "frontend/package-lock.json"
+
+      - name: Setup Expo CLI
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: "latest"
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm install
+
+      - name: Install EAS CLI
+        working-directory: ./frontend
+        run: npm install -g eas-cli
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Display current versions
+        working-directory: ./frontend
+        run: |
+          echo "📦 当前版本信息:"
+          echo "package.json 版本: $(node -p "require('./package.json').version")"
+          echo "app.json 版本: $(node -p "require('./app.json').expo.version")"
+
+      - name: Semantic Release
+        id: semantic
+        working-directory: ./frontend
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_ENV: production
+        run: |
+          if [[ "${{ github.event.inputs.force_release }}" == "true" ]]; then
+            echo "Force release mode enabled"
+            echo "Running dry-run first..."
+            npx semantic-release --dry-run
+            echo "Dry-run completed. Running actual release..."
+            npx semantic-release
+          else
+            echo "Running semantic release..."
+            npx semantic-release
+          fi
+
+      - name: Display updated versions
+        working-directory: ./frontend
+        run: |
+          echo "📦 更新后版本信息:"
+          echo "package.json 版本: $(node -p "require('./package.json').version")"
+          echo "app.json 版本: $(node -p "require('./app.json').expo.version")"
+

@@ -1,0 +1,99 @@
+name: Deploy iOS to App Store
+
+on:
+  workflow_dispatch:
+
+env:
+  EXPO_PROJECT_ID: 664332f3-08d3-4125-86ff-e7f1f01c69aa
+  APPLE_ID: ottozhangdev@gmail.com
+  APPLE_TEAM_ID: P27TYR72TH
+  ASC_APP_ID: 6749503989
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "frontend/package-lock.json"
+
+      - name: Setup Expo CLI
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: "latest"
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm install
+
+      - name: Install EAS CLI
+        working-directory: ./frontend
+        run: npm install -g eas-cli
+
+      - name: Extract version from app.json
+        id: extract_version
+        working-directory: ./frontend
+        run: |
+          VERSION=$(node -p "require('./app.json').expo.version")
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Using version: ${VERSION}"
+
+      - name: Display version info
+        working-directory: ./frontend
+        run: |
+          echo "Using version from app.json: ${{ steps.extract_version.outputs.version }}"
+
+      - name: Build iOS app
+        working-directory: ./frontend
+        env:
+          EXPO_APPLE_ID: ${{ env.APPLE_ID }}
+          EXPO_APPLE_TEAM_ID: ${{ env.APPLE_TEAM_ID }}
+        run: |
+          eas build --platform ios --profile production --non-interactive
+
+      - name: Submit to App Store Connect
+        working-directory: ./frontend
+        env:
+          EXPO_APPLE_ID: ${{ env.APPLE_ID }}
+          EXPO_APPLE_TEAM_ID: ${{ env.APPLE_TEAM_ID }}
+        run: |
+          eas submit --platform ios --latest --non-interactive
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ steps.extract_version.outputs.version }}
+          body: |
+            ## Artiou iOS App Store 发布
+
+            **版本**: ${{ steps.extract_version.outputs.version }}
+            **构建时间**: ${{ github.event.head_commit.timestamp }}
+
+            ### 更新内容
+            - 自动构建和发布到 App Store Connect
+            - 版本号: ${{ steps.extract_version.outputs.version }}
+
+            ### 构建信息
+            - 项目ID: ${{ env.EXPO_PROJECT_ID }}
+            - App Store Connect App ID: ${{ env.ASC_APP_ID }}
+
+            ### 后续步骤
+            1. 在 App Store Connect 中查看构建结果
+            2. 提交审核（如需要）
+            3. 发布到 App Store
+
+          draft: false
+          prerelease: false
+
