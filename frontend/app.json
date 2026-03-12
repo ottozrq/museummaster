@@ -21,7 +21,7 @@
         "NSCameraUsageDescription": "艺游需要使用相机拍摄展品图片。",
         "UIBackgroundModes": ["audio"]
       },
-      "bundleIdentifier": "com.ottozrq.museumguide"
+      "bundleIdentifier": "com.ottozhang.artiou"
     },
     "android": {
       "permissions": [
