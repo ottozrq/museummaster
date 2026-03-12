@@ -54,10 +54,6 @@ async def analyze_artwork(
     """
     非流式 analyze：接收图片，用 OpenAI Responses API 生成讲解，返回 {"text": "..."}。
     """
-    openai_flags = OpenAIFlags.get()
-    if not openai_flags.api_key:
-        raise HTTPException(status_code=500, detail="OPENAI_API_KEY is not set")
-
     content_type = image.content_type or "image/jpeg"
     if not content_type.startswith("image/"):
         raise HTTPException(
@@ -68,6 +64,11 @@ async def analyze_artwork(
     image_bytes = await image.read()
     if not image_bytes:
         raise HTTPException(status_code=400, detail="Image is empty")
+
+    openai_flags = OpenAIFlags.get()
+    if not openai_flags.api_key:
+        raise HTTPException(status_code=500, detail="OPENAI_API_KEY is not set")
+
     # 保存原始图片到本地文件系统
     image_path = _save_image_bytes(image_bytes, content_type)
 

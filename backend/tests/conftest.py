@@ -79,11 +79,23 @@ def client(app):
 @pytest.fixture
 def mock_openai_success(monkeypatch):
     """Mock OpenAI and AsyncOpenAI so analyze and tts succeed without real API key."""
+    from types import SimpleNamespace
+
     from src.routes import analyze, tts
+    from utils.flags import OpenAIFlags
 
     monkeypatch.setattr(analyze, "OpenAI", FakeOpenAI)
     monkeypatch.setattr(analyze, "AsyncOpenAI", FakeAsyncOpenAI)
     monkeypatch.setattr(tts, "OpenAI", FakeOpenAI)
+
+    # 同时 mock 掉 OpenAIFlags.get，提供一个假的配置，避免因 flags.test.yml 中 api_key 为空或缺少字段而报错
+    fake_flags = SimpleNamespace(
+        api_key="test-key",
+        museum_model="gpt-4o",
+        tts_model="gpt-4o-mini-tts",
+        tts_voice="alloy",
+    )
+    monkeypatch.setattr(OpenAIFlags, "get", classmethod(lambda cls: fake_flags))
 
 
 @pytest.fixture

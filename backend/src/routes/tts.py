@@ -82,8 +82,8 @@ def text_to_speech(
     db: MuseumDb = Depends(d.get_psql),
 ) -> dict:
     """POST /tts：JSON body {"text": "..."}，返回 base64 MP3。"""
-    flags = _openai_flags()
     clean_text = _sanitize_text(payload.text)
+    flags = _openai_flags()
     client = OpenAI(api_key=flags.api_key)
     model = flags.tts_model
     voice = flags.tts_voice

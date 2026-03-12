@@ -1,0 +1,82 @@
+name: Python Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+
+    services:
+      postgres:
+        image: postgis/postgis:14-3.2
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: testdb
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/testdb
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11.7'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | POETRY_VERSION=1.8.5 python3 -
+          export PATH="$HOME/.local/bin:$PATH"
+          poetry self update 1.5.0
+
+      - name: Install Task CLI
+        run: |
+          sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+          sudo apt-get update
+          sudo apt-get install -y postgis postgresql-14-postgis-3
+          until pg_isready -h localhost -p 5432; do echo "Waiting for postgres"; sleep 2; done
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          poetry install
+
+      - name: Run tests
+        working-directory: backend
+        env:
+          NAMESPACE: vision-testing
+          PYTHONPATH: ${{ github.workspace }}/backend
+          SKIFLAGS_FILE: flags.test.yml
+          SKIFLAGS_TARGET: testing
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          poetry run task test
+
+      - name: Run lint checks
+        working-directory: backend
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          poetry run task lint
+
