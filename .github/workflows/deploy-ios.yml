@@ -7,7 +7,7 @@ env:
   EXPO_PROJECT_ID: 664332f3-08d3-4125-86ff-e7f1f01c69aa
   APPLE_ID: ottozhangdev@gmail.com
   APPLE_TEAM_ID: P27TYR72TH
-  ASC_APP_ID: 6749503989
+  ASC_APP_ID: 6759812990
 
 jobs:
   deploy:
