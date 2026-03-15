@@ -90,6 +90,10 @@ _global_app = None
 
 
 def get_app(*_, url=None, pool_size=5, max_overflow=10, **__):
+    """创建并返回挂载了中间件与 DB 的 FastAPI 应用。生产/开发必须用工厂方式启动，例如：
+    uvicorn app:get_app --factory
+    若直接使用 app:app，AuthenticationMiddleware 等不会挂载，request.user 会报错。
+    """
     global _global_app
     if _global_app:
         return _global_app
