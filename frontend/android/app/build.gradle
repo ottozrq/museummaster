@@ -87,9 +87,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.ottozrq.museumguide'
+    namespace 'com.ottozhang.artiou'
     defaultConfig {
-        applicationId 'com.ottozrq.museumguide'
+        applicationId 'com.ottozhang.artiou'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

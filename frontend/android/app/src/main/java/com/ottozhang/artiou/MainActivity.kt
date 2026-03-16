@@ -1,4 +1,4 @@
-package com.ottozrq.museumguide
+package com.ottozhang.artiou
 
 import android.os.Build
 import android.os.Bundle

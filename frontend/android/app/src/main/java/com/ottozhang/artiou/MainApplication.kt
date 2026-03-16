@@ -1,4 +1,4 @@
-package com.ottozrq.museumguide
+package com.ottozhang.artiou
 
 import android.app.Application
 import android.content.res.Configuration
