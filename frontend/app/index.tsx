@@ -12,6 +12,7 @@ import {
 import type { GestureResponderEvent } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
+import LottieView from "lottie-react-native";
 
 import { analyzeImage } from "../src/services/api";
 
@@ -20,6 +21,7 @@ export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [loading, setLoading] = useState(false);
   const [zoom, setZoom] = useState(0);
+  const [showSplash, setShowSplash] = useState(true);
   const cameraRef = useRef<CameraView>(null);
   const pinchRef = useRef<{ baseDistance: number; baseZoom: number } | null>(null);
 
@@ -67,6 +69,26 @@ export default function CameraScreen() {
       requestPermission();
     }
   }, []);
+
+  useEffect(() => {
+    if (!showSplash) return;
+    const timer = setTimeout(() => setShowSplash(false), 4000);
+    return () => clearTimeout(timer);
+  }, [showSplash]);
+
+  if (showSplash) {
+    return (
+      <View style={styles.splashContainer}>
+        <LottieView
+          source={require("../assets/animation01.json")}
+          autoPlay
+          loop={false}
+          resizeMode="contain"
+          style={styles.splashAnimation}
+        />
+      </View>
+    );
+  }
 
   const analyzeAndNavigate = async (uri: string) => {
     // 现在由结果页自己发起流式识别，这里只负责导航并传递图片
@@ -213,6 +235,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#000",
+  },
+  splashContainer: {
+    flex: 1,
+    backgroundColor: "#E2461B",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  splashAnimation: {
+    width: "80%",
+    aspectRatio: 1224 / 1424,
+  },
+  splashText: {
+    fontSize: 40,
+    fontWeight: "800",
+    letterSpacing: 4,
+    color: "#E2461B",
   },
   loadingContainer: {
     flex: 1,
