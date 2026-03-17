@@ -1,19 +1,14 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  Alert,
-  FlatList,
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Alert, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import * as AppleAuthentication from "expo-apple-authentication";
 
 import { API_BASE_URL, ScanRecord, fetchMyFavorites } from "../src/services/api";
+
+const GOOGLE_IOS_CLIENT_ID =
+  "577788424612-d3gutf0ru81i1tdrfdm5m21c27rvp27k.apps.googleusercontent.com";
 
 export default function CollectionScreen() {
   const router = useRouter();
@@ -23,6 +18,10 @@ export default function CollectionScreen() {
   const [appleAvailable, setAppleAvailable] = useState(false);
 
   useEffect(() => {
+    GoogleSignin.configure({
+      iosClientId: GOOGLE_IOS_CLIENT_ID,
+    });
+
     let cancelled = false;
     (async () => {
       try {
@@ -116,6 +115,47 @@ export default function CollectionScreen() {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      const signInResult = await GoogleSignin.signIn();
+      const idToken = (signInResult as any)?.data?.idToken ?? (signInResult as any)?.idToken;
+      if (!idToken) {
+        Alert.alert("登录失败", "未能获取 Google 身份凭证");
+        return;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/auth/google`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id_token: idToken,
+        }),
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        Alert.alert("登录失败", errText || `状态码 ${response.status}`);
+        return;
+      }
+
+      const tokenResp = await response.json();
+      if (!tokenResp?.access_token) {
+        Alert.alert("登录失败", "服务器未返回访问令牌");
+        return;
+      }
+
+      await AsyncStorage.setItem("museum_auth_token", tokenResp.access_token);
+      setAuthToken(tokenResp.access_token);
+    } catch (e: any) {
+      if (e?.code === statusCodes?.SIGN_IN_CANCELLED) {
+        return;
+      }
+      Alert.alert("登录失败", e instanceof Error ? e.message : "未知错误");
+    }
+  };
+
   const handleSignOut = async () => {
     await AsyncStorage.removeItem("museum_auth_token");
     setAuthToken(null);
@@ -185,6 +225,15 @@ export default function CollectionScreen() {
             style={styles.loginAppleButton}
             onPress={handleAppleSignIn}
           />
+
+          <Pressable style={styles.loginGoogleButton} onPress={handleGoogleSignIn}>
+            <View style={styles.loginGoogleContent}>
+              <View style={styles.loginGoogleIconCircle}>
+                <Text style={styles.loginGoogleIconG}>G</Text>
+              </View>
+              <Text style={styles.loginGoogleButtonText}>Continue with Google</Text>
+            </View>
+          </Pressable>
         </View>
 
         {/* 底部条款 */}
@@ -426,6 +475,43 @@ const styles = StyleSheet.create({
     maxWidth: 320,
     height: 50,
     marginTop: 8,
+  },
+  loginGoogleButton: {
+    width: "80%",
+    maxWidth: 320,
+    height: 48,
+    marginTop: 12,
+    borderRadius: 10,
+    borderWidth: 1.2,
+    borderColor: "#D0D0D0",
+    backgroundColor: "#fff",
+  },
+  loginGoogleContent: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+  },
+  loginGoogleIconCircle: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: "#fff",
+    borderWidth: 1.2,
+    borderColor: "#DB4437",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  loginGoogleIconG: {
+    fontSize: 14,
+    fontWeight: "800",
+    color: "#DB4437",
+  },
+  loginGoogleButtonText: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#3C4043",
   },
   loginBottom: {
     paddingHorizontal: 32,

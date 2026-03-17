@@ -77,6 +77,7 @@ class MuseumFlags(Flags):
 
     namespace: Annotated[str, Field(alias="namespace")] = "museum-local"
     login_secret: str = "change_me_in_local"
+    google_client_id: str = ""
 
     # cognito_cert_1: str = Secret("jwt_public_key_cognito_1")
     # cognito_cert_2: str = Secret("jwt_public_key_cognito_2")

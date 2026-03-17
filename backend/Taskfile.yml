@@ -31,6 +31,7 @@ tasks:
       with_coverage: '{{ if not .without_coverage }} --cov-fail-under 80 --cov-report html:.cov_html --cov-report xml:coverage.xml --junit-xml tests/report_unit.xml {{ end }}'
     cmds:
       - |-
+        export PATH="/opt/homebrew/opt/postgresql@18/bin:$PATH"
         poetry run pytest {{ default "tests/unit"  .filename }} -vvv --ff -x {{ .parallel }} -s \
         {{ .ignore_test }} {{ .specific_test }} \
         -W ignore::sqlalchemy.exc.SAWarning \

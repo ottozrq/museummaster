@@ -1,4 +1,4 @@
-"""Unit tests for POST /auth/apple (Apple Sign-In)."""
+"""Unit tests for /auth/apple and /auth/google."""
 
 from unittest.mock import MagicMock
 
@@ -74,4 +74,82 @@ def test_auth_apple_decode_error(client, monkeypatch):
 
 def test_auth_apple_missing_body(client):
     response = client.post("/auth/apple", json={})
+    assert response.status_code == 422
+
+
+def test_auth_google_success(client, monkeypatch, test_secret):
+    """Valid Google ID token (mocked verify) returns our JWT."""
+    from src.routes import auth as auth_module
+
+    monkeypatch.setattr(
+        auth_module,
+        "_verify_google_id_token",
+        MagicMock(
+            return_value={
+                "sub": "google-sub-123",
+                "aud": "dummy-client-id",
+                "given_name": "Google",
+                "family_name": "User",
+            }
+        ),
+    )
+    response = client.post(
+        "/auth/google",
+        json={"id_token": "fake.google.token"},
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert "access_token" in data
+    assert data.get("token_type") == "bearer"
+    payload = jwt.decode(
+        data["access_token"],
+        test_secret,
+        algorithms=["HS256"],
+    )
+    assert payload.get("provider") == "google"
+    assert payload.get("role") == "user"
+    assert "user_id" in payload
+
+
+def test_auth_google_missing_sub(client, monkeypatch):
+    """Google claims without sub return 400."""
+    from src.routes import auth as auth_module
+
+    monkeypatch.setattr(
+        auth_module,
+        "_verify_google_id_token",
+        MagicMock(return_value={"aud": "dummy"}),
+    )
+    response = client.post(
+        "/auth/google",
+        json={"id_token": "fake.google.token"},
+    )
+    assert response.status_code == 400
+    assert "sub" in response.json()["detail"].lower()
+
+
+def test_auth_google_decode_error(client, monkeypatch):
+    """Invalid token decode raises and is returned as 400/401."""
+    from src.routes import auth as auth_module
+
+    monkeypatch.setattr(
+        auth_module,
+        "_verify_google_id_token",
+        MagicMock(
+            side_effect=HTTPException(
+                status_code=400,
+                detail="Invalid Google ID token",
+            )
+        ),
+    )
+    response = client.post(
+        "/auth/google",
+        json={"id_token": "bad"},
+    )
+    assert response.status_code == 400
+    assert "Invalid Google" in response.json()["detail"]
+
+
+def test_auth_google_missing_body(client):
+    response = client.post("/auth/google", json={})
     assert response.status_code == 422

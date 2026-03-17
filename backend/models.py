@@ -265,6 +265,12 @@ class TokenResponse(Model):
     token_type: Literal["bearer"] = "bearer"
 
 
+class GoogleLoginRequest(Model):
+    """Body for POST /auth/google."""
+
+    id_token: str
+
+
 class TTSRequest(Model):
     """Body for POST /tts."""
 

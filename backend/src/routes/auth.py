@@ -1,4 +1,4 @@
-"""Apple Sign-In and token response."""
+"""第三方登录（Apple / Google）与 JWT 下发。"""
 
 import json
 import urllib.request
@@ -16,6 +16,7 @@ from utils.flags import AppleFlags
 from utils.utils import MuseumDb
 
 APPLE_KEYS_URL = "https://appleid.apple.com/auth/keys"
+GOOGLE_TOKENINFO_URL = "https://oauth2.googleapis.com/tokeninfo"
 
 
 def _get_apple_public_key(identity_token: str):
@@ -86,6 +87,39 @@ def _decode_apple_identity_token(identity_token: str) -> dict:
     return claims
 
 
+def _verify_google_id_token(id_token: str) -> dict:
+    """调用 Google tokeninfo 接口校验 ID token 并返回 claims。"""
+    MF = flags.MuseumFlags.get()
+    if not MF.google_client_id:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="GOOGLE_CLIENT_ID is not configured",
+        )
+
+    url = f"{GOOGLE_TOKENINFO_URL}?id_token={id_token}"
+    try:
+        with urllib.request.urlopen(url, timeout=5) as resp:
+            data = json.load(resp)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Unable to verify Google ID token",
+        ) from exc
+
+    aud = data.get("aud")
+    if isinstance(aud, str):
+        valid_aud = aud == MF.google_client_id
+    else:
+        valid_aud = MF.google_client_id in (aud or [])
+    if not valid_aud:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Google ID token audience",
+        )
+
+    return data
+
+
 @app.post("/auth/apple", response_model=m.TokenResponse, tags=[TAG.Auth])
 def login_with_apple(
     payload: m.AppleLoginRequest,
@@ -133,6 +167,61 @@ def login_with_apple(
         "user_id": str(user_uuid),
         "role": "user",
         "provider": "apple",
+        "iat": int(now.timestamp()),
+        "exp": int(exp.timestamp()),
+    }
+
+    encoded = jwt.encode(token_payload, MF.login_secret, algorithm="HS256")
+    return m.TokenResponse(access_token=encoded)
+
+
+@app.post("/auth/google", response_model=m.TokenResponse, tags=[TAG.Auth])
+def login_with_google(
+    payload: m.GoogleLoginRequest,
+    db: MuseumDb = Depends(d.get_psql),
+) -> m.TokenResponse:
+    """
+    使用 Google 登录：
+    - 调用 Google tokeninfo 校验 ID token
+    - 使用 Google 的 sub 生成稳定用户
+    - 用项目自己的 login_secret 签发 JWT
+    """
+    claims = _verify_google_id_token(payload.id_token)
+    google_sub = claims.get("sub")
+    if not google_sub:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Google ID token missing 'sub' claim",
+        )
+
+    pseudo_email = f"google:{google_sub}"
+    session = db.session
+    user = (
+        session.query(sm.User).filter(sm.User.user_email == pseudo_email).one_or_none()
+    )
+    if not user:
+        first_name = claims.get("given_name") or ""
+        last_name = claims.get("family_name") or ""
+        user = sm.User(
+            user_email=pseudo_email,
+            password="",
+            first_name=first_name,
+            last_name=last_name,
+            extras={"provider": "google", "google_sub": google_sub},
+        )
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+
+    user_uuid = user.user_id
+    MF = flags.MuseumFlags.get()
+    now = datetime.utcnow()
+    exp = now + timedelta(days=30)
+
+    token_payload = {
+        "user_id": str(user_uuid),
+        "role": "user",
+        "provider": "google",
         "iat": int(now.timestamp()),
         "exp": int(exp.timestamp()),
     }
