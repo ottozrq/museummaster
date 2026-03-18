@@ -18,6 +18,7 @@ export default function CollectionScreen() {
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [appleAvailable, setAppleAvailable] = useState(false);
+  const [scanRemaining, setScanRemaining] = useState<number | null>(null);
 
   useEffect(() => {
     GoogleSignin.configure({
@@ -65,6 +66,29 @@ export default function CollectionScreen() {
     },
     [],
   );
+
+  const loadQuota = useCallback(async (token: string | null) => {
+    if (!token) {
+      setScanRemaining(null);
+      return;
+    }
+    try {
+      const resp = await fetch(`${API_BASE_URL}/scan-quota/remaining`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!resp.ok) {
+        throw new Error(`Quota fetch failed (${resp.status})`);
+      }
+      const data = await resp.json();
+      setScanRemaining(typeof data?.remaining === "number" ? data.remaining : null);
+    } catch (e) {
+      console.warn("Load quota failed", e);
+      setScanRemaining(null);
+    }
+  }, []);
 
   const handleAppleSignIn = async () => {
     try {
@@ -166,6 +190,7 @@ export default function CollectionScreen() {
   useFocusEffect(
     useCallback(() => {
       load(authToken);
+      void loadQuota(authToken);
     }, [authToken, load]),
   );
 
@@ -284,10 +309,14 @@ export default function CollectionScreen() {
         </Pressable>
       </View>
 
-      {!checkingAuth && appleAvailable && authToken && (
+      {!checkingAuth && authToken && (
         <View style={styles.authSection}>
           <View style={styles.authRow}>
-            <Text style={styles.authText}>{t("collection.signedInWithApple")}</Text>
+            <Text style={styles.authText}>
+              {scanRemaining !== null
+                ? t("collection.remainingScans", { count: scanRemaining })
+                : t("collection.signedInWithApple")}
+            </Text>
             <Pressable style={styles.authAction} onPress={handleSignOut}>
               <Text style={styles.authActionText}>{t("collection.signOut")}</Text>
             </Pressable>

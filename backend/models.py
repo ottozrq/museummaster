@@ -107,6 +107,13 @@ class Entity(Model):
         return record
 
     @classmethod
+    def get_or_none(cls, session, primary_key):
+        """
+        返回可选记录：不存在则返回 None，而不是抛 404。
+        """
+        return cls._get(session, primary_key)
+
+    @classmethod
     def from_db_list(cls, xs: List[sm.PsqlBase], **forward_args):
         return [cls.from_db(x, **forward_args) for x in xs]
 
@@ -230,7 +237,8 @@ class User(Entity, UserBase):
             last_name=user.last_name,
             user_email=user.user_email,
             date_joined=user.date_joined,
-            extras=user.extras,
+            # db 字段 extras 允许为 NULL，但前端/响应模型期望为字典
+            extras=user.extras or {},
             role=user.role,
             **cls.links(user),
         )

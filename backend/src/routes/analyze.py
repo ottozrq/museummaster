@@ -2,26 +2,34 @@
 
 import asyncio
 import base64
+import datetime as dt
 import uuid
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+import jwt
 from fastapi import (
     Depends,
     File,
     HTTPException,
+    Request,
     UploadFile,
     WebSocket,
     WebSocketDisconnect,
 )
 from openai import AsyncOpenAI, OpenAI
+from sqlalchemy import func
 
 import sql_models as sm
 from src.routes import TAG, MuseumDb, app, d
+from utils import flags
 from utils.flags import OpenAIFlags
+from utils.utils import postgres_session
 
 IMAGE_DIR = Path("static") / "uploads" / "scans"
 IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+
+DAILY_SCAN_LIMIT = 5
 
 
 def _save_image_bytes(image_bytes: bytes, mime_type: str) -> str:
@@ -47,6 +55,7 @@ PROMPT = (
 
 @app.post("/analyze", tags=[TAG.Analyze])
 async def analyze_artwork(
+    request: Request,
     image: UploadFile = File(...),
     db: MuseumDb = Depends(d.get_psql),
     user: Optional[sm.User] = Depends(d.get_optional_logged_in_user),
@@ -61,13 +70,62 @@ async def analyze_artwork(
             detail="Uploaded file must be an image",
         )
 
-    image_bytes = await image.read()
-    if not image_bytes:
-        raise HTTPException(status_code=400, detail="Image is empty")
-
     openai_flags = OpenAIFlags.get()
     if not openai_flags.api_key:
         raise HTTPException(status_code=500, detail="OPENAI_API_KEY is not set")
+    user_id: Optional[str] = (
+        str(user.user_id) if user and getattr(user, "user_id", None) else None
+    )
+
+    # 兜底：若 request.user 没解析出来（例如中间件未挂载/异常），
+    # 则直接从 Authorization 头解析 user_id。
+    #
+    # 重要：如果客户端没有带 Authorization，则这是匿名可用的 /analyze
+    # 逻辑，应允许继续执行（user_id 仍然保持 None）。
+    auth_header = request.headers.get("Authorization")
+    if user_id is None and auth_header:
+        token = auth_header.strip()
+        if token.lower().startswith("bearer "):
+            token = token[len("bearer ") :].strip()
+        try:
+            payload = jwt.decode(
+                token,
+                flags.MuseumFlags.get().login_secret,
+                algorithms=["HS256"],
+            )
+            raw_uuid = payload.get("user_id") or payload.get("user_uuid")
+            if raw_uuid:
+                user_id = str(raw_uuid)
+        except Exception:
+            # 带了 token 但解不出 user_id：按认证失败处理
+            raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+    # 如果客户端没带 Authorization，则 user_id 可能仍为 None（匿名）。
+
+    # 已注册用户每天最多 5 次扫描
+    if user_id:
+        now = dt.datetime.now(dt.timezone.utc)
+        start = dt.datetime(now.year, now.month, now.day, tzinfo=dt.timezone.utc)
+        end = start + dt.timedelta(days=1)
+        used = (
+            db.session.query(func.count(sm.ScanRecord.scan_id))
+            .filter(
+                sm.ScanRecord.user_id == user_id,
+                sm.ScanRecord.inserted_at >= start,
+                sm.ScanRecord.inserted_at < end,
+            )
+            .scalar()
+            or 0
+        )
+        if used >= DAILY_SCAN_LIMIT:
+            raise HTTPException(
+                status_code=429,
+                detail="Daily scan quota exceeded. Please try again tomorrow.",
+            )
+
+    image_bytes = await image.read()
+    if not image_bytes:
+        raise HTTPException(status_code=400, detail="Image is empty")
 
     # 保存原始图片到本地文件系统
     image_path = _save_image_bytes(image_bytes, content_type)
@@ -98,7 +156,7 @@ async def analyze_artwork(
             )
         # 将本次扫描保存到数据库（图片 + 文本，语音后续可选）
         record = sm.ScanRecord(
-            user_id=getattr(user, "user_id", None),
+            user_id=user_id,
             artwork_code="unknown",
             image_path=image_path,
             text=result_text,
@@ -116,11 +174,40 @@ async def analyze_artwork(
         ) from exc
 
 
-async def _send_error(ws: WebSocket, message: str) -> None:
+async def _send_error(ws: WebSocket, message: str, code: str | None = None) -> None:
     try:
-        await ws.send_json({"type": "error", "message": message})
+        payload: Dict[str, Any] = {"type": "error", "message": message}
+        if code:
+            payload["code"] = code
+        await ws.send_json(payload)
     finally:
         await ws.close()
+
+
+@app.get("/scan-quota/remaining", tags=[TAG.Analyze])
+def get_scan_quota_remaining(
+    user: sm.User = Depends(d.get_logged_in_user),
+    db: MuseumDb = Depends(d.get_psql),
+) -> Dict[str, int]:
+    """
+    返回当前登录用户今日剩余可识别次数（UTC 口径）。
+    """
+    user_id = str(user.user_id)
+    now = dt.datetime.now(dt.timezone.utc)
+    start = dt.datetime(now.year, now.month, now.day, tzinfo=dt.timezone.utc)
+    end = start + dt.timedelta(days=1)
+    used = (
+        db.session.query(func.count(sm.ScanRecord.scan_id))
+        .filter(
+            sm.ScanRecord.user_id == user_id,
+            sm.ScanRecord.inserted_at >= start,
+            sm.ScanRecord.inserted_at < end,
+        )
+        .scalar()
+        or 0
+    )
+    remaining = max(0, DAILY_SCAN_LIMIT - used)
+    return {"limit": DAILY_SCAN_LIMIT, "used": int(used), "remaining": int(remaining)}
 
 
 async def _handle_analyze_websocket(ws: WebSocket) -> None:
@@ -148,12 +235,73 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
 
     image_b64 = init_msg.get("image_base64")
     mime_type = (init_msg.get("mime_type") or "image/jpeg").strip()
+    auth_token = init_msg.get("auth_token")
+
     if not image_b64 or not isinstance(image_b64, str):
         await _send_error(ws, "image_base64 is required")
         return
     if not mime_type.startswith("image/"):
         await _send_error(ws, "mime_type must start with 'image/'")
         return
+
+    # 识别用户（优先使用 init 消息里的 token，其次使用 ws.scope.user）
+    user_uuid: Optional[str] = None
+    if auth_token and isinstance(auth_token, str):
+        try:
+            token = auth_token.strip()
+            if token.lower().startswith("bearer "):
+                token = token[len("bearer ") :].strip()
+            payload = jwt.decode(
+                token,
+                flags.MuseumFlags.get().login_secret,
+                algorithms=["HS256"],
+            )
+            raw_uuid = payload.get("user_id") or payload.get("user_uuid")
+            if raw_uuid:
+                user_uuid = str(raw_uuid)
+        except Exception:
+            user_uuid = None
+
+    if not user_uuid:
+        try:
+            user_obj = ws.scope.get("user") if hasattr(ws, "scope") else None  # type: ignore[attr-defined]
+            user_uuid = getattr(user_obj, "user_uuid", None)
+            if user_uuid:
+                user_uuid = str(user_uuid)
+        except Exception:
+            user_uuid = None
+
+    # 已注册用户每天最多 5 次扫描
+    if auth_token and not user_uuid:
+        # 客户端传了 auth_token 但解不出 user_id：不要静默写 NULL user_id
+        await _send_error(
+            ws, "Invalid or expired auth token", code="INVALID_AUTH_TOKEN"
+        )
+        return
+
+    if user_uuid:
+        now = dt.datetime.now(dt.timezone.utc)
+        start = dt.datetime(now.year, now.month, now.day, tzinfo=dt.timezone.utc)
+        end = start + dt.timedelta(days=1)
+        with postgres_session() as db:
+            used = (
+                db.session.query(func.count(sm.ScanRecord.scan_id))
+                .filter(
+                    sm.ScanRecord.user_id == user_uuid,
+                    sm.ScanRecord.inserted_at >= start,
+                    sm.ScanRecord.inserted_at < end,
+                )
+                .scalar()
+                or 0
+            )
+            if used >= DAILY_SCAN_LIMIT:
+                await _send_error(
+                    ws,
+                    "Daily scan quota exceeded. Please try again tomorrow.",
+                    code="DAILY_SCAN_QUOTA_EXCEEDED",
+                )
+                return
+
     try:
         image_bytes = base64.b64decode(image_b64)
     except Exception:
@@ -199,26 +347,9 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
 
         # 将本次扫描保存到数据库（图片 + 文本）
         if full_text.strip():
-            from utils.utils import postgres_session
-
-            # 在某些部署环境里 WebSocket 可能没有挂载 AuthenticationMiddleware，
-            # 此时访问 ws.user 会直接抛出 RuntimeError，这里统一视为匿名用户。
-            user_obj = None
-            try:
-                if hasattr(ws, "scope"):
-                    user_obj = ws.scope.get("user")  # type: ignore[assignment]
-            except Exception:
-                user_obj = None
-            if not user_obj:
-                try:
-                    user_obj = getattr(ws, "user", None)
-                except Exception:
-                    user_obj = None
-
-            user_uuid = getattr(user_obj, "user_uuid", None)
             with postgres_session() as db:
                 record = sm.ScanRecord(
-                    user_id=str(user_uuid) if user_uuid else None,
+                    user_id=user_uuid,
                     artwork_code="unknown",
                     image_path=image_path,
                     text=full_text,

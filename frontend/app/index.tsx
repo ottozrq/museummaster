@@ -193,10 +193,12 @@ export default function CameraScreen() {
   const analyzeAndNavigate = async (uri: string) => {
     // 现在由结果页自己发起流式识别，这里只负责导航并传递图片
     try {
+      const authToken = await AsyncStorage.getItem("museum_auth_token");
       router.push({
         pathname: "/result",
         params: {
           imageUri: uri,
+          ...(authToken ? { authToken } : {}),
         },
       });
     } catch (error) {

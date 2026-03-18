@@ -63,6 +63,35 @@ class FakeOpenAI:
 class FakeAsyncOpenAI(FakeOpenAI):
     """Async OpenAI mock; same as FakeOpenAI for create, stream uses sync-style."""
 
+    class _FakeStream:
+        def __init__(self):
+            self._events = [
+                SimpleNamespace(type="response.output_text.delta", delta="mock "),
+                SimpleNamespace(type="response.output_text.delta", delta="stream "),
+                SimpleNamespace(type="response.completed"),
+            ]
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            pass
+
+        def __aiter__(self):
+            async def gen():
+                for e in self._events:
+                    yield e
+
+            return gen()
+
+    def __init__(self, api_key: str = ""):
+        super().__init__(api_key=api_key)
+        # analyze WebSocket 流式路径会调用 responses.stream
+        self.responses = SimpleNamespace(
+            create=self._create_response,
+            stream=lambda **kw: FakeAsyncOpenAI._FakeStream(),
+        )
+
     async def __aenter__(self):
         return self
 

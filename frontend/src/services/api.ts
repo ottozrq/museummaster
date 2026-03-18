@@ -1,5 +1,6 @@
 // 使用 expo-file-system 的 legacy API，以便在新版本中继续使用 readAsStringAsync
 import * as FileSystem from "expo-file-system/legacy";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const API_BASE_URL =
   process.env.EXPO_PUBLIC_API_BASE_URL?.trim() || "https://museumapi.ottozhang.com";
@@ -72,6 +73,8 @@ export async function analyzeImage(uri: string): Promise<AnalyzeResponse> {
     return fakeAnalyzeImage(uri);
   }
 
+  const authToken = await AsyncStorage.getItem("museum_auth_token");
+
   const fileName = uri.split("/").pop() || "photo.jpg";
   const ext = fileName.split(".").pop()?.toLowerCase();
   const mimeType = ext === "png" ? "image/png" : "image/jpeg";
@@ -86,11 +89,24 @@ export async function analyzeImage(uri: string): Promise<AnalyzeResponse> {
   const response = await fetch(`${API_BASE_URL}/analyze`, {
     method: "POST",
     body: formData,
+    headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined,
   });
 
   if (!response.ok) {
-    const err = await response.text();
-    throw new Error(`Analyze failed (${response.status}): ${err}`);
+    // 429 这类“额度类”错误需要前端可本地化的 code
+    if (response.status === 429) {
+      try {
+        const body = await response.json();
+        const detail = body?.detail;
+        const err = new Error(typeof detail === "string" ? detail : "Daily scan quota exceeded");
+        (err as any).code = "DAILY_SCAN_QUOTA_EXCEEDED";
+        throw err;
+      } catch {
+        // fallback to text
+      }
+    }
+    const errText = await response.text();
+    throw new Error(`Analyze failed (${response.status}): ${errText}`);
   }
 
   return response.json();
@@ -99,6 +115,7 @@ export async function analyzeImage(uri: string): Promise<AnalyzeResponse> {
 export async function analyzeImageStream(
   uri: string,
   handlers: AnalyzeStreamHandlers,
+  opts?: { authToken?: string | null },
 ): Promise<() => void> {
   if (USE_FAKE_ANALYZE) {
     const result = await fakeAnalyzeImage(uri);
@@ -119,6 +136,8 @@ export async function analyzeImageStream(
   // WebSocket 路径与后端 prefix=\"/analyze\" + websocket(\"\") 对应 => /analyze
   const wsUrl = API_BASE_URL.replace(/^http/, "ws") + "/analyze";
   const ws = new WebSocket(wsUrl);
+  const authToken =
+    opts?.authToken ?? (await AsyncStorage.getItem("museum_auth_token"));
 
   let closedManually = false;
 
@@ -128,6 +147,7 @@ export async function analyzeImageStream(
         type: "start",
         image_base64: base64,
         mime_type: mimeType,
+        ...(authToken ? { auth_token: authToken } : {}),
       }),
     );
   };
@@ -141,7 +161,11 @@ export async function analyzeImageStream(
         handlers.onDone?.(data.scan_id || undefined);
         ws.close();
       } else if (data.type === "error") {
-        handlers.onError?.(new Error(data.message || "Analyze failed"));
+        const err = new Error(data.message || "Analyze failed");
+        if (data.code) {
+          (err as any).code = data.code;
+        }
+        handlers.onError?.(err);
         ws.close();
       }
     } catch (e) {

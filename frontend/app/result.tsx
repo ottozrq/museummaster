@@ -56,7 +56,12 @@ async function appendHistory(item: HistoryItem) {
 export default function ResultScreen() {
   const router = useRouter();
   const { t } = useI18n();
-  const params = useLocalSearchParams<{ text?: string; imageUri?: string; scanId?: string }>();
+  const params = useLocalSearchParams<{
+    text?: string;
+    imageUri?: string;
+    scanId?: string;
+    authToken?: string;
+  }>();
   const initialText = useMemo(() => params.text ?? "", [params.text]);
   const [imageUri, setImageUri] = useState(() => params.imageUri ?? "");
 
@@ -123,7 +128,15 @@ export default function ResultScreen() {
       },
       onError: (error) => {
         setStreaming(false);
-        Alert.alert(t("result.recognizeFailedTitle"), error.message || t("camera.unknownError"));
+        const anyErr = error as any;
+        if (anyErr?.code === "DAILY_SCAN_QUOTA_EXCEEDED") {
+          Alert.alert(t("result.dailyQuotaExceededTitle"), t("result.dailyQuotaExceededText"));
+          return;
+        }
+        Alert.alert(
+          t("result.recognizeFailedTitle"),
+          error.message || t("camera.unknownError"),
+        );
       },
       onDone: (id) => {
         setStreaming(false);
@@ -135,7 +148,7 @@ export default function ResultScreen() {
 
     let cleanup: (() => void) | undefined;
 
-    analyzeImageStream(imageUri, handlers)
+    analyzeImageStream(imageUri, handlers, { authToken: params.authToken ?? null })
       .then((stop) => {
         cleanup = stop;
       })

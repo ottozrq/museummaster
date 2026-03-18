@@ -129,6 +129,8 @@ class ApiClient:
             allow_redirects=allow_redirects,
             method=method,
             headers=headers or {},
+            # 上传文件（multipart）场景下，如果 data=None 不应传 body= "null"，
+            # 否则 FastAPI 可能无法正确解析 files 字段。
             data=(
                 dict(data)
                 if as_dict
@@ -138,7 +140,7 @@ class ApiClient:
                     else (
                         json.dumps(data.database_dict())
                         if isinstance(data, m.Model)
-                        else json.dumps(data)
+                        else (json.dumps(data) if data is not None else None)
                     )
                 )
             ),
