@@ -21,6 +21,11 @@ export const translations = {
       needPhotoLibraryText: "Please allow access to pick a photo",
       analyzeFailedTitle: "Recognition failed",
       unknownError: "Unknown error",
+      freeScanLimitTitle: "Free scans used up",
+      freeScanLimitText:
+        "You have used your 5 free scans. Sign in to unlock more scans and save your journey.",
+      goSignIn: "Sign in",
+      later: "Maybe later",
     },
     collection: {
       saveFavoritesTitle: "Save your favorite pieces",
@@ -244,6 +249,10 @@ Email: legal@example.com
       needPhotoLibraryText: "请允许访问相册以选择图片",
       analyzeFailedTitle: "识别失败",
       unknownError: "未知错误",
+      freeScanLimitTitle: "免费扫码次数已用完",
+      freeScanLimitText: "未登录状态下可免费识别 5 次，登录后可继续使用并同步收藏。",
+      goSignIn: "去登录",
+      later: "稍后再说",
     },
     collection: {
       saveFavoritesTitle: "保存你喜欢的作品",
@@ -466,6 +475,11 @@ Artiou 提供：
       needPhotoLibraryText: "Autorisez l’accès pour choisir une photo",
       analyzeFailedTitle: "Échec de la reconnaissance",
       unknownError: "Erreur inconnue",
+      freeScanLimitTitle: "Limite de scans atteinte",
+      freeScanLimitText:
+        "Vous avez utilisé vos 5 scans gratuits. Connectez-vous pour continuer à scanner et enregistrer votre parcours.",
+      goSignIn: "Se connecter",
+      later: "Plus tard",
     },
     collection: {
       saveFavoritesTitle: "Enregistrez vos œuvres favorites",

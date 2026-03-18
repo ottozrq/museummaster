@@ -32,6 +32,7 @@ export default function CameraScreen() {
   const splashStartedAtRef = useRef<number | null>(null);
 
   const SPLASH_KEY = "mm_has_seen_splash_v2";
+  const SCAN_COUNT_KEY = "museum_free_scan_count";
 
   const getPinchDistance = (touches: { pageX: number; pageY: number }[]) => {
     if (touches.length < 2) return 0;
@@ -155,6 +156,40 @@ export default function CameraScreen() {
     );
   }
 
+  const ensureScanQuotaOrPromptLogin = async () => {
+    try {
+      const token = await AsyncStorage.getItem("museum_auth_token");
+      if (token) {
+        return true;
+      }
+      const raw = await AsyncStorage.getItem(SCAN_COUNT_KEY);
+      const count = raw ? Number.parseInt(raw, 10) || 0 : 0;
+      if (count >= 5) {
+        Alert.alert(
+          t("camera.freeScanLimitTitle"),
+          t("camera.freeScanLimitText"),
+          [
+            {
+              text: t("camera.later"),
+              style: "cancel",
+            },
+            {
+              text: t("camera.goSignIn"),
+              onPress: () => {
+                router.push("/collection");
+              },
+            },
+          ],
+        );
+        return false;
+      }
+      await AsyncStorage.setItem(SCAN_COUNT_KEY, String(count + 1));
+      return true;
+    } catch {
+      return true;
+    }
+  };
+
   const analyzeAndNavigate = async (uri: string) => {
     // 现在由结果页自己发起流式识别，这里只负责导航并传递图片
     try {
@@ -175,6 +210,9 @@ export default function CameraScreen() {
   const handleTakePhoto = async () => {
     if (!cameraRef.current) return;
 
+    const allowed = await ensureScanQuotaOrPromptLogin();
+    if (!allowed) return;
+
     const photo = await cameraRef.current.takePictureAsync({
       quality: 0.8,
     });
@@ -189,6 +227,9 @@ export default function CameraScreen() {
       Alert.alert(t("camera.needPhotoLibraryTitle"), t("camera.needPhotoLibraryText"));
       return;
     }
+
+    const allowed = await ensureScanQuotaOrPromptLogin();
+    if (!allowed) return;
 
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
