@@ -9,6 +9,7 @@ import {
   Text,
   View,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { GestureResponderEvent } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
@@ -21,9 +22,14 @@ export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [loading, setLoading] = useState(false);
   const [zoom, setZoom] = useState(0);
-  const [showSplash, setShowSplash] = useState(true);
+  const [splashState, setSplashState] = useState<"checking" | "show" | "done">("checking");
+  const [showSplash, setShowSplash] = useState(false);
+  const permissionRequestedRef = useRef(false);
   const cameraRef = useRef<CameraView>(null);
   const pinchRef = useRef<{ baseDistance: number; baseZoom: number } | null>(null);
+  const splashStartedAtRef = useRef<number | null>(null);
+
+  const SPLASH_KEY = "mm_has_seen_splash_v2";
 
   const getPinchDistance = (touches: { pageX: number; pageY: number }[]) => {
     if (touches.length < 2) return 0;
@@ -64,25 +70,82 @@ export default function CameraScreen() {
   };
 
   useEffect(() => {
-    // Auto request camera permission on mount
-    if (!permission?.granted) {
-      requestPermission();
-    }
+    // 等开机动画结束后再请求相机权限，避免“启动即弹窗”破坏开机体验
+    if (splashState !== "done") return;
+    if (permissionRequestedRef.current) return;
+    if (permission?.granted) return;
+    permissionRequestedRef.current = true;
+    requestPermission();
+  }, [permission?.granted, requestPermission, splashState]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const seen = await AsyncStorage.getItem(SPLASH_KEY);
+        if (cancelled) return;
+        if (seen) {
+          setSplashState("done");
+          setShowSplash(false);
+        } else {
+          setSplashState("show");
+          setShowSplash(true);
+          splashStartedAtRef.current = Date.now();
+        }
+      } catch {
+        if (!cancelled) {
+          setSplashState("show");
+          setShowSplash(true);
+          splashStartedAtRef.current = Date.now();
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
+  const finishSplash = async () => {
+    setSplashState("done");
+    setShowSplash(false);
+    try {
+      await AsyncStorage.setItem(SPLASH_KEY, "1");
+    } catch {
+      // ignore
+    }
+  };
+
+  // 保留：4 秒后自动关闭开机动画（只在 showSplash=true 时触发）
   useEffect(() => {
     if (!showSplash) return;
     const timer = setTimeout(() => setShowSplash(false), 4000);
     return () => clearTimeout(timer);
   }, [showSplash]);
 
-  if (showSplash) {
+  // showSplash 被关掉后，若本次属于首次展示，则落盘标记，确保以后永不再显示
+  useEffect(() => {
+    if (splashState !== "show") return;
+    if (showSplash) return;
+    void finishSplash();
+  }, [showSplash, splashState]);
+
+  // 避免二次启动闪一下 splash 底色：先等 AsyncStorage 判断完
+  if (splashState === "checking") {
+    return <View style={styles.preloadContainer} />;
+  }
+
+  if (splashState === "show" && showSplash) {
     return (
       <View style={styles.splashContainer}>
         <LottieView
           source={require("../assets/animation01.json")}
           autoPlay
           loop={false}
+          onAnimationFinish={() => {
+            const startedAt = splashStartedAtRef.current;
+            if (startedAt && Date.now() - startedAt < 500) return;
+            setShowSplash(false);
+          }}
           resizeMode="contain"
           style={styles.splashAnimation}
         />
@@ -233,6 +296,10 @@ export default function CameraScreen() {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: "#000",
+  },
+  preloadContainer: {
     flex: 1,
     backgroundColor: "#000",
   },
