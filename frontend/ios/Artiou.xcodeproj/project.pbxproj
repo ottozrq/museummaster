@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		1A3FEE7A2C00000100000001 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1A3FEE792C00000100000001 /* InfoPlist.strings */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		6258EA99D20358F01EF2BEDE /* libPods-Artiou.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F777001950EFD2680EBC79D /* libPods-Artiou.a */; };
 		75846BA997ED301022420D5D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EB18BEA4220D0239827BDCCA /* PrivacyInfo.xcprivacy */; };
@@ -20,6 +21,9 @@
 		13B07F961A680F5B00A75B9A /* Artiou.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Artiou.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Artiou/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Artiou/Info.plist; sourceTree = "<group>"; };
+		1A3FEE762C00000100000001 /* InfoPlist.strings (en) */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = Artiou/en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1A3FEE772C00000100000001 /* InfoPlist.strings (fr) */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = Artiou/fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1A3FEE782C00000100000001 /* InfoPlist.strings (zh-Hans) */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = Artiou/zh-Hans.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2F777001950EFD2680EBC79D /* libPods-Artiou.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Artiou.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BE83EB38552E5989E530D3A /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Artiou/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		8D3247191C661C9416CDD041 /* Pods-Artiou.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Artiou.debug.xcconfig"; path = "Target Support Files/Pods-Artiou/Pods-Artiou.debug.xcconfig"; sourceTree = "<group>"; };
@@ -52,6 +56,7 @@
 				BB2F792B24A3F905000567C9 /* Supporting */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
+				1A3FEE792C00000100000001 /* InfoPlist.strings */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
 				EB18BEA4220D0239827BDCCA /* PrivacyInfo.xcprivacy */,
 			);
@@ -178,6 +183,8 @@
 			knownRegions = (
 				en,
 				Base,
+				fr,
+				"zh-Hans",
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
@@ -196,12 +203,26 @@
 			files = (
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				1A3FEE7A2C00000100000001 /* InfoPlist.strings in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
 				75846BA997ED301022420D5D /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		1A3FEE792C00000100000001 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1A3FEE762C00000100000001 /* InfoPlist.strings (en) */,
+				1A3FEE772C00000100000001 /* InfoPlist.strings (fr) */,
+				1A3FEE782C00000100000001 /* InfoPlist.strings (zh-Hans) */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {

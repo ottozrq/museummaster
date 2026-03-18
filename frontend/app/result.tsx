@@ -28,6 +28,7 @@ import {
   getTtsStreamUrl,
   unfavoriteScanRecord,
 } from "../src/services/api";
+import { useI18n } from "../src/i18n";
 import {
   Back15Icon,
   Forward30Icon,
@@ -54,6 +55,7 @@ async function appendHistory(item: HistoryItem) {
 
 export default function ResultScreen() {
   const router = useRouter();
+  const { t } = useI18n();
   const params = useLocalSearchParams<{ text?: string; imageUri?: string; scanId?: string }>();
   const initialText = useMemo(() => params.text ?? "", [params.text]);
   const [imageUri, setImageUri] = useState(() => params.imageUri ?? "");
@@ -97,7 +99,10 @@ export default function ResultScreen() {
         }
       } catch (e) {
         if (!cancelled) {
-          Alert.alert("加载失败", e instanceof Error ? e.message : "无法加载收藏内容");
+          Alert.alert(
+            t("result.loadFailedTitle"),
+            e instanceof Error ? e.message : t("result.loadFailedFallback"),
+          );
         }
       }
     })();
@@ -118,7 +123,7 @@ export default function ResultScreen() {
       },
       onError: (error) => {
         setStreaming(false);
-        Alert.alert("识别失败", error.message || "未知错误");
+        Alert.alert(t("result.recognizeFailedTitle"), error.message || t("camera.unknownError"));
       },
       onDone: (id) => {
         setStreaming(false);
@@ -136,7 +141,10 @@ export default function ResultScreen() {
       })
       .catch((error) => {
         setStreaming(false);
-        Alert.alert("识别失败", error instanceof Error ? error.message : "未知错误");
+        Alert.alert(
+          t("result.recognizeFailedTitle"),
+          error instanceof Error ? error.message : t("camera.unknownError"),
+        );
       });
 
     return () => {
@@ -191,7 +199,10 @@ export default function ResultScreen() {
         player.replace(downloadedAudioUri);
         player.play();
       } catch (error) {
-        Alert.alert("播放失败", error instanceof Error ? error.message : "未知错误");
+        Alert.alert(
+          t("result.playFailedTitle"),
+          error instanceof Error ? error.message : t("camera.unknownError"),
+        );
       } finally {
         setRequestingSpeech(false);
       }
@@ -214,7 +225,10 @@ export default function ResultScreen() {
       isPlayingStreamRef.current = true;
     } catch (error) {
       setStreamLoading(false);
-      Alert.alert("播放失败", error instanceof Error ? error.message : "未知错误");
+      Alert.alert(
+        t("result.playFailedTitle"),
+        error instanceof Error ? error.message : t("camera.unknownError"),
+      );
     } finally {
       setRequestingSpeech(false);
     }
@@ -243,10 +257,10 @@ export default function ResultScreen() {
     // 未登录时先引导登录（当前使用 Apple 登录，token 保存在 AsyncStorage）
     const authToken = await AsyncStorage.getItem("museum_auth_token");
     if (!authToken) {
-      Alert.alert("需要登录", "登录后才能收藏作品", [
-        { text: "取消", style: "cancel" },
+      Alert.alert(t("result.needLoginTitle"), t("result.needLoginText"), [
+        { text: t("result.cancel"), style: "cancel" },
         {
-          text: "去登录",
+          text: t("result.goSignIn"),
           onPress: () => {
             // 跳转到收藏页，在顶部使用 Apple 登录
             router.push("/collection");
@@ -259,7 +273,7 @@ export default function ResultScreen() {
     setSaving(true);
     try {
       if (!scanId) {
-        Alert.alert("暂不可收藏", "当前识别记录尚未完成，请稍后重试。");
+        Alert.alert(t("result.notReadyTitle"), t("result.notReadyText"));
         return;
       }
 
@@ -276,8 +290,8 @@ export default function ResultScreen() {
       }
     } catch (error) {
       Alert.alert(
-        isFavorite ? "取消收藏失败" : "收藏失败",
-        error instanceof Error ? error.message : "未知错误",
+        isFavorite ? t("result.unfavoriteFailed") : t("result.favoriteFailed"),
+        error instanceof Error ? error.message : t("camera.unknownError"),
       );
     } finally {
       setSaving(false);
@@ -308,11 +322,11 @@ export default function ResultScreen() {
   // 锁屏/控制中心「正在播放」：开始播放时激活，离开页面时清除
   const lockScreenMetadata = useMemo(
     () => ({
-      title: "作品讲解",
-      artist: "Artiou",
+      title: t("result.lockscreenTitle"),
+      artist: t("result.lockscreenArtist"),
       ...(imageUri ? { artworkUrl: imageUri } : {}),
     }),
-    [imageUri]
+    [imageUri, t]
   );
   const lockScreenOptions = { showSeekBackward: true, showSeekForward: true };
 
@@ -397,10 +411,10 @@ export default function ResultScreen() {
       <View style={styles.detailsSection}>
         <View style={styles.textCard}>
           <Text style={styles.title} numberOfLines={2}>
-            识别结果
+            {t("result.title")}
           </Text>
           <Text style={styles.subtitle} numberOfLines={2}>
-            {streaming ? "AI 正在为你讲解本次识别到的展品…" : "AI 为你讲解本次识别到的展品"}
+            {streaming ? t("result.subtitleStreaming") : t("result.subtitleDone")}
           </Text>
 
           <ScrollView
@@ -409,7 +423,7 @@ export default function ResultScreen() {
             showsVerticalScrollIndicator={false}
           >
             <Text style={styles.body}>
-              {text || (streaming ? "AI 正在分析这件艺术品，请稍候…" : "暂无结果")}
+              {text || (streaming ? t("result.bodyStreaming") : t("result.bodyEmpty"))}
             </Text>
           </ScrollView>
         </View>
@@ -514,7 +528,7 @@ export default function ResultScreen() {
       {showCollectedToast && (
         <View style={styles.toastOverlay}>
           <View style={styles.toastContent}>
-            <Text style={styles.toastText}>作品已加入收藏夹</Text>
+            <Text style={styles.toastText}>{t("result.collectedToast")}</Text>
           </View>
         </View>
       )}

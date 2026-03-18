@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import { Stack } from "expo-router";
 import { setAudioModeAsync } from "expo-audio";
+import { useI18n } from "../src/i18n";
 
 export default function RootLayout() {
+  const { t } = useI18n();
   useEffect(() => {
     setAudioModeAsync({
       playsInSilentMode: true,
@@ -14,24 +16,24 @@ export default function RootLayout() {
     <Stack>
       <Stack.Screen
         name="index"
-        options={{ title: "艺游", headerShown: false }}
+        options={{ title: t("nav.camera"), headerShown: false }}
       />
       <Stack.Screen
         name="result"
-        options={{ title: "讲解结果", headerShown: false }}
+        options={{ title: t("nav.result"), headerShown: false }}
       />
-      <Stack.Screen name="history" options={{ title: "历史记录" }} />
+      <Stack.Screen name="history" options={{ title: t("nav.history") }} />
       <Stack.Screen
         name="collection"
-        options={{ title: "我的收藏夹", headerShown: false }}
+        options={{ title: t("nav.collection"), headerShown: false }}
       />
       <Stack.Screen
         name="privacy"
-        options={{ title: "Privacy Policy", headerShown: false }}
+        options={{ title: t("nav.privacy"), headerShown: false }}
       />
       <Stack.Screen
         name="terms"
-        options={{ title: "Terms of Service", headerShown: false }}
+        options={{ title: t("nav.terms"), headerShown: false }}
       />
     </Stack>
   );

@@ -16,9 +16,11 @@ import * as ImagePicker from "expo-image-picker";
 import LottieView from "lottie-react-native";
 
 import { analyzeImage } from "../src/services/api";
+import { useI18n } from "../src/i18n";
 
 export default function CameraScreen() {
   const router = useRouter();
+  const { t } = useI18n();
   const [permission, requestPermission] = useCameraPermissions();
   const [loading, setLoading] = useState(false);
   const [zoom, setZoom] = useState(0);
@@ -163,7 +165,10 @@ export default function CameraScreen() {
         },
       });
     } catch (error) {
-      Alert.alert("识别失败", error instanceof Error ? error.message : "未知错误");
+      Alert.alert(
+        t("camera.analyzeFailedTitle"),
+        error instanceof Error ? error.message : t("camera.unknownError"),
+      );
     }
   };
 
@@ -181,7 +186,7 @@ export default function CameraScreen() {
   const handlePickFromGallery = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("需要相册权限", "请允许访问相册以选择图片");
+      Alert.alert(t("camera.needPhotoLibraryTitle"), t("camera.needPhotoLibraryText"));
       return;
     }
 
@@ -206,12 +211,12 @@ export default function CameraScreen() {
   if (!permission.granted) {
     return (
       <View style={styles.permissionContainer}>
-        <Text style={styles.permissionTitle}>Camera access needed</Text>
+        <Text style={styles.permissionTitle}>{t("camera.permissionTitle")}</Text>
         <Text style={styles.permissionText}>
-          Point at an exhibit so AI can recognize it.
+          {t("camera.permissionText")}
         </Text>
         <Pressable style={styles.permissionButton} onPress={requestPermission}>
-          <Text style={styles.permissionButtonText}>Enable camera</Text>
+          <Text style={styles.permissionButtonText}>{t("camera.enableCamera")}</Text>
         </Pressable>
       </View>
     );
@@ -241,7 +246,7 @@ export default function CameraScreen() {
 
       {/* Top hint text */}
       <View style={styles.topSection}>
-        <Text style={styles.topHint}>Point at an exhibit for AI recognition</Text>
+        <Text style={styles.topHint}>{t("camera.topHint")}</Text>
       </View>
 
       {/* Focus frame */}
@@ -262,7 +267,7 @@ export default function CameraScreen() {
             onPress={handlePickFromGallery}
             disabled={loading}
           >
-            <Text style={styles.pillButtonText}>GALLERY</Text>
+            <Text style={styles.pillButtonText}>{t("camera.gallery").toUpperCase()}</Text>
           </Pressable>
 
           <Pressable
@@ -282,12 +287,12 @@ export default function CameraScreen() {
             onPress={() => router.push("/collection")}
             disabled={loading}
           >
-            <Text style={styles.pillButtonText}>ARTIOU</Text>
+            <Text style={styles.pillButtonText}>{t("camera.artiou").toUpperCase()}</Text>
           </Pressable>
         </View>
 
         <Text style={styles.bottomHint}>
-          {loading ? "Recognizing..." : "Take a photo or choose from gallery"}
+          {loading ? t("camera.recognizing") : t("camera.takeOrChoose")}
         </Text>
       </View>
     </View>

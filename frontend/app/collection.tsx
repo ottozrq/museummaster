@@ -6,12 +6,14 @@ import { Alert, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View }
 import * as AppleAuthentication from "expo-apple-authentication";
 
 import { API_BASE_URL, ScanRecord, fetchMyFavorites } from "../src/services/api";
+import { useI18n } from "../src/i18n";
 
 const GOOGLE_IOS_CLIENT_ID =
   "577788424612-d3gutf0ru81i1tdrfdm5m21c27rvp27k.apps.googleusercontent.com";
 
 export default function CollectionScreen() {
   const router = useRouter();
+  const { t } = useI18n();
   const [items, setItems] = useState<ScanRecord[]>([]);
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -74,7 +76,7 @@ export default function CollectionScreen() {
       });
 
       if (!credential.identityToken) {
-        Alert.alert("登录失败", "未能获取 Apple 身份凭证");
+        Alert.alert(t("collection.loginFailedTitle"), t("collection.noAppleCredential"));
         return;
       }
 
@@ -95,13 +97,13 @@ export default function CollectionScreen() {
 
       if (!response.ok) {
         const errText = await response.text();
-        Alert.alert("登录失败", errText || `状态码 ${response.status}`);
+        Alert.alert(t("collection.loginFailedTitle"), errText || `状态码 ${response.status}`);
         return;
       }
 
       const data = await response.json();
       if (!data?.access_token) {
-        Alert.alert("登录失败", "服务器未返回访问令牌");
+        Alert.alert(t("collection.loginFailedTitle"), t("collection.serverNoToken"));
         return;
       }
 
@@ -111,7 +113,7 @@ export default function CollectionScreen() {
       if (e?.code === "ERR_CANCELED") {
         return;
       }
-      Alert.alert("登录失败", e instanceof Error ? e.message : "未知错误");
+      Alert.alert(t("collection.loginFailedTitle"), e instanceof Error ? e.message : t("camera.unknownError"));
     }
   };
 
@@ -120,7 +122,7 @@ export default function CollectionScreen() {
       const signInResult = await GoogleSignin.signIn();
       const idToken = (signInResult as any)?.data?.idToken ?? (signInResult as any)?.idToken;
       if (!idToken) {
-        Alert.alert("登录失败", "未能获取 Google 身份凭证");
+        Alert.alert(t("collection.loginFailedTitle"), t("collection.noGoogleCredential"));
         return;
       }
 
@@ -136,13 +138,13 @@ export default function CollectionScreen() {
 
       if (!response.ok) {
         const errText = await response.text();
-        Alert.alert("登录失败", errText || `状态码 ${response.status}`);
+        Alert.alert(t("collection.loginFailedTitle"), errText || `状态码 ${response.status}`);
         return;
       }
 
       const tokenResp = await response.json();
       if (!tokenResp?.access_token) {
-        Alert.alert("登录失败", "服务器未返回访问令牌");
+        Alert.alert(t("collection.loginFailedTitle"), t("collection.serverNoToken"));
         return;
       }
 
@@ -152,7 +154,7 @@ export default function CollectionScreen() {
       if (e?.code === statusCodes?.SIGN_IN_CANCELLED) {
         return;
       }
-      Alert.alert("登录失败", e instanceof Error ? e.message : "未知错误");
+      Alert.alert(t("collection.loginFailedTitle"), e instanceof Error ? e.message : t("camera.unknownError"));
     }
   };
 
@@ -206,16 +208,16 @@ export default function CollectionScreen() {
               <View style={[styles.scanCorner, styles.scanTopRight]} />
               <View style={[styles.scanCorner, styles.scanBottomLeft]} />
               <View style={[styles.scanCorner, styles.scanBottomRight]} />
-              <Text style={styles.scanText}>SCAN</Text>
+              <Text style={styles.scanText}>{t("collection.scan").toUpperCase()}</Text>
             </View>
           </Pressable>
         </View>
 
         {/* 中间 Apple 登录按钮与文案 */}
         <View style={styles.loginCenter}>
-          <Text style={styles.loginTitle}>Save your favorite pieces</Text>
+          <Text style={styles.loginTitle}>{t("collection.saveFavoritesTitle")}</Text>
           <Text style={styles.loginSubtitle}>
-            Sign in to keep your art journey across visits and devices.
+            {t("collection.saveFavoritesSubtitle")}
           </Text>
 
           <AppleAuthentication.AppleAuthenticationButton
@@ -231,7 +233,7 @@ export default function CollectionScreen() {
               <View style={styles.loginGoogleIconCircle}>
                 <Text style={styles.loginGoogleIconG}>G</Text>
               </View>
-              <Text style={styles.loginGoogleButtonText}>Continue with Google</Text>
+              <Text style={styles.loginGoogleButtonText}>{t("collection.continueWithGoogle")}</Text>
             </View>
           </Pressable>
         </View>
@@ -239,19 +241,19 @@ export default function CollectionScreen() {
         {/* 底部条款 */}
         <View style={styles.loginBottom}>
           <Text style={styles.loginLegalText}>
-            By entering, you agree to our{" "}
+            {t("collection.legalPrefix")}{" "}
             <Text
               style={styles.loginLegalLink}
               onPress={() => router.push("/privacy")}
             >
-              privacy policy
+              {t("collection.privacyPolicy")}
             </Text>
-            {" & "}
+            {" "}{t("collection.and")}{" "}
             <Text
               style={styles.loginLegalLink}
               onPress={() => router.push("/terms")}
             >
-              terms of service
+              {t("collection.termsOfService")}
             </Text>
           </Text>
         </View>
@@ -277,7 +279,7 @@ export default function CollectionScreen() {
             <View style={[styles.scanCorner, styles.scanTopRight]} />
             <View style={[styles.scanCorner, styles.scanBottomLeft]} />
             <View style={[styles.scanCorner, styles.scanBottomRight]} />
-            <Text style={styles.scanText}>SCAN</Text>
+          <Text style={styles.scanText}>{t("collection.scan").toUpperCase()}</Text>
           </View>
         </Pressable>
       </View>
@@ -285,9 +287,9 @@ export default function CollectionScreen() {
       {!checkingAuth && appleAvailable && authToken && (
         <View style={styles.authSection}>
           <View style={styles.authRow}>
-            <Text style={styles.authText}>已使用 Apple 登录</Text>
+            <Text style={styles.authText}>{t("collection.signedInWithApple")}</Text>
             <Pressable style={styles.authAction} onPress={handleSignOut}>
-              <Text style={styles.authActionText}>退出</Text>
+              <Text style={styles.authActionText}>{t("collection.signOut")}</Text>
             </Pressable>
           </View>
         </View>
@@ -297,7 +299,7 @@ export default function CollectionScreen() {
         data={sections}
         keyExtractor={(section) => section.dateKey}
         contentContainerStyle={styles.content}
-        ListEmptyComponent={<Text style={styles.empty}>暂无收藏</Text>}
+        ListEmptyComponent={<Text style={styles.empty}>{t("collection.empty")}</Text>}
         renderItem={({ item: section }) => (
           <View style={styles.section}>
             <ScrollView

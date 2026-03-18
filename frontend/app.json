@@ -19,7 +19,8 @@
       "usesAppleSignIn": true,
       "icon": "./assets/icon.png",
       "infoPlist": {
-        "NSCameraUsageDescription": "艺游需要使用相机拍摄展品图片。",
+        "NSCameraUsageDescription": "Artiou needs camera access to capture exhibit photos for recognition.",
+        "NSPhotoLibraryUsageDescription": "Artiou needs access to your photos so you can choose an image from your library.",
         "UIBackgroundModes": ["audio"]
       },
       "bundleIdentifier": "com.ottozhang.artiou"

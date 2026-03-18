@@ -9,6 +9,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { useI18n } from "../src/i18n";
 
 type HistoryItem = {
   id: string;
@@ -21,6 +22,7 @@ const HISTORY_KEY = "museum_guide_history";
 
 export default function HistoryScreen() {
   const router = useRouter();
+  const { t } = useI18n();
   const [items, setItems] = useState<HistoryItem[]>([]);
 
   const load = useCallback(async () => {
@@ -41,13 +43,13 @@ export default function HistoryScreen() {
         style={styles.collectionLink}
         onPress={() => router.push("/collection")}
       >
-        <Text style={styles.collectionLinkText}>我的收藏夹</Text>
+        <Text style={styles.collectionLinkText}>{t("history.collectionLink")}</Text>
       </Pressable>
       <FlatList
         data={items}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.content}
-        ListEmptyComponent={<Text style={styles.empty}>暂无历史记录</Text>}
+        ListEmptyComponent={<Text style={styles.empty}>{t("history.empty")}</Text>}
         renderItem={({ item }) => (
           <View style={styles.card}>
             {item.imageUri ? <Image source={{ uri: item.imageUri }} style={styles.thumb} /> : null}
