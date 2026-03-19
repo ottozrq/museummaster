@@ -70,6 +70,12 @@ async def analyze_artwork(
             detail="Uploaded file must be an image",
         )
 
+    # 空文件校验必须放在 OpenAI/额度逻辑之前，
+    # 否则单测（空文件应返回 400）会先触发 OPENAI_API_KEY 缺失而返回 500。
+    image_bytes = await image.read()
+    if not image_bytes:
+        raise HTTPException(status_code=400, detail="Image is empty")
+
     openai_flags = OpenAIFlags.get()
     if not openai_flags.api_key:
         raise HTTPException(status_code=500, detail="OPENAI_API_KEY is not set")
@@ -122,10 +128,6 @@ async def analyze_artwork(
                 status_code=429,
                 detail="Daily scan quota exceeded. Please try again tomorrow.",
             )
-
-    image_bytes = await image.read()
-    if not image_bytes:
-        raise HTTPException(status_code=400, detail="Image is empty")
 
     # 保存原始图片到本地文件系统
     image_path = _save_image_bytes(image_bytes, content_type)

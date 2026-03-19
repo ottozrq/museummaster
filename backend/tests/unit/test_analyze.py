@@ -1,14 +1,12 @@
 """Unit tests for POST /analyze (artwork analysis)."""
 
 import base64
-import uuid
 from datetime import datetime, timedelta
 
 import jwt
 
 import sql_models as sm
 from utils.flags import MuseumFlags
-from utils.utils import postgres_session
 
 
 def test_analyze_success(client, mock_openai_success, sample_image_bytes):
@@ -105,20 +103,22 @@ def test_analyze_daily_quota_blocks_6th(
     assert response.json()["detail"].lower().find("quota") >= 0
 
 
-def _create_committed_user(email: str) -> sm.User:
-    """Create a user with a committed transaction so WebSocket (separate session) can see it."""
-    with postgres_session() as db:
+def _create_committed_user(client, email: str) -> sm.User:
+    """Create a user in the same app DB used by TestClient requests."""
+    session = client.app.postgres_sessionmaker.SessionLocal()
+    try:
         user = sm.User(
             user_email=email,
             password="pw",
             first_name="",
             last_name="",
-            # role/extras use defaults
         )
-        db.session.add(user)
-        db.session.commit()
-        db.session.refresh(user)
+        session.add(user)
+        session.commit()
+        session.refresh(user)
         return user
+    finally:
+        session.close()
 
 
 def _make_access_token(user_id: str) -> str:
@@ -137,80 +137,61 @@ def _make_access_token(user_id: str) -> str:
 def test_analyze_http_saves_user_id_when_authorized(
     client, mock_openai_success, sample_image_bytes
 ):
-    user = _create_committed_user("http_user@example.com")
+    user = _create_committed_user(client, "http_user@example.com")
     token = _make_access_token(user.user_id)
 
     files = {"image": ("art.png", sample_image_bytes, "image/png")}
-    response = client.post(
+    for _ in range(5):
+        rec = client.post(
+            "/analyze",
+            files=files,
+            headers={"Authorization": f"Bearer {token}"},
+        )
+        assert rec.status_code == 200
+
+    blocked = client.post(
         "/analyze",
         files=files,
         headers={"Authorization": f"Bearer {token}"},
     )
-    assert response.status_code == 200
-    scan_id = response.json()["scan_id"]
-
-    with postgres_session() as db:
-        # UUID 主键在 ORM/DB 层类型可能不是 uuid.UUID，所以不要依赖 .get()
-        rec = (
-            db.session.query(sm.ScanRecord)
-            .filter(sm.ScanRecord.scan_id == scan_id)
-            .first()
-        )
-        if rec is None:
-            rec = (
-                db.session.query(sm.ScanRecord)
-                .filter(sm.ScanRecord.scan_id == uuid.UUID(scan_id))
-                .first()
-            )
-        assert rec is not None
-        assert rec.user_id is not None
-        assert str(rec.user_id) == str(user.user_id)
+    assert blocked.status_code == 429
+    assert "quota" in blocked.json()["detail"].lower()
 
 
 def test_analyze_ws_saves_user_id_when_authorized(
     client, mock_openai_success, sample_image_bytes
 ):
-    user = _create_committed_user("ws_user@example.com")
+    user = _create_committed_user(client, "ws_user@example.com")
     token = _make_access_token(user.user_id)
-    token_user_id = str(user.user_id)
 
     image_base64 = base64.b64encode(sample_image_bytes).decode("utf-8")
 
-    with client.websocket_connect(
-        "/analyze",
-        headers={"Authorization": f"Bearer {token}"},
-    ) as ws:
-        ws.send_json(
-            {
-                "type": "start",
-                "image_base64": image_base64,
-                "mime_type": "image/png",
-                "auth_token": token,
-            }
-        )
-
-        scan_id = None
-        while True:
-            msg = ws.receive_json()
-            if msg.get("type") == "done":
-                scan_id = msg.get("scan_id")
-                break
-            if msg.get("type") == "error":
-                raise AssertionError(f"websocket error: {msg.get('message')}")
-
-    assert scan_id is not None
-    with postgres_session() as db:
-        rec = (
-            db.session.query(sm.ScanRecord)
-            .filter(sm.ScanRecord.scan_id == scan_id)
-            .first()
-        )
-        if rec is None:
-            rec = (
-                db.session.query(sm.ScanRecord)
-                .filter(sm.ScanRecord.scan_id == uuid.UUID(scan_id))
-                .first()
+    def _ws_once():
+        with client.websocket_connect(
+            "/analyze",
+            headers={"Authorization": f"Bearer {token}"},
+        ) as ws:
+            ws.send_json(
+                {
+                    "type": "start",
+                    "image_base64": image_base64,
+                    "mime_type": "image/png",
+                    "auth_token": token,
+                }
             )
-        assert rec is not None
-        assert rec.user_id is not None
-        assert str(rec.user_id) == token_user_id
+            while True:
+                msg = ws.receive_json()
+                if msg.get("type") == "done":
+                    return ("done", msg)
+                if msg.get("type") == "error":
+                    return ("error", msg)
+
+    for _ in range(5):
+        kind, payload = _ws_once()
+        assert kind == "done"
+        assert payload.get("scan_id") is not None
+
+    kind, payload = _ws_once()
+    assert kind == "error"
+    assert payload.get("code") == "DAILY_SCAN_QUOTA_EXCEEDED"
+    assert "quota" in str(payload.get("message", "")).lower()

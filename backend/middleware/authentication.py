@@ -139,11 +139,19 @@ class MuseumAuthBackend(AuthenticationBackend):
             "/redoc",
             "/static",
         ]
-        if any(request.url.path.startswith(p) for p in public_paths):
-            return None
+        is_public_path = any(request.url.path.startswith(p) for p in public_paths)
         if superuser_email := _superuser_email():
             return MuseumAuthUser.from_superuser(superuser_email)
-        if "Authorization" not in request.headers or request.url.path == "/token/":
+        if request.url.path == "/token/":
+            return None
+        has_auth_header = (
+            "Authorization" in request.headers or "authorization" in request.headers
+        )
+        # public path 允许匿名访问；但如果带了 Authorization，仍应解析用户，
+        # 这样下游（如 /analyze）才能拿到 request.user 并写入 user_id。
+        if is_public_path and not has_auth_header:
+            return None
+        if not has_auth_header:
             return None
         return MuseumAuthUser.from_uuid(
             _get_user_uuid(await OAuth2PasswordBearer("/token/").__call__(request))
