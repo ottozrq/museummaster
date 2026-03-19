@@ -82,25 +82,34 @@ def _seed_scan_records(session, user_id: str, count: int) -> None:
 
 
 def test_analyze_daily_quota_allows_up_to_5(
-    api_client, mock_openai_success, sample_image_bytes
+    api_client_editor, mock_openai_success, sample_image_bytes
 ):
-    user_id = str(api_client.user.user_id)
-    _seed_scan_records(api_client.session, user_id, 4)
+    user_id = str(api_client_editor.user.user_id)
+    _seed_scan_records(api_client_editor.session, user_id, 4)
 
     files = {"image": ("art.png", sample_image_bytes, "image/png")}
-    response = api_client.post("/analyze", files=files)
+    response = api_client_editor.post("/analyze", files=files)
     assert response.status_code == 200
 
 
 def test_analyze_daily_quota_blocks_6th(
-    api_client, mock_openai_success, sample_image_bytes
+    api_client_editor, mock_openai_success, sample_image_bytes
 ):
+    user_id = str(api_client_editor.user.user_id)
+    _seed_scan_records(api_client_editor.session, user_id, 5)
+
+    files = {"image": ("art.png", sample_image_bytes, "image/png")}
+    response = api_client_editor.post("/analyze", files=files, status=429)
+    assert response.json()["detail"].lower().find("quota") >= 0
+
+
+def test_analyze_admin_unlimited(api_client, mock_openai_success, sample_image_bytes):
     user_id = str(api_client.user.user_id)
     _seed_scan_records(api_client.session, user_id, 5)
 
     files = {"image": ("art.png", sample_image_bytes, "image/png")}
-    response = api_client.post("/analyze", files=files, status=429)
-    assert response.json()["detail"].lower().find("quota") >= 0
+    response = api_client.post("/analyze", files=files)
+    assert response.status_code == 200
 
 
 def _create_committed_user(client, email: str) -> sm.User:

@@ -32,6 +32,22 @@ IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 DAILY_SCAN_LIMIT = 5
 
 
+def _is_admin_role(role: Any) -> bool:
+    if role is None:
+        return False
+    # SQLAlchemy Enum returns sm.UserRole.* in normal cases.
+    if role == sm.UserRole.admin:
+        return True
+    # Some drivers/config may return strings.
+    role_name = getattr(role, "name", None)
+    if isinstance(role_name, str) and role_name.lower() == "admin":
+        return True
+    if isinstance(role, str) and role.lower() == "admin":
+        return True
+    # Last resort: string representation.
+    return str(role).lower().endswith(".admin") or str(role).lower() == "admin"
+
+
 def _save_image_bytes(image_bytes: bytes, mime_type: str) -> str:
     ext = ".jpg"
     if mime_type.endswith("png"):
@@ -109,7 +125,20 @@ async def analyze_artwork(
     # 如果客户端没带 Authorization，则 user_id 可能仍为 None（匿名）。
 
     # 已注册用户每天最多 5 次扫描
-    if user_id:
+    # 管理员不限制扫描次数
+    user_role = getattr(user, "role", None) if user else None
+    if user_role is None and user_id:
+        # 某些情况下 request.user 可能解析不到，但我们仍能从 user_id 回查角色。
+        try:
+            user_role = (
+                db.session.query(sm.User.role)
+                .filter(sm.User.user_id == user_id)
+                .scalar()
+            )
+        except Exception:
+            user_role = None
+
+    if user_id and not _is_admin_role(user_role):
         now = dt.datetime.now(dt.timezone.utc)
         start = dt.datetime(now.year, now.month, now.day, tzinfo=dt.timezone.utc)
         end = start + dt.timedelta(days=1)
@@ -194,6 +223,10 @@ def get_scan_quota_remaining(
     """
     返回当前登录用户今日剩余可识别次数（UTC 口径）。
     """
+    # 管理员不限制扫描次数：返回一个足够大的剩余值，避免前端展示“已用尽”。
+    if _is_admin_role(getattr(user, "role", None)):
+        return {"limit": DAILY_SCAN_LIMIT, "used": 0, "remaining": 999999}
+
     user_id = str(user.user_id)
     now = dt.datetime.now(dt.timezone.utc)
     start = dt.datetime(now.year, now.month, now.day, tzinfo=dt.timezone.utc)
@@ -286,23 +319,29 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
         start = dt.datetime(now.year, now.month, now.day, tzinfo=dt.timezone.utc)
         end = start + dt.timedelta(days=1)
         with postgres_session() as db:
-            used = (
-                db.session.query(func.count(sm.ScanRecord.scan_id))
-                .filter(
-                    sm.ScanRecord.user_id == user_uuid,
-                    sm.ScanRecord.inserted_at >= start,
-                    sm.ScanRecord.inserted_at < end,
-                )
+            user_role = (
+                db.session.query(sm.User.role)
+                .filter(sm.User.user_id == user_uuid)
                 .scalar()
-                or 0
             )
-            if used >= DAILY_SCAN_LIMIT:
-                await _send_error(
-                    ws,
-                    "Daily scan quota exceeded. Please try again tomorrow.",
-                    code="DAILY_SCAN_QUOTA_EXCEEDED",
+            if not _is_admin_role(user_role):
+                used = (
+                    db.session.query(func.count(sm.ScanRecord.scan_id))
+                    .filter(
+                        sm.ScanRecord.user_id == user_uuid,
+                        sm.ScanRecord.inserted_at >= start,
+                        sm.ScanRecord.inserted_at < end,
+                    )
+                    .scalar()
+                    or 0
                 )
-                return
+                if used >= DAILY_SCAN_LIMIT:
+                    await _send_error(
+                        ws,
+                        "Daily scan quota exceeded. Please try again tomorrow.",
+                        code="DAILY_SCAN_QUOTA_EXCEEDED",
+                    )
+                    return
 
     try:
         image_bytes = base64.b64decode(image_b64)

@@ -324,6 +324,14 @@ def api_client(_api_client: utils.ApiClient, user_admin) -> utils.ApiClient:
 
 
 @pytest.fixture
+def api_client_editor(_api_client: utils.ApiClient, user_editor) -> utils.ApiClient:
+    _api_client.user = user_editor
+    _api_client.default_user = _api_client.user
+    _api_client.login(user_editor, superuser=True)
+    yield _api_client
+
+
+@pytest.fixture
 def user_admin(fix):
     return fixts.User(
         fix,
@@ -341,6 +349,7 @@ def user_editor(fix):
         user_email="editor@ottozhang.com",
         password=pwd_context.hash("666666"),
         user_id="00000000-0000-0000-0000-000000000002",
-        role=sm.UserRole.editor,
+        # sql_models.UserRole 目前仅包含 admin/client；这里使用 client 代替 editor
+        role=sm.UserRole.client,
         extras={},
     ).create()
