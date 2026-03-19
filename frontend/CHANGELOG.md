@@ -1,3 +1,25 @@
+# [1.1.0](https://github.com/ottozrq/museummaster/compare/v1.0.0...v1.1.0) (2026-03-19)
+
+
+### Bug Fixes
+
+* animation only first time ([f89c562](https://github.com/ottozrq/museummaster/commit/f89c5627cf92b34adae53b20cf94f9da37742468))
+* bumdle id ([b26bd75](https://github.com/ottozrq/museummaster/commit/b26bd75402ecf5868529a5c4d09338288f775af4))
+* bundle id and apple id ([a583e92](https://github.com/ottozrq/museummaster/commit/a583e9257f5c6dfedf68d28b7f4197ee15ee08a2))
+* deploy ios ([570ba0d](https://github.com/ottozrq/museummaster/commit/570ba0d1c6eb478394df6e89bfce3dc9c1cd940b))
+* front bundle id ([16c1799](https://github.com/ottozrq/museummaster/commit/16c17997fe3c16718ccb25fb7a339b25bc2845ef))
+* ios submition ([fbea0be](https://github.com/ottozrq/museummaster/commit/fbea0be74cef299c74787b2cd5991b1e4bba0c00))
+* unit test ([f587352](https://github.com/ottozrq/museummaster/commit/f58735231d8d198160fb45e0a23f304ce2dc920f))
+
+
+### Features
+
+* animation ([d76427c](https://github.com/ottozrq/museummaster/commit/d76427c23db33617d593a95c931ac75944b7a9c6))
+* google sso ([904ad40](https://github.com/ottozrq/museummaster/commit/904ad4090a77731010248d32b668e672fee17164))
+* localization ([e74935e](https://github.com/ottozrq/museummaster/commit/e74935e2cdc0bbf88fda53da26e4373dad670fd1))
+* user not login in 5 scan limits ([cd438fa](https://github.com/ottozrq/museummaster/commit/cd438fa9fa171a299c053d24e03a2f7bcbdda728))
+* user scan limitation ([2908651](https://github.com/ottozrq/museummaster/commit/2908651b6d6e48c35855dc779a1e708fe71fb574))
+
 # 1.0.0 (2026-03-12)
 
 
