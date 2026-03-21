@@ -172,8 +172,13 @@ def app():
         app = get_app(url=p.url(), pool_size=20, max_overflow=50)
         session = app.postgres_sessionmaker.SessionLocal()
 
+        # postgis 在某些本地环境可能与 PostgreSQL 版本不兼容，
+        # 这会导致测试初始化直接失败；对本仓库多数单测并非必须。
+        try:
+            session.execute('create extension if not exists "postgis";')
+        except Exception:
+            session.rollback()
         for extension in (
-            "postgis",
             "uuid-ossp",
         ):
             session.execute(f'create extension if not exists "{extension}";')
@@ -227,7 +232,11 @@ def _api_client(app, monkeypatch, mocker):
     session = scoped_session(
         app.postgres_sessionmaker.SessionLocal, scopefunc=lambda: ""
     )
-    postgis.psycopg.register(session.bind.raw_connection())
+    try:
+        postgis.psycopg.register(session.bind.raw_connection())
+    except Exception:
+        # postgis 扩展缺失时允许降级运行（多数单测不依赖 GIS 功能）
+        pass
     connection.force_close = connection.close
     transaction.force_rollback = transaction.rollback
 

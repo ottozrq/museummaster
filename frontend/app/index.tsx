@@ -32,7 +32,9 @@ export default function CameraScreen() {
   const splashStartedAtRef = useRef<number | null>(null);
 
   const SPLASH_KEY = "mm_has_seen_splash_v2";
-  const SCAN_COUNT_KEY = "museum_free_scan_count";
+  const SCAN_COUNT_KEY = "museum_free_scan_count_v2";
+
+  const getTodayKeyUTC = () => new Date().toISOString().slice(0, 10); // yyyy-mm-dd
 
   const getPinchDistance = (touches: { pageX: number; pageY: number }[]) => {
     if (touches.length < 2) return 0;
@@ -162,9 +164,10 @@ export default function CameraScreen() {
       if (token) {
         return true;
       }
-      const raw = await AsyncStorage.getItem(SCAN_COUNT_KEY);
-      const count = raw ? Number.parseInt(raw, 10) || 0 : 0;
-      if (count >= 5) {
+      const dailyKey = `${SCAN_COUNT_KEY}_${getTodayKeyUTC()}`;
+      const dailyRaw = await AsyncStorage.getItem(dailyKey);
+      const dailyCount = dailyRaw ? Number.parseInt(dailyRaw, 10) || 0 : 0;
+      if (dailyCount >= 3) {
         Alert.alert(
           t("camera.freeScanLimitTitle"),
           t("camera.freeScanLimitText"),
@@ -183,7 +186,7 @@ export default function CameraScreen() {
         );
         return false;
       }
-      await AsyncStorage.setItem(SCAN_COUNT_KEY, String(count + 1));
+      await AsyncStorage.setItem(dailyKey, String(dailyCount + 1));
       return true;
     } catch {
       return true;

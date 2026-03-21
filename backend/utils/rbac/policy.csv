@@ -36,6 +36,8 @@ p, *, /geometries*, GET
 p, *, /scan_records/*/favorite, (POST)|(DELETE)
 p, *, /users/me/favorites, GET
 p, *, /scan-quota/remaining, GET
+p, *, /subscription/current, GET
+p, *, /subscription/activate, POST
 
 p, role_base, /reset_password, POST
 p, role_base, /images*, POST 

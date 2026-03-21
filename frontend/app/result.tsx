@@ -129,8 +129,24 @@ export default function ResultScreen() {
       onError: (error) => {
         setStreaming(false);
         const anyErr = error as any;
-        if (anyErr?.code === "DAILY_SCAN_QUOTA_EXCEEDED") {
-          Alert.alert(t("result.dailyQuotaExceededTitle"), t("result.dailyQuotaExceededText"));
+        if (
+          anyErr?.code === "DAILY_SCAN_QUOTA_EXCEEDED" ||
+          anyErr?.code === "SCAN_PACK_QUOTA_EXCEEDED"
+        ) {
+          Alert.alert(
+            t("result.dailyQuotaExceededTitle"),
+            t("result.dailyQuotaExceededText"),
+            [
+              {
+                text: t("result.cancel"),
+                style: "cancel",
+              },
+              {
+                text: t("result.viewPlans"),
+                onPress: () => router.push("/subscription"),
+              },
+            ],
+          );
           return;
         }
         Alert.alert(

@@ -1,4 +1,4 @@
-from src.routes import analyze, auth, favorites, root, scan_records, tts, users
+from src.routes import analyze, auth, favorites, root, scan_records, subscription, tts, users
 
 __all__ = (
     auth,
@@ -6,6 +6,7 @@ __all__ = (
     favorites,
     root,
     scan_records,
+    subscription,
     tts,
     users,
 )

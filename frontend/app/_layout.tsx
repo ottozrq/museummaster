@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Stack } from "expo-router";
 import { setAudioModeAsync } from "expo-audio";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useI18n } from "../src/i18n";
 
 export default function RootLayout() {
@@ -13,6 +14,7 @@ export default function RootLayout() {
   }, []);
 
   return (
+    <SafeAreaProvider>
     <Stack>
       <Stack.Screen
         name="index"
@@ -28,6 +30,10 @@ export default function RootLayout() {
         options={{ title: t("nav.collection"), headerShown: false }}
       />
       <Stack.Screen
+        name="subscription"
+        options={{ title: t("nav.subscription"), headerShown: false }}
+      />
+      <Stack.Screen
         name="privacy"
         options={{ title: t("nav.privacy"), headerShown: false }}
       />
@@ -36,5 +42,6 @@ export default function RootLayout() {
         options={{ title: t("nav.terms"), headerShown: false }}
       />
     </Stack>
+    </SafeAreaProvider>
   );
 }
