@@ -9,7 +9,7 @@ g, editor, role_base
 g, editor, writer
 
 # Tourist account
-g, visitor, role_base
+g, client, role_base
 
 # POLICIES
 p, *, /*, OPTION
@@ -26,16 +26,11 @@ p, *, /auth/*, .*
 p, *, /static, .*
 p, *, /static/*, .*
 p, *, /scan-records*, .*
-p, *, /landmarks*, GET
-p, *, /artworks*, GET
-p, *, /images*, GET
-p, *, /detect, POST
-p, *, /search*, GET
-p, *, /activities*, GET
-p, *, /geometries*, GET
 p, *, /scan_records/*/favorite, (POST)|(DELETE)
-p, *, /users/me/favorites, GET
-p, *, /scan-quota/remaining, GET
+p, role_base, /users/me/favorites, GET
+p, role_base, /users/me, DELETE
+p, role_base, /users/me/, DELETE
+p, role_base, /scan-quota/remaining, GET
 
 p, role_base, /reset_password, POST
 p, role_base, /images*, POST 
@@ -43,10 +38,3 @@ p, role_base, /series*, GET
 p, role_base, /introductions*, GET
 
 p, admin, /*, (GET)|(POST)|(DELETE)|(PATCH)
-p, admin, /images*, DELETE
-
-p, producer, /landmarks*, (POST)|(DELETE)|(PATCH)
-p, producer, /artworks*, (POST)|(DELETE)|(PATCH)
-
-p, writer, /series*, (POST)|(DELETE)|(PATCH)
-p, writer, /introductions*, (POST)|(DELETE)|(PATCH)

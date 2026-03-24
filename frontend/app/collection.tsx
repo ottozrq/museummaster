@@ -1,5 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -11,6 +10,14 @@ import { useI18n } from "../src/i18n";
 const GOOGLE_IOS_CLIENT_ID =
   "577788424612-d3gutf0ru81i1tdrfdm5m21c27rvp27k.apps.googleusercontent.com";
 
+function getGoogleSignin() {
+  try {
+    return require("@react-native-google-signin/google-signin").GoogleSignin;
+  } catch {
+    return null;
+  }
+}
+
 export default function CollectionScreen() {
   const router = useRouter();
   const { t } = useI18n();
@@ -21,7 +28,8 @@ export default function CollectionScreen() {
   const [scanRemaining, setScanRemaining] = useState<number | null>(null);
 
   useEffect(() => {
-    GoogleSignin.configure({
+    const googleSignin = getGoogleSignin();
+    googleSignin?.configure?.({
       iosClientId: GOOGLE_IOS_CLIENT_ID,
     });
 
@@ -142,8 +150,14 @@ export default function CollectionScreen() {
   };
 
   const handleGoogleSignIn = async () => {
+    const googleSignin = getGoogleSignin();
+    if (!googleSignin) {
+      Alert.alert(t("collection.loginFailedTitle"), t("collection.googleUnavailable"));
+      return;
+    }
+
     try {
-      const signInResult = await GoogleSignin.signIn();
+      const signInResult = await googleSignin.signIn();
       const idToken = (signInResult as any)?.data?.idToken ?? (signInResult as any)?.idToken;
       if (!idToken) {
         Alert.alert(t("collection.loginFailedTitle"), t("collection.noGoogleCredential"));
@@ -175,16 +189,11 @@ export default function CollectionScreen() {
       await AsyncStorage.setItem("museum_auth_token", tokenResp.access_token);
       setAuthToken(tokenResp.access_token);
     } catch (e: any) {
-      if (e?.code === statusCodes?.SIGN_IN_CANCELLED) {
+      if (e?.code === "SIGN_IN_CANCELLED") {
         return;
       }
       Alert.alert(t("collection.loginFailedTitle"), e instanceof Error ? e.message : t("camera.unknownError"));
     }
-  };
-
-  const handleSignOut = async () => {
-    await AsyncStorage.removeItem("museum_auth_token");
-    setAuthToken(null);
   };
 
   useFocusEffect(
@@ -317,8 +326,11 @@ export default function CollectionScreen() {
                 ? t("collection.remainingScans", { count: scanRemaining })
                 : t("collection.signedInWithApple")}
             </Text>
-            <Pressable style={styles.authAction} onPress={handleSignOut}>
-              <Text style={styles.authActionText}>{t("collection.signOut")}</Text>
+            <Pressable
+              style={styles.authAction}
+              onPress={() => router.push("/settings" as any)}
+            >
+              <Text style={styles.authActionText}>{t("collection.settings")}</Text>
             </Pressable>
           </View>
         </View>

@@ -73,3 +73,15 @@ def test_reset_password(cl: ApiClient):
 
 def test_user(cl: ApiClient, user_admin: sm.User):
     assert m.User.from_response(cl("user")) == m.User.from_db(user_admin)
+
+
+def test_delete_my_account(cl: ApiClient):
+    cl.login()
+    resp = cl.delete("/users/me")
+    assert resp.status_code == status.HTTP_200_OK
+    assert resp.json() == {"success": True}
+
+    # 删除后，继续访问当前用户接口应失败。
+    # 这里直接走底层 client，避免 ApiClient.__call__ 里 refresh 已删除实例。
+    resp_after_delete = cl.client.request(method="GET", url="/user/")
+    assert resp_after_delete.status_code == status.HTTP_404_NOT_FOUND

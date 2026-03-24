@@ -1,3 +1,0 @@
-"NSCameraUsageDescription" = "Artiou uses the camera to capture exhibit photos so our AI can recognize the artwork and generate an audio/text guide. We don’t record video or capture anything without your action.";
-"NSPhotoLibraryUsageDescription" = "Artiou needs access to your photo library so you can choose an existing image for recognition and an AI guide. We only use the photo you select.";
-

@@ -52,7 +52,8 @@ def register(
 ):
     if m.User.db(db).query.filter_by(user_email=user.user_email).first():
         raise HTTPException(
-            status.HTTP_400_BAD_REQUEST, f"email already registered: {user.user_email}"
+            status.HTTP_400_BAD_REQUEST,
+            f"email already registered: {user.user_email}",
         )
 
     user_db = sm.User(
@@ -75,6 +76,10 @@ class ResetPasswordResponse(m.Model):
 class ResetPasswordRequest(m.Model):
     old_password: str
     new_password: str
+
+
+class DeleteAccountResponse(m.Model):
+    success: bool = True
 
 
 @app.post(
@@ -109,3 +114,20 @@ def user(
     user: sm.User = Depends(d.get_logged_in_user),
 ):
     return m.User.from_db(user)
+
+
+@app.delete(
+    "/users/me",
+    response_model=DeleteAccountResponse,
+    tags=[TAG.Users],
+)
+def delete_my_account(
+    db: MuseumDb = Depends(d.get_psql),
+    user: sm.User = Depends(d.get_logged_in_user),
+):
+    """
+    永久删除当前登录账号，用于满足平台账号删除合规要求。
+    """
+    db.session.delete(user)
+    db.session.commit()
+    return DeleteAccountResponse()

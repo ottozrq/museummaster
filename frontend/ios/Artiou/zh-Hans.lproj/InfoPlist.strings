@@ -1,3 +1,0 @@
-"NSCameraUsageDescription" = "Artiou 使用相机拍摄展品图片，用于 AI 识别作品并生成文字/语音讲解。我们不会在你未操作时自动拍摄，也不会录制视频。";
-"NSPhotoLibraryUsageDescription" = "Artiou 需要访问相册，以便你选择已有图片用于识别并生成 AI 讲解。我们只会使用你选中的那张照片。";
-

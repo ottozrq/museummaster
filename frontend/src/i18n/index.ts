@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { I18n } from "i18n-js";
-import * as RNLocalize from "react-native-localize";
 
 import { translations } from "./translations";
 
@@ -17,8 +16,7 @@ function normalizeLanguageTag(tag: string): AppLanguage {
 }
 
 function getSystemLanguage(): AppLanguage {
-  const locales = RNLocalize.getLocales?.() ?? [];
-  const first = locales[0]?.languageTag ?? locales[0]?.languageCode ?? "en";
+  const first = Intl.DateTimeFormat().resolvedOptions().locale || "en";
   return normalizeLanguageTag(first);
 }
 
@@ -37,16 +35,7 @@ export function useI18n() {
   }, [locale]);
 
   useEffect(() => {
-    const onChange = () => setLocale(getSystemLanguage());
-    // react-native-localize v3: addEventListener returns subscription with remove()
-    const sub = (RNLocalize as any).addEventListener?.("change", onChange);
-    return () => {
-      if (sub?.remove) {
-        sub.remove();
-        return;
-      }
-      (RNLocalize as any).removeEventListener?.("change", onChange);
-    };
+    setLocale(getSystemLanguage());
   }, []);
 
   const t = useMemo(() => {

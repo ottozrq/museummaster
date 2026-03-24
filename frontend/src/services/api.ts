@@ -276,6 +276,20 @@ export async function fetchMyFavorites(
   return response.json();
 }
 
+export async function deleteMyAccount(token: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/users/me`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`Delete account failed (${response.status}): ${err}`);
+  }
+}
+
 export async function fetchScanRecordById(scanId: string): Promise<ScanRecord> {
   const response = await fetch(`${API_BASE_URL}/scan-records/${scanId}`, {
     method: "GET",

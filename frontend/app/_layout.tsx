@@ -28,6 +28,10 @@ export default function RootLayout() {
         options={{ title: t("nav.collection"), headerShown: false }}
       />
       <Stack.Screen
+        name="settings"
+        options={{ title: t("nav.settings"), headerShown: false }}
+      />
+      <Stack.Screen
         name="privacy"
         options={{ title: t("nav.privacy"), headerShown: false }}
       />
