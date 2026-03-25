@@ -8,6 +8,7 @@ import jwt
 import sql_models as sm
 from src.routes.analyze import _analyze_prompt, _normalize_analyze_locale
 from utils.flags import MuseumFlags
+from utils.subscription import consume_quota_after_success, get_active_plan
 
 
 def test_normalize_analyze_locale():
@@ -101,26 +102,28 @@ def _seed_scan_records(session, user_id: str, count: int) -> None:
     session.commit()
 
 
-def test_analyze_daily_quota_allows_up_to_5(
+def test_analyze_daily_quota_allows_up_to_3(
     api_client_editor, mock_openai_success, sample_image_bytes
 ):
     user_id = str(api_client_editor.user.user_id)
-    _seed_scan_records(api_client_editor.session, user_id, 4)
+    _seed_scan_records(api_client_editor.session, user_id, 2)
 
     files = {"image": ("art.png", sample_image_bytes, "image/png")}
     response = api_client_editor.post("/analyze", files=files)
     assert response.status_code == 200
 
 
-def test_analyze_daily_quota_blocks_6th(
+def test_analyze_daily_quota_blocks_4th(
     api_client_editor, mock_openai_success, sample_image_bytes
 ):
     user_id = str(api_client_editor.user.user_id)
-    _seed_scan_records(api_client_editor.session, user_id, 5)
+    _seed_scan_records(api_client_editor.session, user_id, 3)
 
     files = {"image": ("art.png", sample_image_bytes, "image/png")}
     response = api_client_editor.post("/analyze", files=files, status=429)
-    assert response.json()["detail"].lower().find("quota") >= 0
+    detail = response.json()["detail"]
+    assert isinstance(detail, dict)
+    assert "quota" in (detail.get("message") or "").lower()
 
 
 def test_analyze_admin_unlimited(api_client, mock_openai_success, sample_image_bytes):
@@ -130,6 +133,112 @@ def test_analyze_admin_unlimited(api_client, mock_openai_success, sample_image_b
     files = {"image": ("art.png", sample_image_bytes, "image/png")}
     response = api_client.post("/analyze", files=files)
     assert response.status_code == 200
+
+
+def test_analyze_scan_pack_consumes_remaining(
+    api_client_editor, mock_openai_success, sample_image_bytes
+):
+    user_id = str(api_client_editor.user.user_id)
+    user_db = (
+        api_client_editor.session.query(sm.User)
+        .filter(sm.User.user_id == user_id)
+        .one()
+    )
+    user_db.extras = {
+        "subscription": {
+            "type": "scan_pack",
+            "scan_pack_total": 50,
+            "scan_pack_remaining": 1,
+        }
+    }
+    api_client_editor.session.add(user_db)
+    api_client_editor.session.commit()
+    sub0 = user_db.extras.get("subscription") or {}
+    assert isinstance(sub0.get("scan_pack_remaining"), (int, float))
+
+    quota0 = api_client_editor("/scan-quota/remaining")
+    assert quota0.status_code == 200
+    q = quota0.json()
+    assert q.get("plan") == "scan_pack"
+    assert q.get("remaining") == 1
+
+    # 第一次应允许，且成功后扣减 scan_pack_remaining
+    files = {"image": ("art.png", sample_image_bytes, "image/png")}
+    ok = api_client_editor.post("/analyze", files=files)
+    assert ok.status_code == 200
+
+    quota1 = api_client_editor("/scan-quota/remaining")
+    q1 = quota1.json()
+    assert q1.get("plan") == "free"
+    # free 每日 3 次，用掉 1 次后剩余 2 次
+    assert q1.get("remaining") == 2
+
+    api_client_editor.session.refresh(user_db)
+    sub = user_db.extras.get("subscription") or {}
+    assert sub.get("scan_pack_remaining") == 0
+
+
+def test_analyze_pro_unlimited_overrides_free_daily(
+    api_client_editor, mock_openai_success, sample_image_bytes
+):
+    user_id = str(api_client_editor.user.user_id)
+
+    # free 每日 3 次：先把额度用满
+    _seed_scan_records(api_client_editor.session, user_id, 3)
+
+    # 激活 pro，pro 不受每日额度影响
+    expires_ts = int((datetime.utcnow() + timedelta(days=40)).timestamp())
+    user_db = (
+        api_client_editor.session.query(sm.User)
+        .filter(sm.User.user_id == user_id)
+        .one()
+    )
+    user_db.extras = {
+        "subscription": {
+            "type": "pro_monthly",
+            "pro_expires_at_ts": expires_ts,
+        }
+    }
+    api_client_editor.session.add(user_db)
+    api_client_editor.session.commit()
+
+    files = {"image": ("art.png", sample_image_bytes, "image/png")}
+    response = api_client_editor.post("/analyze", files=files)
+    assert response.status_code == 200
+
+
+def test_consume_quota_scan_pack_decrements_remaining(api_client_editor):
+    user_id = str(api_client_editor.user.user_id)
+    user_db = (
+        api_client_editor.session.query(sm.User)
+        .filter(sm.User.user_id == user_id)
+        .one()
+    )
+    user_db.extras = {
+        "subscription": {
+            "type": "scan_pack",
+            "scan_pack_total": 50,
+            "scan_pack_remaining": 1,
+        }
+    }
+    api_client_editor.session.add(user_db)
+    api_client_editor.session.commit()
+
+    assert get_active_plan(user_db) == "scan_pack"
+
+    consume_quota_after_success(user_db, api_client_editor.db)
+    refreshed = (
+        api_client_editor.session.query(sm.User)
+        .filter(sm.User.user_id == user_id)
+        .one()
+    )
+    sub_after = refreshed.extras.get("subscription") or {}
+    assert sub_after.get("scan_pack_remaining") == 0
+    api_client_editor.session.commit()
+
+    api_client_editor.session.refresh(user_db)
+    sub = user_db.extras.get("subscription") or {}
+    assert sub.get("scan_pack_remaining") == 0
 
 
 def _create_committed_user(client, email: str) -> sm.User:
@@ -170,7 +279,7 @@ def test_analyze_http_saves_user_id_when_authorized(
     token = _make_access_token(user.user_id)
 
     files = {"image": ("art.png", sample_image_bytes, "image/png")}
-    for _ in range(5):
+    for _ in range(3):
         rec = client.post(
             "/analyze",
             files=files,
@@ -184,7 +293,9 @@ def test_analyze_http_saves_user_id_when_authorized(
         headers={"Authorization": f"Bearer {token}"},
     )
     assert blocked.status_code == 429
-    assert "quota" in blocked.json()["detail"].lower()
+    detail = blocked.json()["detail"]
+    assert isinstance(detail, dict)
+    assert "quota" in (detail.get("message") or "").lower()
 
 
 def test_analyze_ws_saves_user_id_when_authorized(
@@ -215,7 +326,7 @@ def test_analyze_ws_saves_user_id_when_authorized(
                 if msg.get("type") == "error":
                     return ("error", msg)
 
-    for _ in range(5):
+    for _ in range(3):
         kind, payload = _ws_once()
         assert kind == "done"
         assert payload.get("scan_id") is not None

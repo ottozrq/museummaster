@@ -196,11 +196,16 @@ export default function CollectionScreen() {
     }
   };
 
+  const handleSignOut = async () => {
+    await AsyncStorage.removeItem("museum_auth_token");
+    setAuthToken(null);
+  };
+
   useFocusEffect(
     useCallback(() => {
       load(authToken);
       void loadQuota(authToken);
-    }, [authToken, load]),
+    }, [authToken, load, loadQuota]),
   );
 
   const sections = useMemo(() => {
@@ -326,12 +331,20 @@ export default function CollectionScreen() {
                 ? t("collection.remainingScans", { count: scanRemaining })
                 : t("collection.signedInWithApple")}
             </Text>
-            <Pressable
-              style={styles.authAction}
-              onPress={() => router.push("/settings" as any)}
-            >
-              <Text style={styles.authActionText}>{t("collection.settings")}</Text>
-            </Pressable>
+            <View style={styles.authActions}>
+              <Pressable
+                style={styles.authAction}
+                onPress={() => router.push("/settings" as any)}
+              >
+                <Text style={styles.authActionText}>{t("collection.settings")}</Text>
+              </Pressable>
+              <Pressable style={styles.authAction} onPress={() => router.push("/subscription")}>
+                <Text style={styles.authActionText}>{t("nav.subscription")}</Text>
+              </Pressable>
+              <Pressable style={styles.authAction} onPress={handleSignOut}>
+                <Text style={styles.authActionText}>{t("collection.signOut")}</Text>
+              </Pressable>
+            </View>
           </View>
         </View>
       )}
@@ -393,7 +406,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingTop: 32,
+    paddingTop: 52,
     paddingBottom: 12,
   },
   headerTitleLine1: {
@@ -595,6 +608,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "#E2461B",
+  },
+  authActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   authActionText: {
     fontSize: 13,

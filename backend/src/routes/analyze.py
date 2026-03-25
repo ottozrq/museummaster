@@ -19,18 +19,21 @@ from fastapi import (
     WebSocketDisconnect,
 )
 from openai import AsyncOpenAI, OpenAI
-from sqlalchemy import func
 
 import sql_models as sm
 from src.routes import TAG, MuseumDb, app, d
 from utils import flags
 from utils.flags import GeminiFlags
+from utils.subscription import (
+    FREE_DAILY_SCAN_LIMIT,
+    consume_quota_after_success,
+    get_quota_remaining,
+)
 from utils.utils import postgres_session
 
 IMAGE_DIR = Path("static") / "uploads" / "scans"
 IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 
-DAILY_SCAN_LIMIT = 5
 GEMINI_FALLBACK_MODEL = "gemini-2.5-flash"
 
 
@@ -180,8 +183,7 @@ async def analyze_artwork(
 
     # 如果客户端没带 Authorization，则 user_id 可能仍为 None（匿名）。
 
-    # 已注册用户每天最多 5 次扫描
-    # 管理员不限制扫描次数
+    # 已注册用户走订阅额度规则：Free / Scan Pack / Pro
     user_role = getattr(user, "role", None) if user else None
     if user_role is None and user_id:
         # 某些情况下 request.user 可能解析不到，但我们仍能从 user_id 回查角色。
@@ -194,24 +196,27 @@ async def analyze_artwork(
         except Exception:
             user_role = None
 
-    if user_id and not _is_admin_role(user_role):
-        now = dt.datetime.now(dt.timezone.utc)
-        start = dt.datetime(now.year, now.month, now.day, tzinfo=dt.timezone.utc)
-        end = start + dt.timedelta(days=1)
-        used = (
-            db.session.query(func.count(sm.ScanRecord.scan_id))
-            .filter(
-                sm.ScanRecord.user_id == user_id,
-                sm.ScanRecord.inserted_at >= start,
-                sm.ScanRecord.inserted_at < end,
-            )
-            .scalar()
-            or 0
+    user_db: sm.User | None = (
+        user if user_id and user and getattr(user, "user_id", None) is not None else None
+    )
+    if user_db is None and user_id:
+        user_db = (
+            db.session.query(sm.User).filter(sm.User.user_id == user_id).one_or_none()
         )
-        if used >= DAILY_SCAN_LIMIT:
+
+    if user_db and not _is_admin_role(user_role):
+        now = dt.datetime.now(dt.timezone.utc)
+        quota = get_quota_remaining(user_db, db.session, now=now)
+        if quota["remaining"] <= 0:
+            is_free = quota["plan"] == "free"
             raise HTTPException(
                 status_code=429,
-                detail="Daily scan quota exceeded. Please try again tomorrow.",
+                detail={
+                    "code": is_free and "DAILY_SCAN_QUOTA_EXCEEDED" or "SCAN_PACK_QUOTA_EXCEEDED",
+                    "message": is_free
+                    and "Daily scan quota exceeded. Please try again tomorrow."
+                    or "Scan quota exhausted.",
+                },
             )
 
     # 保存原始图片到本地文件系统
@@ -269,6 +274,10 @@ async def analyze_artwork(
                 detail="Model returned empty response",
             )
         # 将本次扫描保存到数据库（图片 + 文本，语音后续可选）
+        if user_db and not _is_admin_role(user_role):
+            # 成功拿到识别结果后再扣减/二次校验，避免 OpenAI 失败时错误扣额度
+            consume_quota_after_success(user_db, db)
+
         record = sm.ScanRecord(
             user_id=user_id,
             artwork_code="unknown",
@@ -302,30 +311,30 @@ async def _send_error(ws: WebSocket, message: str, code: str | None = None) -> N
 def get_scan_quota_remaining(
     user: sm.User = Depends(d.get_logged_in_user),
     db: MuseumDb = Depends(d.get_psql),
-) -> Dict[str, int]:
+) -> Dict[str, Any]:
     """
     返回当前登录用户今日剩余可识别次数（UTC 口径）。
     """
     # 管理员不限制扫描次数：返回一个足够大的剩余值，避免前端展示“已用尽”。
     if _is_admin_role(getattr(user, "role", None)):
-        return {"limit": DAILY_SCAN_LIMIT, "used": 0, "remaining": 999999}
+        return {
+            "plan": "pro_monthly",
+            "limit": 999999,
+            "used": 0,
+            "remaining": 999999,
+        }
 
-    user_id = str(user.user_id)
     now = dt.datetime.now(dt.timezone.utc)
-    start = dt.datetime(now.year, now.month, now.day, tzinfo=dt.timezone.utc)
-    end = start + dt.timedelta(days=1)
-    used = (
-        db.session.query(func.count(sm.ScanRecord.scan_id))
-        .filter(
-            sm.ScanRecord.user_id == user_id,
-            sm.ScanRecord.inserted_at >= start,
-            sm.ScanRecord.inserted_at < end,
-        )
-        .scalar()
-        or 0
-    )
-    remaining = max(0, DAILY_SCAN_LIMIT - used)
-    return {"limit": DAILY_SCAN_LIMIT, "used": int(used), "remaining": int(remaining)}
+    quota = get_quota_remaining(user, db.session, now=now)
+    return {
+        "plan": quota["plan"],
+        "limit": quota["limit"],
+        "used": quota["used"],
+        "remaining": quota["remaining"],
+        "pro_expires_at_ts": quota["pro_expires_at_ts"],
+        "scan_pack_total": quota["scan_pack_total"],
+        "daily_limit": FREE_DAILY_SCAN_LIMIT,
+    }
 
 
 async def _handle_analyze_websocket(ws: WebSocket) -> None:
@@ -389,7 +398,7 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
         except Exception:
             user_uuid = None
 
-    # 已注册用户每天最多 5 次扫描
+    # 已注册用户走订阅额度规则：Free / Scan Pack / Pro
     if auth_token and not user_uuid:
         # 客户端传了 auth_token 但解不出 user_id：不要静默写 NULL user_id
         await _send_error(
@@ -398,9 +407,6 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
         return
 
     if user_uuid:
-        now = dt.datetime.now(dt.timezone.utc)
-        start = dt.datetime(now.year, now.month, now.day, tzinfo=dt.timezone.utc)
-        end = start + dt.timedelta(days=1)
         with postgres_session() as db:
             user_role = (
                 db.session.query(sm.User.role)
@@ -408,21 +414,31 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
                 .scalar()
             )
             if not _is_admin_role(user_role):
-                used = (
-                    db.session.query(func.count(sm.ScanRecord.scan_id))
-                    .filter(
-                        sm.ScanRecord.user_id == user_uuid,
-                        sm.ScanRecord.inserted_at >= start,
-                        sm.ScanRecord.inserted_at < end,
-                    )
-                    .scalar()
-                    or 0
+                user_db = (
+                    db.session.query(sm.User)
+                    .filter(sm.User.user_id == user_uuid)
+                    .one_or_none()
                 )
-                if used >= DAILY_SCAN_LIMIT:
+                if not user_db:
                     await _send_error(
                         ws,
-                        "Daily scan quota exceeded. Please try again tomorrow.",
-                        code="DAILY_SCAN_QUOTA_EXCEEDED",
+                        "Subscription not initialized.",
+                        code="SUBSCRIPTION_NOT_READY",
+                    )
+                    return
+                quota = get_quota_remaining(
+                    user_db, db.session, now=dt.datetime.now(dt.timezone.utc)
+                )
+                if quota["remaining"] <= 0:
+                    is_free = quota["plan"] == "free"
+                    await _send_error(
+                        ws,
+                        is_free
+                        and "Daily scan quota exceeded. Please try again tomorrow."
+                        or "Scan quota exhausted.",
+                        code=is_free
+                        and "DAILY_SCAN_QUOTA_EXCEEDED"
+                        or "SCAN_PACK_QUOTA_EXCEEDED",
                     )
                     return
 
@@ -492,6 +508,22 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
         # 将本次扫描保存到数据库（图片 + 文本）
         if full_text.strip():
             with postgres_session() as db:
+                if user_uuid:
+                    user_db = (
+                        db.session.query(sm.User)
+                        .filter(sm.User.user_id == user_uuid)
+                        .one_or_none()
+                    )
+                    if user_db and not _is_admin_role(getattr(user_db, "role", None)):
+                        try:
+                            consume_quota_after_success(user_db, db)
+                        except HTTPException as exc:
+                            detail = exc.detail if isinstance(exc.detail, dict) else {}
+                            code = detail.get("code") if isinstance(detail, dict) else None
+                            msg = detail.get("message") if isinstance(detail, dict) else None
+                            await _send_error(ws, msg or "Scan quota exhausted.", code=code)
+                            return
+
                 record = sm.ScanRecord(
                     user_id=user_uuid,
                     artwork_code="unknown",

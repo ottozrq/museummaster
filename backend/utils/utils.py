@@ -195,7 +195,12 @@ class _Connection(SingletonDatabaseConnection):
         )
 
     def prepped_session(self, session: Session) -> Session:
-        register(session.bind.raw_connection())
+        # postgis 在某些环境可能未安装或与 PostgreSQL 版本不兼容。
+        # 对大多数非 GIS 单测/场景应当允许降级运行。
+        try:
+            register(session.bind.raw_connection())
+        except Exception:
+            pass
         return super(_Connection, self).prepped_session(session)
 
 

@@ -104,8 +104,18 @@ export async function analyzeImage(
       try {
         const body = await response.json();
         const detail = body?.detail;
-        const err = new Error(typeof detail === "string" ? detail : "Daily scan quota exceeded");
-        (err as any).code = "DAILY_SCAN_QUOTA_EXCEEDED";
+        const code =
+          typeof detail === "object" && detail?.code
+            ? String(detail.code)
+            : "DAILY_SCAN_QUOTA_EXCEEDED";
+        const msg =
+          typeof detail === "object" && detail?.message
+            ? String(detail.message)
+            : typeof detail === "string"
+              ? detail
+              : "Scan quota exhausted.";
+        const err = new Error(msg);
+        (err as any).code = code;
         throw err;
       } catch {
         // fallback to text
@@ -307,6 +317,58 @@ export async function fetchScanRecordById(scanId: string): Promise<ScanRecord> {
     throw new Error(`Fetch scan record failed (${response.status}): ${err}`);
   }
 
+  return response.json();
+}
+
+export type SubscriptionCurrent = {
+  plan: string;
+  limit: number;
+  used: number;
+  remaining: number;
+  pro_expires_at_ts?: number | null;
+  scan_pack_total?: number | null;
+  scan_pack_remaining?: number | null;
+  daily_limit?: number | null;
+};
+
+export async function fetchSubscriptionCurrent(token: string): Promise<SubscriptionCurrent> {
+  const response = await fetch(`${API_BASE_URL}/subscription/current`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`Fetch subscription failed (${response.status}): ${err}`);
+  }
+  return response.json();
+}
+
+export type SubscriptionPlanType = "free" | "scan_pack" | "pro_monthly" | "pro_yearly";
+
+export async function activateSubscriptionPlan(
+  token: string,
+  plan_type: SubscriptionPlanType,
+  opts?: { scan_pack_remaining?: number },
+): Promise<SubscriptionCurrent> {
+  const response = await fetch(`${API_BASE_URL}/subscription/activate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      plan_type,
+      ...(plan_type === "scan_pack" && opts?.scan_pack_remaining != null
+        ? { scan_pack_remaining: opts.scan_pack_remaining }
+        : {}),
+    }),
+  });
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`Activate subscription failed (${response.status}): ${err}`);
+  }
   return response.json();
 }
 
