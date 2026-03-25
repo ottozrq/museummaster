@@ -54,6 +54,17 @@ class OpenAIFlags(Flags):
     tts_voice: str = "alloy"
 
 
+class GeminiFlags(Flags):
+    """Gemini API keys and model names. Env: GEMINI_*."""
+
+    _museumflags_key = "gemini"
+
+    api_key: str = ""
+    model: str = "gemini-2.5-flash"
+    # 使用 OpenAI 兼容接口访问 Gemini。
+    base_url: str = "https://generativelanguage.googleapis.com/v1beta/openai/"
+
+
 class AppleFlags(Flags):
     """Apple Sign-In. Env: APPLE_* (e.g. APPLE_CLIENT_ID)."""
 

@@ -41,9 +41,12 @@ class _FakeStreamingResponse:
 class FakeOpenAI:
     """Mock OpenAI client for analyze and TTS tests."""
 
-    def __init__(self, api_key: str = ""):
+    def __init__(self, api_key: str = "", **kwargs):
         self.api_key = api_key
         self.responses = SimpleNamespace(create=self._create_response)
+        self.chat = SimpleNamespace(
+            completions=SimpleNamespace(create=self._create_chat_completion)
+        )
         self.audio = SimpleNamespace(
             speech=SimpleNamespace(
                 create=self._create_speech,
@@ -56,6 +59,15 @@ class FakeOpenAI:
     def _create_response(self, **kw):
         return SimpleNamespace(output_text="Mocked analyze output")
 
+    def _create_chat_completion(self, **kw):
+        return SimpleNamespace(
+            choices=[
+                SimpleNamespace(
+                    message=SimpleNamespace(content="Mocked analyze output")
+                )
+            ]
+        )
+
     def _create_speech(self, **kw):
         return SimpleNamespace(read=lambda: b"fake-mp3-bytes")
 
@@ -66,9 +78,12 @@ class FakeAsyncOpenAI(FakeOpenAI):
     class _FakeStream:
         def __init__(self):
             self._events = [
-                SimpleNamespace(type="response.output_text.delta", delta="mock "),
-                SimpleNamespace(type="response.output_text.delta", delta="stream "),
-                SimpleNamespace(type="response.completed"),
+                SimpleNamespace(
+                    choices=[SimpleNamespace(delta=SimpleNamespace(content="mock "))]
+                ),
+                SimpleNamespace(
+                    choices=[SimpleNamespace(delta=SimpleNamespace(content="stream "))]
+                ),
             ]
 
         async def __aenter__(self):
@@ -84,12 +99,27 @@ class FakeAsyncOpenAI(FakeOpenAI):
 
             return gen()
 
-    def __init__(self, api_key: str = ""):
-        super().__init__(api_key=api_key)
-        # analyze WebSocket 流式路径会调用 responses.stream
+    def __init__(self, api_key: str = "", **kwargs):
+        super().__init__(api_key=api_key, **kwargs)
+        # analyze WebSocket 流式路径会调用 chat.completions.create(stream=True)
         self.responses = SimpleNamespace(
             create=self._create_response,
             stream=lambda **kw: FakeAsyncOpenAI._FakeStream(),
+        )
+
+        async def _create_chat_completion_async(**kw):
+            if kw.get("stream"):
+                return FakeAsyncOpenAI._FakeStream()
+            return SimpleNamespace(
+                choices=[
+                    SimpleNamespace(
+                        message=SimpleNamespace(content="Mocked analyze output")
+                    )
+                ]
+            )
+
+        self.chat = SimpleNamespace(
+            completions=SimpleNamespace(create=_create_chat_completion_async)
         )
 
     async def __aenter__(self):
@@ -111,20 +141,25 @@ def mock_openai_success(monkeypatch):
     from types import SimpleNamespace
 
     from src.routes import analyze, tts
-    from utils.flags import OpenAIFlags
+    from utils.flags import GeminiFlags, OpenAIFlags
 
     monkeypatch.setattr(analyze, "OpenAI", FakeOpenAI)
     monkeypatch.setattr(analyze, "AsyncOpenAI", FakeAsyncOpenAI)
     monkeypatch.setattr(tts, "OpenAI", FakeOpenAI)
 
-    # 同时 mock 掉 OpenAIFlags.get，提供一个假的配置，避免因 flags.test.yml 中 api_key 为空或缺少字段而报错
-    fake_flags = SimpleNamespace(
+    # 分别 mock 掉 Gemini/OpenAI flags，避免因测试配置中的空 key 触发 500。
+    fake_openai_flags = SimpleNamespace(
         api_key="test-key",
-        museum_model="gpt-4o",
         tts_model="gpt-4o-mini-tts",
         tts_voice="alloy",
     )
-    monkeypatch.setattr(OpenAIFlags, "get", classmethod(lambda cls: fake_flags))
+    fake_gemini_flags = SimpleNamespace(
+        api_key="test-key",
+        model="gemini-2.5-flash",
+        base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+    )
+    monkeypatch.setattr(OpenAIFlags, "get", classmethod(lambda cls: fake_openai_flags))
+    monkeypatch.setattr(GeminiFlags, "get", classmethod(lambda cls: fake_gemini_flags))
 
 
 @pytest.fixture

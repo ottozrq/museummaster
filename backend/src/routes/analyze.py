@@ -23,13 +23,24 @@ from sqlalchemy import func
 import sql_models as sm
 from src.routes import TAG, MuseumDb, app, d
 from utils import flags
-from utils.flags import OpenAIFlags
+from utils.flags import GeminiFlags
 from utils.utils import postgres_session
 
 IMAGE_DIR = Path("static") / "uploads" / "scans"
 IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 
 DAILY_SCAN_LIMIT = 5
+GEMINI_FALLBACK_MODEL = "gemini-2.5-flash"
+
+
+def _is_model_not_found_error(exc: Exception) -> bool:
+    message = str(exc).lower()
+    return "404" in message and (
+        "not_found" in message
+        or "no longer available" in message
+        or "model" in message
+        and "not found" in message
+    )
 
 
 def _is_admin_role(role: Any) -> bool:
@@ -63,9 +74,10 @@ def _save_image_bytes(image_bytes: bytes, mime_type: str) -> str:
 
 PROMPT = (
     "你是一位专业的博物馆讲解员。请分析这张艺术品图片，并用中文输出详细讲解。"
-    "内容必须包含并清晰分段："
+    "内容必须包含并清晰分段，且用简洁的语言表达："
     "1) 作品标题，2) 艺术家，3) 创作年份，4) 艺术风格，"
     "5) 历史背景，6) 艺术意义。如果信息不确定，请明确说明‘可能’并给出依据。"
+    "除了以上几点不要输出任何其他内容，介绍直接从作品标题开始。"
 )
 
 
@@ -77,7 +89,7 @@ async def analyze_artwork(
     user: Optional[sm.User] = Depends(d.get_optional_logged_in_user),
 ) -> Dict[str, str]:
     """
-    非流式 analyze：接收图片，用 OpenAI Responses API 生成讲解，返回 {"text": "..."}。
+    非流式 analyze：接收图片，用 Gemini Responses API 生成讲解，返回 {"text": "..."}。
     """
     content_type = image.content_type or "image/jpeg"
     if not content_type.startswith("image/"):
@@ -86,15 +98,15 @@ async def analyze_artwork(
             detail="Uploaded file must be an image",
         )
 
-    # 空文件校验必须放在 OpenAI/额度逻辑之前，
-    # 否则单测（空文件应返回 400）会先触发 OPENAI_API_KEY 缺失而返回 500。
+    # 空文件校验必须放在 Gemini/额度逻辑之前，
+    # 否则单测（空文件应返回 400）会先触发 GEMINI_API_KEY 缺失而返回 500。
     image_bytes = await image.read()
     if not image_bytes:
         raise HTTPException(status_code=400, detail="Image is empty")
 
-    openai_flags = OpenAIFlags.get()
-    if not openai_flags.api_key:
-        raise HTTPException(status_code=500, detail="OPENAI_API_KEY is not set")
+    gemini_flags = GeminiFlags.get()
+    if not gemini_flags.api_key:
+        raise HTTPException(status_code=500, detail="GEMINI_API_KEY is not set")
     user_id: Optional[str] = (
         str(user.user_id) if user and getattr(user, "user_id", None) else None
     )
@@ -163,23 +175,45 @@ async def analyze_artwork(
 
     image_b64 = base64.b64encode(image_bytes).decode("utf-8")
     image_url = f"data:{content_type};base64,{image_b64}"
-    client = OpenAI(api_key=openai_flags.api_key)
-    model = openai_flags.museum_model
+    client = OpenAI(api_key=gemini_flags.api_key, base_url=gemini_flags.base_url)
+    model = gemini_flags.model
 
     try:
-        response = client.responses.create(
+        completion = client.chat.completions.create(
             model=model,
-            input=[
+            messages=[
                 {
                     "role": "user",
                     "content": [
-                        {"type": "input_text", "text": PROMPT},
-                        {"type": "input_image", "image_url": image_url},
+                        {"type": "text", "text": PROMPT},
+                        {"type": "image_url", "image_url": {"url": image_url}},
                     ],
                 }
             ],
         )
-        result_text = response.output_text.strip()
+    except Exception as exc:
+        if model != GEMINI_FALLBACK_MODEL and _is_model_not_found_error(exc):
+            completion = client.chat.completions.create(
+                model=GEMINI_FALLBACK_MODEL,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": PROMPT},
+                            {"type": "image_url", "image_url": {"url": image_url}},
+                        ],
+                    }
+                ],
+            )
+        else:
+            raise
+    try:
+        result_text = (
+            (completion.choices[0].message.content or "")
+            if getattr(completion, "choices", None)
+            else ""
+        )
+        result_text = result_text.strip()
         if not result_text:
             raise HTTPException(
                 status_code=502,
@@ -251,9 +285,9 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
     服务端回 type=delta（delta, full）和 type=done。
     """
     await ws.accept()
-    openai_flags = OpenAIFlags.get()
-    if not openai_flags.api_key:
-        await _send_error(ws, "OPENAI_API_KEY is not set")
+    gemini_flags = GeminiFlags.get()
+    if not gemini_flags.api_key:
+        await _send_error(ws, "GEMINI_API_KEY is not set")
         return
 
     try:
@@ -353,36 +387,52 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
     image_path = _save_image_bytes(image_bytes, mime_type)
 
     image_url = f"data:{mime_type};base64,{image_b64}"
-    client = AsyncOpenAI(api_key=openai_flags.api_key)
-    model = openai_flags.museum_model
+    client = AsyncOpenAI(api_key=gemini_flags.api_key, base_url=gemini_flags.base_url)
+    model = gemini_flags.model
     full_text = ""
 
     try:
-        async with client.responses.stream(
+        stream = await client.chat.completions.create(
             model=model,
-            input=[
+            messages=[
                 {
                     "role": "user",
                     "content": [
-                        {"type": "input_text", "text": PROMPT},
-                        {"type": "input_image", "image_url": image_url},
+                        {"type": "text", "text": PROMPT},
+                        {"type": "image_url", "image_url": {"url": image_url}},
                     ],
                 }
             ],
-        ) as stream:
-            async for event in stream:
-                event_type = getattr(event, "type", None)
-                if event_type == "response.output_text.delta":
-                    delta = getattr(event, "delta", "") or ""
-                    if not delta:
-                        continue
-                    full_text += delta
-                    await ws.send_json(
-                        {"type": "delta", "delta": delta, "full": full_text}
-                    )
-                    await asyncio.sleep(0)  # yield so WebSocket flushes immediately
-                elif event_type == "response.completed":
-                    break
+            stream=True,
+        )
+    except Exception as exc:
+        if model != GEMINI_FALLBACK_MODEL and _is_model_not_found_error(exc):
+            stream = await client.chat.completions.create(
+                model=GEMINI_FALLBACK_MODEL,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": PROMPT},
+                            {"type": "image_url", "image_url": {"url": image_url}},
+                        ],
+                    }
+                ],
+                stream=True,
+            )
+        else:
+            raise
+    try:
+        async for chunk in stream:
+            choices = getattr(chunk, "choices", None) or []
+            if not choices:
+                continue
+            delta = getattr(choices[0].delta, "content", None) or ""
+            if not delta:
+                continue
+            full_text += delta
+            await ws.send_json({"type": "delta", "delta": delta, "full": full_text})
+            await asyncio.sleep(0)  # yield so WebSocket flushes immediately
 
         scan_id_str: Optional[str] = None
 

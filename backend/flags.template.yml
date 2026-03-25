@@ -6,9 +6,13 @@ museum:
 
 openai:
   api_key: ""
-  museum_model: gpt-4o
   tts_model: gpt-4o-mini-tts
   tts_voice: alloy
+
+gemini:
+  api_key: ""
+  model: gemini-2.5-flash
+  base_url: "https://generativelanguage.googleapis.com/v1beta/openai/"
 
 apple:
   client_id: ""

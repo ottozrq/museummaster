@@ -54,13 +54,17 @@ def test_analyze_openai_failure(client, mock_openai_failure, sample_image_bytes)
 
 
 def test_analyze_missing_api_key(client, monkeypatch, sample_image_bytes):
-    """When OpenAI api_key is empty, endpoint returns 500 with API_KEY in detail."""
+    """When Gemini api_key is empty, endpoint returns 500 with API_KEY in detail."""
     from types import SimpleNamespace
 
-    from utils.flags import OpenAIFlags
+    from utils.flags import GeminiFlags
 
-    fake_flags = SimpleNamespace(api_key="", museum_model="gpt-4o")
-    monkeypatch.setattr(OpenAIFlags, "get", classmethod(lambda cls: fake_flags))
+    fake_flags = SimpleNamespace(
+        api_key="",
+        model="gemini-2.5-flash",
+        base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+    )
+    monkeypatch.setattr(GeminiFlags, "get", classmethod(lambda cls: fake_flags))
     files = {"image": ("art.png", sample_image_bytes, "image/png")}
     response = client.post("/analyze", files=files)
     assert response.status_code == 500
