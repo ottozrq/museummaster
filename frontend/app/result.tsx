@@ -55,7 +55,9 @@ async function appendHistory(item: HistoryItem) {
 
 export default function ResultScreen() {
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const localeRef = useRef(locale);
+  localeRef.current = locale;
   const params = useLocalSearchParams<{
     text?: string;
     imageUri?: string;
@@ -148,7 +150,10 @@ export default function ResultScreen() {
 
     let cleanup: (() => void) | undefined;
 
-    analyzeImageStream(imageUri, handlers, { authToken: params.authToken ?? null })
+    analyzeImageStream(imageUri, handlers, {
+      authToken: params.authToken ?? null,
+      locale: localeRef.current,
+    })
       .then((stop) => {
         cleanup = stop;
       })

@@ -6,7 +6,23 @@ from datetime import datetime, timedelta
 import jwt
 
 import sql_models as sm
+from src.routes.analyze import _analyze_prompt, _normalize_analyze_locale
 from utils.flags import MuseumFlags
+
+
+def test_normalize_analyze_locale():
+    assert _normalize_analyze_locale(None) == "zh"
+    assert _normalize_analyze_locale("") == "zh"
+    assert _normalize_analyze_locale("en-US") == "en"
+    assert _normalize_analyze_locale("zh-Hans-CN") == "zh"
+    assert _normalize_analyze_locale("fr-CA") == "fr"
+    assert _normalize_analyze_locale("de") == "en"
+
+
+def test_analyze_prompt_matches_language_family():
+    assert "中文" in _analyze_prompt("zh")
+    assert "in English" in _analyze_prompt("en")
+    assert "en français" in _analyze_prompt("fr")
 
 
 def test_analyze_success(client, mock_openai_success, sample_image_bytes):

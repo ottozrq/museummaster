@@ -68,7 +68,10 @@ async function fakeAnalyzeImage(_: string): Promise<AnalyzeResponse> {
   };
 }
 
-export async function analyzeImage(uri: string): Promise<AnalyzeResponse> {
+export async function analyzeImage(
+  uri: string,
+  opts?: { locale?: string },
+): Promise<AnalyzeResponse> {
   if (USE_FAKE_ANALYZE) {
     return fakeAnalyzeImage(uri);
   }
@@ -85,6 +88,9 @@ export async function analyzeImage(uri: string): Promise<AnalyzeResponse> {
     name: fileName,
     type: mimeType,
   } as any);
+  if (opts?.locale) {
+    formData.append("locale", opts.locale);
+  }
 
   const response = await fetch(`${API_BASE_URL}/analyze`, {
     method: "POST",
@@ -115,7 +121,7 @@ export async function analyzeImage(uri: string): Promise<AnalyzeResponse> {
 export async function analyzeImageStream(
   uri: string,
   handlers: AnalyzeStreamHandlers,
-  opts?: { authToken?: string | null },
+  opts?: { authToken?: string | null; locale?: string },
 ): Promise<() => void> {
   if (USE_FAKE_ANALYZE) {
     const result = await fakeAnalyzeImage(uri);
@@ -147,6 +153,7 @@ export async function analyzeImageStream(
         type: "start",
         image_base64: base64,
         mime_type: mimeType,
+        ...(opts?.locale ? { locale: opts.locale } : {}),
         ...(authToken ? { auth_token: authToken } : {}),
       }),
     );

@@ -11,6 +11,7 @@ import jwt
 from fastapi import (
     Depends,
     File,
+    Form,
     HTTPException,
     Request,
     UploadFile,
@@ -72,19 +73,62 @@ def _save_image_bytes(image_bytes: bytes, mime_type: str) -> str:
     return f"/static/{relative.as_posix()}"
 
 
-PROMPT = (
-    "你是一位专业的博物馆讲解员。请分析这张艺术品图片，并用中文输出详细讲解。"
-    "内容必须包含并清晰分段，且用简洁的语言表达："
-    "1) 作品标题，2) 艺术家，3) 创作年份，4) 艺术风格，"
-    "5) 历史背景，6) 艺术意义。如果信息不确定，请明确说明‘可能’并给出依据。"
-    "除了以上几点不要输出任何其他内容，介绍直接从作品标题开始。"
-)
+def _normalize_analyze_locale(tag: Optional[str]) -> str:
+    """与前端 AppLanguage 对齐：zh / en / fr；未知或未提供时默认中文（兼容旧客户端）。"""
+    if not tag or not str(tag).strip():
+        return "zh"
+    lower = str(tag).strip().lower().replace("_", "-")
+    if lower.startswith("zh"):
+        return "zh"
+    if lower.startswith("fr"):
+        return "fr"
+    return "en"
+
+
+def _locale_from_accept_language(header: Optional[str]) -> Optional[str]:
+    if not header or not str(header).strip():
+        return None
+    first = str(header).split(",")[0].strip().split(";")[0].strip()
+    return first or None
+
+
+def _analyze_prompt(locale_code: str) -> str:
+    if locale_code == "en":
+        return (
+            "You are a professional museum guide. Analyze this artwork image and "
+            "write a detailed explanation in English. "
+            "The response must include these sections, clearly separated, in concise language: "
+            "1) Title of the work, 2) Artist, 3) Year or period, 4) Art style, "
+            "5) Historical context, 6) Artistic significance. "
+            "If information is uncertain, say it is possible or probable and give your reasoning. "
+            "Do not output anything beyond these points; begin directly with the work title."
+        )
+    if locale_code == "fr":
+        return (
+            "Tu es un guide de musée professionnel. Analyse cette image d'œuvre d'art et "
+            "rédige une explication détaillée en français. "
+            "Le contenu doit inclure et structurer clairement les rubriques suivantes, "
+            "dans un langage concis : "
+            "1) Titre de l'œuvre, 2) Artiste, 3) Année ou période, 4) Style artistique, "
+            "5) Contexte historique, 6) Importance artistique. "
+            "Si une information est incertaine, indique explicitement que c'est "
+            "« possible » ou « probable » et donne des éléments de justification. "
+            "Ne produis rien d'autre que ces points ; commence directement par le titre de l'œuvre."
+        )
+    return (
+        "你是一位专业的博物馆讲解员。请分析这张艺术品图片，并用中文输出详细讲解。"
+        "内容必须包含并清晰分段，且用简洁的语言表达："
+        "1) 作品标题，2) 艺术家，3) 创作年份，4) 艺术风格，"
+        "5) 历史背景，6) 艺术意义。如果信息不确定，请明确说明‘可能’并给出依据。"
+        "除了以上几点不要输出任何其他内容，介绍直接从作品标题开始。"
+    )
 
 
 @app.post("/analyze", tags=[TAG.Analyze])
 async def analyze_artwork(
     request: Request,
     image: UploadFile = File(...),
+    locale: Optional[str] = Form(None),
     db: MuseumDb = Depends(d.get_psql),
     user: Optional[sm.User] = Depends(d.get_optional_logged_in_user),
 ) -> Dict[str, str]:
@@ -178,6 +222,11 @@ async def analyze_artwork(
     client = OpenAI(api_key=gemini_flags.api_key, base_url=gemini_flags.base_url)
     model = gemini_flags.model
 
+    lang_tag = locale or _locale_from_accept_language(
+        request.headers.get("Accept-Language")
+    )
+    prompt_text = _analyze_prompt(_normalize_analyze_locale(lang_tag))
+
     try:
         completion = client.chat.completions.create(
             model=model,
@@ -185,7 +234,7 @@ async def analyze_artwork(
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": PROMPT},
+                        {"type": "text", "text": prompt_text},
                         {"type": "image_url", "image_url": {"url": image_url}},
                     ],
                 }
@@ -199,7 +248,7 @@ async def analyze_artwork(
                     {
                         "role": "user",
                         "content": [
-                            {"type": "text", "text": PROMPT},
+                            {"type": "text", "text": prompt_text},
                             {"type": "image_url", "image_url": {"url": image_url}},
                         ],
                     }
@@ -391,6 +440,10 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
     model = gemini_flags.model
     full_text = ""
 
+    raw_locale = init_msg.get("locale")
+    lang_tag = raw_locale if isinstance(raw_locale, str) else None
+    prompt_text = _analyze_prompt(_normalize_analyze_locale(lang_tag))
+
     try:
         stream = await client.chat.completions.create(
             model=model,
@@ -398,7 +451,7 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": PROMPT},
+                        {"type": "text", "text": prompt_text},
                         {"type": "image_url", "image_url": {"url": image_url}},
                     ],
                 }
@@ -413,7 +466,7 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
                     {
                         "role": "user",
                         "content": [
-                            {"type": "text", "text": PROMPT},
+                            {"type": "text", "text": prompt_text},
                             {"type": "image_url", "image_url": {"url": image_url}},
                         ],
                     }
