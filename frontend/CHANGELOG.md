@@ -1,3 +1,19 @@
+# [1.2.0](https://github.com/ottozrq/museummaster/compare/v1.1.0...v1.2.0) (2026-04-01)
+
+
+### Bug Fixes
+
+* admin no limit ([86e108e](https://github.com/ottozrq/museummaster/commit/86e108e1f9428bd894ccec9da24230d97e5ad7d7))
+* analyze localization ([0eec52d](https://github.com/ottozrq/museummaster/commit/0eec52deca82d2533c2e001401701fbaa165137f))
+* lint ([f0d52c0](https://github.com/ottozrq/museummaster/commit/f0d52c070b346f5af3d5114db0b696587440b362))
+* switch analyze model ([008387f](https://github.com/ottozrq/museummaster/commit/008387f8ebfa5d1e563fdfffb1b7329f4b42475a))
+* user deletion ([70b1f74](https://github.com/ottozrq/museummaster/commit/70b1f7400022ca0d175a125b49c784008dbab2eb))
+
+
+### Features
+
+* iap ([a0a35f3](https://github.com/ottozrq/museummaster/commit/a0a35f341b674e1be1298c982d01cb0908d5490f))
+
 # [1.1.0](https://github.com/ottozrq/museummaster/compare/v1.0.0...v1.1.0) (2026-03-19)
 
 
