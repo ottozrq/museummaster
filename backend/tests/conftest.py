@@ -213,9 +213,7 @@ def app():
             session.execute('create extension if not exists "postgis";')
         except Exception:
             session.rollback()
-        for extension in (
-            "uuid-ossp",
-        ):
+        for extension in ("uuid-ossp",):
             session.execute(f'create extension if not exists "{extension}";')
         for schema in {
             schema

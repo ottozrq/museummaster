@@ -123,7 +123,8 @@ def get_quota_remaining(
         scan_pack_remaining_val = sub.get("scan_pack_remaining")
         scan_pack_total = (
             scan_pack_total_val
-            if isinstance(scan_pack_total_val, (int, float)) and float(scan_pack_total_val) > 0
+            if isinstance(scan_pack_total_val, (int, float))
+            and float(scan_pack_total_val) > 0
             else SCAN_PACK_DEFAULT_TOTAL
         )
         scan_pack_remaining = (
@@ -154,7 +155,9 @@ def get_quota_remaining(
         limit=999999,
         used=0,
         remaining=999999,
-        pro_expires_at_ts=int(pro_expires_at_ts) if pro_expires_at_ts is not None else None,
+        pro_expires_at_ts=(
+            int(pro_expires_at_ts) if pro_expires_at_ts is not None else None
+        ),
         scan_pack_total=None,
     )
 
@@ -167,7 +170,9 @@ def _quota_exhausted_http(detail_code: str, message: str) -> HTTPException:
     )
 
 
-def consume_quota_after_success(user: sm.User, db, now: dt.datetime | None = None) -> None:
+def consume_quota_after_success(
+    user: sm.User, db, now: dt.datetime | None = None
+) -> None:
     """
     在一次 analyze 成功后调用：
     - free：再次检查今日剩余额度（避免并发导致超量）
@@ -225,4 +230,3 @@ def consume_quota_after_success(user: sm.User, db, now: dt.datetime | None = Non
     new_extras["subscription"] = new_sub
     locked.extras = new_extras
     db.session.add(locked)
-

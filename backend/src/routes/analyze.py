@@ -197,7 +197,9 @@ async def analyze_artwork(
             user_role = None
 
     user_db: sm.User | None = (
-        user if user_id and user and getattr(user, "user_id", None) is not None else None
+        user
+        if user_id and user and getattr(user, "user_id", None) is not None
+        else None
     )
     if user_db is None and user_id:
         user_db = (
@@ -212,7 +214,9 @@ async def analyze_artwork(
             raise HTTPException(
                 status_code=429,
                 detail={
-                    "code": is_free and "DAILY_SCAN_QUOTA_EXCEEDED" or "SCAN_PACK_QUOTA_EXCEEDED",
+                    "code": is_free
+                    and "DAILY_SCAN_QUOTA_EXCEEDED"
+                    or "SCAN_PACK_QUOTA_EXCEEDED",
                     "message": is_free
                     and "Daily scan quota exceeded. Please try again tomorrow."
                     or "Scan quota exhausted.",
@@ -519,9 +523,17 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
                             consume_quota_after_success(user_db, db)
                         except HTTPException as exc:
                             detail = exc.detail if isinstance(exc.detail, dict) else {}
-                            code = detail.get("code") if isinstance(detail, dict) else None
-                            msg = detail.get("message") if isinstance(detail, dict) else None
-                            await _send_error(ws, msg or "Scan quota exhausted.", code=code)
+                            code = (
+                                detail.get("code") if isinstance(detail, dict) else None
+                            )
+                            msg = (
+                                detail.get("message")
+                                if isinstance(detail, dict)
+                                else None
+                            )
+                            await _send_error(
+                                ws, msg or "Scan quota exhausted.", code=code
+                            )
                             return
 
                 record = sm.ScanRecord(

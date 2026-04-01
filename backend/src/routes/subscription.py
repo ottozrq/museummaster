@@ -6,12 +6,11 @@ from fastapi import Depends, HTTPException
 import sql_models as sm
 from src.routes import TAG, MuseumDb, app, d
 from utils.subscription import (
-    SCAN_PACK_DEFAULT_TOTAL,
     PRO_MONTHLY_DAYS,
     PRO_YEARLY_DAYS,
+    SCAN_PACK_DEFAULT_TOTAL,
     get_quota_remaining,
 )
-
 
 PlanType = Literal["free", "scan_pack", "pro_monthly", "pro_yearly"]
 
@@ -72,12 +71,20 @@ def activate_subscription(
         extras["subscription"] = {
             "type": "scan_pack",
             "scan_pack_total": SCAN_PACK_DEFAULT_TOTAL,
-            "scan_pack_remaining": int(payload.get("scan_pack_remaining") or SCAN_PACK_DEFAULT_TOTAL),
+            "scan_pack_remaining": int(
+                payload.get("scan_pack_remaining") or SCAN_PACK_DEFAULT_TOTAL
+            ),
         }
         if extras["subscription"]["scan_pack_remaining"] <= 0:
-            raise HTTPException(status_code=400, detail="scan_pack_remaining must be > 0")
-        if int(extras["subscription"]["scan_pack_remaining"]) > int(extras["subscription"]["scan_pack_total"]):
-            extras["subscription"]["scan_pack_remaining"] = int(extras["subscription"]["scan_pack_total"])
+            raise HTTPException(
+                status_code=400, detail="scan_pack_remaining must be > 0"
+            )
+        if int(extras["subscription"]["scan_pack_remaining"]) > int(
+            extras["subscription"]["scan_pack_total"]
+        ):
+            extras["subscription"]["scan_pack_remaining"] = int(
+                extras["subscription"]["scan_pack_total"]
+            )
     else:
         days = PRO_MONTHLY_DAYS if plan_type == "pro_monthly" else PRO_YEARLY_DAYS
         expires_ts = int((now + dt.timedelta(days=days)).timestamp())
@@ -102,4 +109,3 @@ def activate_subscription(
 
 
 __all__ = ["get_subscription_current", "activate_subscription"]
-
