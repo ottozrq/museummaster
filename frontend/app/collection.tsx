@@ -196,11 +196,6 @@ export default function CollectionScreen() {
     }
   };
 
-  const handleSignOut = async () => {
-    await AsyncStorage.removeItem("museum_auth_token");
-    setAuthToken(null);
-  };
-
   useFocusEffect(
     useCallback(() => {
       load(authToken);
@@ -340,9 +335,6 @@ export default function CollectionScreen() {
               </Pressable>
               <Pressable style={styles.authAction} onPress={() => router.push("/subscription")}>
                 <Text style={styles.authActionText}>{t("nav.subscription")}</Text>
-              </Pressable>
-              <Pressable style={styles.authAction} onPress={handleSignOut}>
-                <Text style={styles.authActionText}>{t("collection.signOut")}</Text>
               </Pressable>
             </View>
           </View>

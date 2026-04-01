@@ -1,10 +1,30 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { fetchSubscriptionCurrent, activateSubscriptionPlan, type SubscriptionCurrent, type SubscriptionPlanType } from "../src/services/api";
+import {
+  loadIosStoreCatalog,
+  purchaseIosPlanThenActivate,
+  storeDescriptionToDetailLines,
+  type StoreCatalog,
+} from "../src/iap/appleIap";
+import {
+  activateSubscriptionPlan,
+  fetchSubscriptionCurrent,
+  type SubscriptionCurrent,
+  type SubscriptionPlanType,
+} from "../src/services/api";
 import { useI18n } from "../src/i18n";
 
 const TOKEN_KEY = "museum_auth_token";
@@ -44,15 +64,22 @@ function PlanCard(props: {
   return (
     <View style={[styles.card, filled ? styles.cardFilled : styles.cardOutline]}>
       <View style={styles.cardTitleRow}>
-        <Text style={[styles.cardTitleMain, filled && styles.cardTitleMainFilled]}>{titleMain}</Text>
+        <Text
+          style={[styles.cardTitleMain, filled && styles.cardTitleMainFilled]}
+          numberOfLines={3}
+          adjustsFontSizeToFit
+          minimumFontScale={0.55}
+        >
+          {titleMain}
+        </Text>
         {titleSub ? <Text style={[styles.cardTitleSub, filled && styles.cardTitleSubFilled]}>{titleSub}</Text> : null}
       </View>
 
       <Text style={[styles.cardPrice, filled && styles.cardPriceFilled]}>{price}</Text>
 
       <View style={styles.cardDetailBlock}>
-        {details.map((line) => (
-          <Text key={line} style={[styles.cardDetailText, filled && styles.cardDetailTextFilled]}>
+        {details.map((line, idx) => (
+          <Text key={`${idx}-${line.slice(0, 24)}`} style={[styles.cardDetailText, filled && styles.cardDetailTextFilled]}>
             {line}
           </Text>
         ))}
@@ -89,6 +116,8 @@ export default function SubscriptionScreen() {
   const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState<SubscriptionCurrent | null>(null);
   const [activating, setActivating] = useState<SubscriptionPlanType | null>(null);
+  const [storeCatalog, setStoreCatalog] = useState<StoreCatalog>({});
+  const [storeCatalogReady, setStoreCatalogReady] = useState(Platform.OS !== "ios");
 
   useEffect(() => {
     let cancelled = false;
@@ -124,6 +153,29 @@ export default function SubscriptionScreen() {
     };
   }, [token]);
 
+  useEffect(() => {
+    if (Platform.OS !== "ios") {
+      setStoreCatalog({});
+      setStoreCatalogReady(true);
+      return;
+    }
+    let cancelled = false;
+    setStoreCatalogReady(false);
+    void (async () => {
+      try {
+        const cat = await loadIosStoreCatalog();
+        if (!cancelled) setStoreCatalog(cat);
+      } catch (e) {
+        console.warn("[IAP] loadIosStoreCatalog failed (subscription screen):", e);
+      } finally {
+        if (!cancelled) setStoreCatalogReady(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const activePlan: SubscriptionPlanType | null = useMemo(() => {
     if (!current?.plan) return null;
     const p = current.plan as SubscriptionPlanType;
@@ -133,12 +185,36 @@ export default function SubscriptionScreen() {
 
   const cards = useMemo(() => {
     const isCurrent = (p: SubscriptionPlanType) => activePlan === p;
+    const paidPrice = (plan: "scan_pack" | "pro_monthly" | "pro_yearly", fallback: string) => {
+      if (Platform.OS === "ios" && !storeCatalogReady) return t("subscription.priceLoading");
+      return storeCatalog[plan]?.localizedPrice ?? fallback;
+    };
+    const paidTitle = (plan: "scan_pack" | "pro_monthly" | "pro_yearly", fallbackMain: string, fallbackSub: string) => {
+      const info = storeCatalog[plan];
+      if (info?.title) {
+        return { main: info.title, sub: "" as const };
+      }
+      return { main: fallbackMain, sub: fallbackSub };
+    };
+    const paidDetails = (
+      plan: "scan_pack" | "pro_monthly" | "pro_yearly",
+      fallback: string[],
+    ): string[] => {
+      const desc = storeCatalog[plan]?.description ?? "";
+      const fromStore = storeDescriptionToDetailLines(desc);
+      return fromStore.length ? fromStore : fallback;
+    };
+
+    const sp = paidTitle("scan_pack", t("subscription.scanPackPlan"), "");
+    const pm = paidTitle("pro_monthly", t("subscription.proMonthlyPlan"), "");
+    const py = paidTitle("pro_yearly", t("subscription.proYearlyPlan"), "");
+
     return [
       {
         plan: "free" as const,
         titleMain: "FREE PLAN",
         titleSub: "",
-        price: "3 Scans / Day",
+        price: t("subscription.freePlanSubtitle"),
         details: ["* Basic artwork", "recognition"],
         badge: undefined as string | undefined,
         buttonText: isCurrent("free") ? "CURRENT PLAN" : "CHANGE PLAN",
@@ -148,10 +224,10 @@ export default function SubscriptionScreen() {
       },
       {
         plan: "scan_pack" as const,
-        titleMain: "SCAN PACK",
-        titleSub: "",
-        price: "€1.99",
-        details: ["* 50 Scans", "*Best for", "occasional visits"],
+        titleMain: sp.main,
+        titleSub: sp.sub,
+        price: paidPrice("scan_pack", t("subscription.scanPackPrice")),
+        details: paidDetails("scan_pack", ["* 50 Scans", "*Best for", "occasional visits"]),
         badge: undefined as string | undefined,
         buttonText: isCurrent("scan_pack") ? "CURRENT PLAN" : "CHANGE PLAN",
         note: undefined as string | undefined,
@@ -160,10 +236,10 @@ export default function SubscriptionScreen() {
       },
       {
         plan: "pro_monthly" as const,
-        titleMain: "PRO",
-        titleSub: "MONTHLY",
-        price: "€5.99 / Month",
-        details: ["* Unlimited scans", "*Perfect for", "museum lovers"],
+        titleMain: pm.main,
+        titleSub: pm.sub,
+        price: paidPrice("pro_monthly", t("subscription.proMonthlyPrice")),
+        details: paidDetails("pro_monthly", ["* Unlimited scans", "*Perfect for", "museum lovers"]),
         badge: "MOST POPULAR !",
         buttonText: isCurrent("pro_monthly") ? "CURRENT PLAN" : "START PRO",
         note: "Cancel anytime",
@@ -172,10 +248,10 @@ export default function SubscriptionScreen() {
       },
       {
         plan: "pro_yearly" as const,
-        titleMain: "PRO",
-        titleSub: "YEARLY",
-        price: "€59.99 / Year",
-        details: ["* Unlimited scans", "*Gain 16%"],
+        titleMain: py.main,
+        titleSub: py.sub,
+        price: paidPrice("pro_yearly", t("subscription.proYearlyPrice")),
+        details: paidDetails("pro_yearly", ["* Unlimited scans", "*Gain 16%"]),
         badge: undefined as string | undefined,
         buttonText: isCurrent("pro_yearly") ? "CURRENT PLAN" : "CHANGE PLAN",
         note: "Cancel anytime",
@@ -183,7 +259,12 @@ export default function SubscriptionScreen() {
         isCurrent: isCurrent("pro_yearly"),
       },
     ];
-  }, [activePlan]);
+  }, [activePlan, storeCatalog, storeCatalogReady, t]);
+
+  const showStoreCatalogHint = useMemo(() => {
+    if (Platform.OS !== "ios" || !storeCatalogReady) return false;
+    return !storeCatalog.scan_pack && !storeCatalog.pro_monthly && !storeCatalog.pro_yearly;
+  }, [storeCatalog, storeCatalogReady]);
 
   const onActivate = async (plan: SubscriptionPlanType) => {
     if (!token) {
@@ -192,12 +273,29 @@ export default function SubscriptionScreen() {
       ]);
       return;
     }
+    if (plan !== "free" && Platform.OS !== "ios") {
+      Alert.alert(t("subscription.title"), t("subscription.iosOnlyPurchase"));
+      return;
+    }
     try {
       setActivating(plan);
-      const data = await activateSubscriptionPlan(token, plan);
-      setCurrent(data);
+      if (plan === "free") {
+        const data = await activateSubscriptionPlan(token, plan);
+        setCurrent(data);
+      } else {
+        await purchaseIosPlanThenActivate(token, plan);
+        const data = await fetchSubscriptionCurrent(token);
+        setCurrent(data);
+      }
     } catch (e) {
-      Alert.alert(t("result.recognizeFailedTitle"), e instanceof Error ? e.message : t("camera.unknownError"));
+      if (e instanceof Error && e.message === "E_USER_CANCELLED") {
+        return;
+      }
+      const isIosOnly = e instanceof Error && e.message === "SUBSCRIPTION_IOS_ONLY";
+      Alert.alert(
+        t("result.recognizeFailedTitle"),
+        isIosOnly ? t("subscription.iosOnlyPurchase") : e instanceof Error ? e.message : t("camera.unknownError"),
+      );
     } finally {
       setActivating(null);
     }
@@ -239,6 +337,9 @@ export default function SubscriptionScreen() {
       </View>
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+        {showStoreCatalogHint ? (
+          <Text style={styles.storeHint}>{t("subscription.storeCatalogEmpty")}</Text>
+        ) : null}
         <View style={styles.grid}>
           {cards.map((c) => (
             <PlanCard
@@ -282,6 +383,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
+  },
+  storeHint: {
+    color: BRAND_RED,
+    fontSize: 12,
+    lineHeight: 16,
+    marginBottom: 12,
+    opacity: 0.92,
   },
   bottomBar: {
     alignItems: "center",

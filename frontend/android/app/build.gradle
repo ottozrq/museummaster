@@ -89,6 +89,7 @@ android {
 
     namespace 'com.ottozhang.artiou'
     defaultConfig {
+missingDimensionStrategy "store", "play"
         applicationId 'com.ottozhang.artiou'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion

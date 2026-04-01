@@ -102,22 +102,22 @@ def _seed_scan_records(session, user_id: str, count: int) -> None:
     session.commit()
 
 
-def test_analyze_daily_quota_allows_up_to_3(
+def test_analyze_daily_quota_allows_up_to_5(
     api_client_editor, mock_openai_success, sample_image_bytes
 ):
     user_id = str(api_client_editor.user.user_id)
-    _seed_scan_records(api_client_editor.session, user_id, 2)
+    _seed_scan_records(api_client_editor.session, user_id, 4)
 
     files = {"image": ("art.png", sample_image_bytes, "image/png")}
     response = api_client_editor.post("/analyze", files=files)
     assert response.status_code == 200
 
 
-def test_analyze_daily_quota_blocks_4th(
+def test_analyze_daily_quota_blocks_6th(
     api_client_editor, mock_openai_success, sample_image_bytes
 ):
     user_id = str(api_client_editor.user.user_id)
-    _seed_scan_records(api_client_editor.session, user_id, 3)
+    _seed_scan_records(api_client_editor.session, user_id, 5)
 
     files = {"image": ("art.png", sample_image_bytes, "image/png")}
     response = api_client_editor.post("/analyze", files=files, status=429)
@@ -170,8 +170,8 @@ def test_analyze_scan_pack_consumes_remaining(
     quota1 = api_client_editor("/scan-quota/remaining")
     q1 = quota1.json()
     assert q1.get("plan") == "free"
-    # free 每日 3 次，用掉 1 次后剩余 2 次
-    assert q1.get("remaining") == 2
+    # free 每日 5 次，用掉 1 次后剩余 4 次
+    assert q1.get("remaining") == 4
 
     api_client_editor.session.refresh(user_db)
     sub = user_db.extras.get("subscription") or {}
@@ -183,8 +183,8 @@ def test_analyze_pro_unlimited_overrides_free_daily(
 ):
     user_id = str(api_client_editor.user.user_id)
 
-    # free 每日 3 次：先把额度用满
-    _seed_scan_records(api_client_editor.session, user_id, 3)
+    # free 每日 5 次：先把额度用满
+    _seed_scan_records(api_client_editor.session, user_id, 5)
 
     # 激活 pro，pro 不受每日额度影响
     expires_ts = int((datetime.utcnow() + timedelta(days=40)).timestamp())
@@ -279,7 +279,7 @@ def test_analyze_http_saves_user_id_when_authorized(
     token = _make_access_token(user.user_id)
 
     files = {"image": ("art.png", sample_image_bytes, "image/png")}
-    for _ in range(3):
+    for _ in range(5):
         rec = client.post(
             "/analyze",
             files=files,
@@ -326,7 +326,7 @@ def test_analyze_ws_saves_user_id_when_authorized(
                 if msg.get("type") == "error":
                     return ("error", msg)
 
-    for _ in range(3):
+    for _ in range(5):
         kind, payload = _ws_once()
         assert kind == "done"
         assert payload.get("scan_id") is not None

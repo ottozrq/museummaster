@@ -4,6 +4,7 @@
     "slug": "museum-guide",
     "scheme": "museumguide",
     "version": "1.0.0",
+    "newArchEnabled": false,
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "icon": "./assets/icon.png",
@@ -36,7 +37,13 @@
       "expo-router",
       "expo-image-picker",
       "expo-audio",
-      "expo-apple-authentication"
+      "expo-apple-authentication",
+      [
+        "react-native-iap",
+        {
+          "paymentProvider": "Play Store"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

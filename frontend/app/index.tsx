@@ -167,7 +167,7 @@ export default function CameraScreen() {
       const dailyKey = `${SCAN_COUNT_KEY}_${getTodayKeyUTC()}`;
       const dailyRaw = await AsyncStorage.getItem(dailyKey);
       const dailyCount = dailyRaw ? Number.parseInt(dailyRaw, 10) || 0 : 0;
-      if (dailyCount >= 3) {
+      if (dailyCount >= 5) {
         Alert.alert(
           t("camera.freeScanLimitTitle"),
           t("camera.freeScanLimitText"),

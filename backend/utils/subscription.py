@@ -8,8 +8,8 @@ import sql_models as sm
 
 PlanType = Literal["free", "scan_pack", "pro_monthly", "pro_yearly"]
 
-# 图中规则：Free = 每日 3 次
-FREE_DAILY_SCAN_LIMIT = 3
+# 图中规则：Free = 每日 5 次
+FREE_DAILY_SCAN_LIMIT = 5
 
 # 图中规则：Scan Pack = 50 次
 SCAN_PACK_DEFAULT_TOTAL = 50
