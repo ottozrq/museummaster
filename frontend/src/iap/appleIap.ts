@@ -16,8 +16,8 @@ import { activateSubscriptionPlan, type SubscriptionPlanType } from "../services
 /** 与 App Store Connect 中 In-App Purchase 的 Product ID 一致 */
 export const APPLE_PRODUCT_IDS = {
   scan_pack: "com.ottozhang.artiou.scan_pack",
-  pro_monthly: "com.ottozhang.artiou.subscription.monthly.200",
-  pro_yearly: "com.ottozhang.artiou.subscription.yearly.200",
+  pro_monthly: "com.ottozhang.artiou.subscription.scan_pro.monthly",
+  pro_yearly: "com.ottozhang.artiou.subscription.scan_pro.ywarly",
 } as const;
 
 export type PaidPlanType = Exclude<SubscriptionPlanType, "free">;
