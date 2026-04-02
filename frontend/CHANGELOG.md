@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/ottozrq/museummaster/compare/v1.2.1...v1.2.2) (2026-04-02)
+
+
+### Bug Fixes
+
+* scan pack ([20bb98d](https://github.com/ottozrq/museummaster/commit/20bb98dda189a1f7a4f1c3d1e2635e0e7102811f))
+
 ## [1.2.1](https://github.com/ottozrq/museummaster/compare/v1.2.0...v1.2.1) (2026-04-02)
 
 
