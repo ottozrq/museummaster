@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   loadIosStoreCatalog,
   purchaseIosPlanThenActivate,
+  STORE_PRODUCT_UNAVAILABLE,
   storeDescriptionToDetailLines,
   type StoreCatalog,
 } from "../src/iap/appleIap";
@@ -292,9 +293,16 @@ export default function SubscriptionScreen() {
         return;
       }
       const isIosOnly = e instanceof Error && e.message === "SUBSCRIPTION_IOS_ONLY";
+      const storeUnavailable = e instanceof Error && e.message === STORE_PRODUCT_UNAVAILABLE;
       Alert.alert(
         t("result.recognizeFailedTitle"),
-        isIosOnly ? t("subscription.iosOnlyPurchase") : e instanceof Error ? e.message : t("camera.unknownError"),
+        isIosOnly
+          ? t("subscription.iosOnlyPurchase")
+          : storeUnavailable
+            ? t("subscription.storeCatalogEmpty")
+            : e instanceof Error
+              ? e.message
+              : t("camera.unknownError"),
       );
     } finally {
       setActivating(null);
@@ -353,7 +361,11 @@ export default function SubscriptionScreen() {
               note={c.note}
               theme={c.theme}
               onPress={() => onActivate(c.plan)}
-              disabled={c.isCurrent || activating !== null}
+              disabled={
+                c.isCurrent ||
+                activating !== null ||
+                (Platform.OS === "ios" && c.plan !== "free" && !storeCatalogReady)
+              }
             />
           ))}
         </View>

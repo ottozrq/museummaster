@@ -92,11 +92,8 @@ export async function loadIosStoreCatalog(): Promise<StoreCatalog> {
     console.warn("[IAP] initConnection returned false — StoreKit unavailable, catalog empty");
     return {};
   }
-  const subSkus = [
-    APPLE_PRODUCT_IDS.scan_pack,
-    APPLE_PRODUCT_IDS.pro_monthly,
-    APPLE_PRODUCT_IDS.pro_yearly,
-  ];
+  // Scan Pack 在 ASC 为消耗型/一次性 IAP → 仅 getProducts；勿放进 getSubscriptions
+  const subSkus = [APPLE_PRODUCT_IDS.pro_monthly, APPLE_PRODUCT_IDS.pro_yearly];
   let packProducts: Awaited<ReturnType<typeof getProducts>> = [];
   let subs: Awaited<ReturnType<typeof getSubscriptions>> = [];
   try {
@@ -126,7 +123,6 @@ export async function loadIosStoreCatalog(): Promise<StoreCatalog> {
     const description = "description" in s ? (s.description as string | undefined) : undefined;
     const info = pickInfo(s.productId, s.localizedPrice, title, description);
     if (!info) continue;
-    if (s.productId === APPLE_PRODUCT_IDS.scan_pack) out.scan_pack = info;
     if (s.productId === APPLE_PRODUCT_IDS.pro_monthly) out.pro_monthly = info;
     if (s.productId === APPLE_PRODUCT_IDS.pro_yearly) out.pro_yearly = info;
   }
@@ -136,6 +132,28 @@ export async function loadIosStoreCatalog(): Promise<StoreCatalog> {
 
 function skuForPaidPlan(plan: PaidPlanType): string {
   return APPLE_PRODUCT_IDS[plan];
+}
+
+/** App Store 未返回该 SKU（或未就绪）时抛出，供 UI 映射为本地化说明 */
+export const STORE_PRODUCT_UNAVAILABLE = "STORE_PRODUCT_UNAVAILABLE";
+
+/**
+ * iOS：StoreKit 1/2 的购买都依赖「先 getProducts / getSubscriptions 把商品放进原生缓存」，
+ * 否则 requestPurchase / requestSubscription 会报 Invalid product ID（与是否消耗型无关）。
+ * 须在每次购买前调用，避免用户抢在订阅页首次拉目录完成前点击。
+ */
+async function ensureIosSkuLoadedBeforePurchase(plan: PaidPlanType, sku: string): Promise<void> {
+  if (plan === "scan_pack") {
+    const products = await getProducts({ skus: [sku] });
+    if (!products?.length) {
+      throw new Error(STORE_PRODUCT_UNAVAILABLE);
+    }
+    return;
+  }
+  const subs = await getSubscriptions({ skus: [sku] });
+  if (!subs?.length) {
+    throw new Error(STORE_PRODUCT_UNAVAILABLE);
+  }
 }
 
 function normalizePurchase(result: Purchase | Purchase[] | void | null): Purchase | null {
@@ -160,18 +178,15 @@ export async function purchaseIosPlanThenActivate(token: string, plan: PaidPlanT
   const sku = skuForPaidPlan(plan);
   const autoFinish = false;
   try {
+    await ensureIosSkuLoadedBeforePurchase(plan, sku);
     let purchase: Purchase | null = null;
     if (plan === "scan_pack") {
-      try {
-        purchase = normalizePurchase(
-          await requestPurchase({ sku, andDangerouslyFinishTransactionAutomaticallyIOS: autoFinish }),
-        );
-      } catch (e) {
-        if (isUserCancelled(e)) throw e;
-        purchase = normalizePurchase(
-          await requestSubscription({ sku, andDangerouslyFinishTransactionAutomaticallyIOS: autoFinish }),
-        );
-      }
+      purchase = normalizePurchase(
+        await requestPurchase({
+          sku,
+          andDangerouslyFinishTransactionAutomaticallyIOS: autoFinish,
+        }),
+      );
     } else {
       purchase = normalizePurchase(
         await requestSubscription({ sku, andDangerouslyFinishTransactionAutomaticallyIOS: autoFinish }),
