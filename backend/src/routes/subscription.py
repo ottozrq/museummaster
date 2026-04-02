@@ -7,10 +7,10 @@ import sql_models as sm
 from src.routes import TAG, MuseumDb, app, d
 from utils.subscription import (
     PRO_MONTHLY_DAYS,
-    PRO_YEARLY_DAYS,
-    SCAN_PACK_DEFAULT_TOTAL,
     PRO_MONTHLY_SCAN_LIMIT,
+    PRO_YEARLY_DAYS,
     PRO_YEARLY_SCAN_LIMIT,
+    SCAN_PACK_DEFAULT_TOTAL,
     get_quota_remaining,
 )
 
@@ -66,10 +66,7 @@ def activate_subscription(
 
     now = dt.datetime.now(dt.timezone.utc)
     extras = dict(getattr(user, "extras", None) or {})
-    if (
-        "subscription" in extras
-        and not isinstance(extras["subscription"], dict)
-    ):
+    if "subscription" in extras and not isinstance(extras["subscription"], dict):
         extras.pop("subscription", None)
 
     if plan_type == "free":
@@ -93,11 +90,7 @@ def activate_subscription(
                 extras["subscription"]["scan_pack_total"]
             )
     else:
-        days = (
-            PRO_MONTHLY_DAYS
-            if plan_type == "pro_monthly"
-            else PRO_YEARLY_DAYS
-        )
+        days = PRO_MONTHLY_DAYS if plan_type == "pro_monthly" else PRO_YEARLY_DAYS
         expires_ts = int((now + dt.timedelta(days=days)).timestamp())
         scan_total = (
             PRO_MONTHLY_SCAN_LIMIT

@@ -154,25 +154,17 @@ def get_quota_remaining(
         pro_expires_at_ts = None
 
     default_total = (
-        PRO_MONTHLY_SCAN_LIMIT
-        if plan == "pro_monthly"
-        else PRO_YEARLY_SCAN_LIMIT
+        PRO_MONTHLY_SCAN_LIMIT if plan == "pro_monthly" else PRO_YEARLY_SCAN_LIMIT
     )
     pro_scan_total_val = sub.get("pro_scan_total")
     pro_scan_remaining_val = sub.get("pro_scan_remaining")
 
     pro_scan_total = int(default_total)
-    if (
-        isinstance(pro_scan_total_val, (int, float))
-        and pro_scan_total_val > 0
-    ):
+    if isinstance(pro_scan_total_val, (int, float)) and pro_scan_total_val > 0:
         pro_scan_total = int(pro_scan_total_val)
 
     pro_scan_remaining = int(default_total)
-    if (
-        isinstance(pro_scan_remaining_val, (int, float))
-        and pro_scan_remaining_val >= 0
-    ):
+    if isinstance(pro_scan_remaining_val, (int, float)) and pro_scan_remaining_val >= 0:
         pro_scan_remaining = int(pro_scan_remaining_val)
     # 防御：remaining 不能超过 total
     pro_scan_remaining = min(pro_scan_remaining, pro_scan_total)
@@ -220,17 +212,11 @@ def consume_quota_after_success(
             .one()
         )
         current_extras = getattr(locked, "extras", None)
-        extras_dict = (
-            current_extras
-            if isinstance(current_extras, dict)
-            else {}
-        )
+        extras_dict = current_extras if isinstance(current_extras, dict) else {}
         sub = _subscription_dict(extras_dict)
 
         default_total = (
-            PRO_MONTHLY_SCAN_LIMIT
-            if plan == "pro_monthly"
-            else PRO_YEARLY_SCAN_LIMIT
+            PRO_MONTHLY_SCAN_LIMIT if plan == "pro_monthly" else PRO_YEARLY_SCAN_LIMIT
         )
         total_val = sub.get("pro_scan_total")
         remaining_val = sub.get("pro_scan_remaining")
@@ -278,9 +264,7 @@ def consume_quota_after_success(
         if int(used) >= FREE_DAILY_SCAN_LIMIT:
             raise _quota_exhausted_http(
                 detail_code="DAILY_SCAN_QUOTA_EXCEEDED",
-                message=(
-                    "Daily scan quota exceeded. Please try again tomorrow."
-                ),
+                message=("Daily scan quota exceeded. Please try again tomorrow."),
             )
         return
 

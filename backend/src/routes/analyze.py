@@ -213,9 +213,7 @@ async def analyze_artwork(
             plan = quota["plan"]
             if plan == "free":
                 detail_code = "DAILY_SCAN_QUOTA_EXCEEDED"
-                detail_message = (
-                    "Daily scan quota exceeded. Please try again tomorrow."
-                )
+                detail_message = "Daily scan quota exceeded. Please try again tomorrow."
             elif plan == "scan_pack":
                 detail_code = "SCAN_PACK_QUOTA_EXCEEDED"
                 detail_message = "Scan pack quota exhausted."
@@ -447,9 +445,7 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
                     plan = quota["plan"]
                     if plan == "free":
                         code = "DAILY_SCAN_QUOTA_EXCEEDED"
-                        msg = (
-                            "Daily scan quota exceeded. Please try again tomorrow."
-                        )
+                        msg = "Daily scan quota exceeded. Please try again tomorrow."
                     elif plan == "scan_pack":
                         code = "SCAN_PACK_QUOTA_EXCEEDED"
                         msg = "Scan pack quota exhausted."
@@ -459,9 +455,7 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
                     else:
                         code = "QUOTA_EXCEEDED"
                         msg = "Quota exhausted."
-                    await _send_error(
-                        ws, msg, code=code
-                    )
+                    await _send_error(ws, msg, code=code)
                     return
 
     try:

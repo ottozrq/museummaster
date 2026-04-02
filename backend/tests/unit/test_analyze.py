@@ -63,9 +63,7 @@ def test_analyze_without_file(client):
     assert response.status_code == 422
 
 
-def test_analyze_openai_failure(
-    client, mock_openai_failure, sample_image_bytes
-):
+def test_analyze_openai_failure(client, mock_openai_failure, sample_image_bytes):
     files = {"image": ("art.png", sample_image_bytes, "image/png")}
     response = client.post("/analyze", files=files)
     assert response.status_code == 500
@@ -133,9 +131,7 @@ def test_analyze_daily_quota_blocks_6th(
     assert "quota" in (detail.get("message") or "").lower()
 
 
-def test_analyze_admin_unlimited(
-    api_client, mock_openai_success, sample_image_bytes
-):
+def test_analyze_admin_unlimited(api_client, mock_openai_success, sample_image_bytes):
     user_id = str(api_client.user.user_id)
     _seed_scan_records(api_client.session, user_id, 5)
 
