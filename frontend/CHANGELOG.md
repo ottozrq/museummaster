@@ -1,3 +1,12 @@
+## [1.2.1](https://github.com/ottozrq/museummaster/compare/v1.2.0...v1.2.1) (2026-04-02)
+
+
+### Bug Fixes
+
+* iap plans ([2c3cb9e](https://github.com/ottozrq/museummaster/commit/2c3cb9e1b701d5ad3a020a46ab03b9e78485f908))
+* lint ([0dd70b4](https://github.com/ottozrq/museummaster/commit/0dd70b4a1afc26c6b444066d20d4b49c06584fed))
+* scan plan rules ([204498c](https://github.com/ottozrq/museummaster/commit/204498c1a07265ad0f08d5153705d239dde5caa7))
+
 # [1.2.0](https://github.com/ottozrq/museummaster/compare/v1.1.0...v1.2.0) (2026-04-01)
 
 
