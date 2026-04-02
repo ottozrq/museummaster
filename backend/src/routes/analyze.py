@@ -210,16 +210,26 @@ async def analyze_artwork(
         now = dt.datetime.now(dt.timezone.utc)
         quota = get_quota_remaining(user_db, db.session, now=now)
         if quota["remaining"] <= 0:
-            is_free = quota["plan"] == "free"
+            plan = quota["plan"]
+            if plan == "free":
+                detail_code = "DAILY_SCAN_QUOTA_EXCEEDED"
+                detail_message = (
+                    "Daily scan quota exceeded. Please try again tomorrow."
+                )
+            elif plan == "scan_pack":
+                detail_code = "SCAN_PACK_QUOTA_EXCEEDED"
+                detail_message = "Scan pack quota exhausted."
+            elif plan in ("pro_monthly", "pro_yearly"):
+                detail_code = "PRO_QUOTA_EXCEEDED"
+                detail_message = "Pro scan quota exhausted."
+            else:
+                detail_code = "QUOTA_EXCEEDED"
+                detail_message = "Quota exhausted."
             raise HTTPException(
                 status_code=429,
                 detail={
-                    "code": is_free
-                    and "DAILY_SCAN_QUOTA_EXCEEDED"
-                    or "SCAN_PACK_QUOTA_EXCEEDED",
-                    "message": is_free
-                    and "Daily scan quota exceeded. Please try again tomorrow."
-                    or "Scan quota exhausted.",
+                    "code": detail_code,
+                    "message": detail_message,
                 },
             )
 
@@ -434,15 +444,23 @@ async def _handle_analyze_websocket(ws: WebSocket) -> None:
                     user_db, db.session, now=dt.datetime.now(dt.timezone.utc)
                 )
                 if quota["remaining"] <= 0:
-                    is_free = quota["plan"] == "free"
+                    plan = quota["plan"]
+                    if plan == "free":
+                        code = "DAILY_SCAN_QUOTA_EXCEEDED"
+                        msg = (
+                            "Daily scan quota exceeded. Please try again tomorrow."
+                        )
+                    elif plan == "scan_pack":
+                        code = "SCAN_PACK_QUOTA_EXCEEDED"
+                        msg = "Scan pack quota exhausted."
+                    elif plan in ("pro_monthly", "pro_yearly"):
+                        code = "PRO_QUOTA_EXCEEDED"
+                        msg = "Pro scan quota exhausted."
+                    else:
+                        code = "QUOTA_EXCEEDED"
+                        msg = "Quota exhausted."
                     await _send_error(
-                        ws,
-                        is_free
-                        and "Daily scan quota exceeded. Please try again tomorrow."
-                        or "Scan quota exhausted.",
-                        code=is_free
-                        and "DAILY_SCAN_QUOTA_EXCEEDED"
-                        or "SCAN_PACK_QUOTA_EXCEEDED",
+                        ws, msg, code=code
                     )
                     return
 

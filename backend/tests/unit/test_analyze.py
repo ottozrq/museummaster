@@ -63,7 +63,9 @@ def test_analyze_without_file(client):
     assert response.status_code == 422
 
 
-def test_analyze_openai_failure(client, mock_openai_failure, sample_image_bytes):
+def test_analyze_openai_failure(
+    client, mock_openai_failure, sample_image_bytes
+):
     files = {"image": ("art.png", sample_image_bytes, "image/png")}
     response = client.post("/analyze", files=files)
     assert response.status_code == 500
@@ -71,7 +73,8 @@ def test_analyze_openai_failure(client, mock_openai_failure, sample_image_bytes)
 
 
 def test_analyze_missing_api_key(client, monkeypatch, sample_image_bytes):
-    """When Gemini api_key is empty, endpoint returns 500 with API_KEY in detail."""
+    """When Gemini api_key is empty, endpoint returns 500
+    with API_KEY in detail."""
     from types import SimpleNamespace
 
     from utils.flags import GeminiFlags
@@ -81,7 +84,11 @@ def test_analyze_missing_api_key(client, monkeypatch, sample_image_bytes):
         model="gemini-2.5-flash",
         base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
     )
-    monkeypatch.setattr(GeminiFlags, "get", classmethod(lambda cls: fake_flags))
+    monkeypatch.setattr(
+        GeminiFlags,
+        "get",
+        classmethod(lambda cls: fake_flags),
+    )
     files = {"image": ("art.png", sample_image_bytes, "image/png")}
     response = client.post("/analyze", files=files)
     assert response.status_code == 500
@@ -126,7 +133,9 @@ def test_analyze_daily_quota_blocks_6th(
     assert "quota" in (detail.get("message") or "").lower()
 
 
-def test_analyze_admin_unlimited(api_client, mock_openai_success, sample_image_bytes):
+def test_analyze_admin_unlimited(
+    api_client, mock_openai_success, sample_image_bytes
+):
     user_id = str(api_client.user.user_id)
     _seed_scan_records(api_client.session, user_id, 5)
 
@@ -197,6 +206,8 @@ def test_analyze_pro_unlimited_overrides_free_daily(
         "subscription": {
             "type": "pro_monthly",
             "pro_expires_at_ts": expires_ts,
+            "pro_scan_total": 200,
+            "pro_scan_remaining": 200,
         }
     }
     api_client_editor.session.add(user_db)

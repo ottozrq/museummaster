@@ -105,7 +105,7 @@ export const translations = {
       scanPackSubtitle: "50 Scans",
       proMonthlyPrice: "€5.99 / month",
       proYearlyPrice: "€59.99 / year",
-      proSubtitle: "Unlimited scans",
+      proSubtitle: "200 scans / month",
       iosOnlyPurchase:
         "In-app purchases are only available on the iOS app. Please use an iPhone or iPad with the App Store version.",
       priceLoading: "Loading price…",
@@ -377,7 +377,7 @@ Email: legal@example.com
       scanPackSubtitle: "共 50 次识别",
       proMonthlyPrice: "€5.99 / 月",
       proYearlyPrice: "€59.99 / 年",
-      proSubtitle: "无限次数识别",
+      proSubtitle: "每月 200 次识别",
       iosOnlyPurchase: "应用内购买仅支持 iOS 正式版。请在 iPhone 或 iPad 上使用 App Store 版本购买。",
       priceLoading: "正在加载价格…",
       storeCatalogEmpty:
@@ -650,7 +650,7 @@ Artiou 提供：
       scanPackSubtitle: "50 scans",
       proMonthlyPrice: "€5,99 / mois",
       proYearlyPrice: "€59,99 / an",
-      proSubtitle: "Scans illimités",
+      proSubtitle: "200 scans / mois",
       iosOnlyPurchase:
         "Les achats intégrés sont disponibles uniquement sur l’app iOS (App Store). Utilisez un iPhone ou un iPad.",
       priceLoading: "Chargement du prix…",

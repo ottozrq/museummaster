@@ -17,6 +17,11 @@ SCAN_PACK_DEFAULT_TOTAL = 50
 PRO_MONTHLY_DAYS = 30
 PRO_YEARLY_DAYS = 365
 
+# pro 扫描额度（每次 analyze 成功扣减 1）
+PRO_MONTHLY_SCAN_LIMIT = 200
+# 默认理解：年订也是“每月 200 次”，即一年 2400 次
+PRO_YEARLY_SCAN_LIMIT = 200 * 12
+
 
 class QuotaResponse(TypedDict):
     plan: PlanType
@@ -87,7 +92,7 @@ def get_quota_remaining(
     now: dt.datetime | None = None,
 ) -> QuotaResponse:
     """
-    返回当前用户的识别额度（UTC 口径，只对 free 使用每日统计）。
+    返回当前用户的识别额度（UTC 口径：free 为每日统计，pro/scan_pack 为“剩余次数”统计）。
     """
     now = _now_utc(now)
     plan = get_active_plan(user, now=now)
@@ -143,18 +148,41 @@ def get_quota_remaining(
             scan_pack_total=int(scan_pack_total),
         )
 
-    # pro_*：无限制
-    pro_expires_at_ts = (
-        sub.get("pro_expires_at_ts") if plan in ("pro_monthly", "pro_yearly") else None
-    )
+    # pro_*：按订阅周期限制次数
+    pro_expires_at_ts = sub.get("pro_expires_at_ts")
     if not isinstance(pro_expires_at_ts, (int, float)):
         pro_expires_at_ts = None
 
+    default_total = (
+        PRO_MONTHLY_SCAN_LIMIT
+        if plan == "pro_monthly"
+        else PRO_YEARLY_SCAN_LIMIT
+    )
+    pro_scan_total_val = sub.get("pro_scan_total")
+    pro_scan_remaining_val = sub.get("pro_scan_remaining")
+
+    pro_scan_total = int(default_total)
+    if (
+        isinstance(pro_scan_total_val, (int, float))
+        and pro_scan_total_val > 0
+    ):
+        pro_scan_total = int(pro_scan_total_val)
+
+    pro_scan_remaining = int(default_total)
+    if (
+        isinstance(pro_scan_remaining_val, (int, float))
+        and pro_scan_remaining_val >= 0
+    ):
+        pro_scan_remaining = int(pro_scan_remaining_val)
+    # 防御：remaining 不能超过 total
+    pro_scan_remaining = min(pro_scan_remaining, pro_scan_total)
+
+    used = max(0, pro_scan_total - pro_scan_remaining)
     return QuotaResponse(
         plan=plan,
-        limit=999999,
-        used=0,
-        remaining=999999,
+        limit=int(pro_scan_total),
+        used=int(used),
+        remaining=int(max(0, pro_scan_remaining)),
         pro_expires_at_ts=(
             int(pro_expires_at_ts) if pro_expires_at_ts is not None else None
         ),
@@ -177,12 +205,61 @@ def consume_quota_after_success(
     在一次 analyze 成功后调用：
     - free：再次检查今日剩余额度（避免并发导致超量）
     - scan_pack：扣减 scan_pack_remaining（并发使用 SELECT ... FOR UPDATE）
-    - pro：不扣减
+    - pro：扣减 pro_scan_remaining
     """
     now = _now_utc(now)
     plan = get_active_plan(user, now=now)
 
     if plan == "pro_monthly" or plan == "pro_yearly":
+        # 并发下强一致扣减：只扣减 1 次
+        user_id = str(user.user_id)
+        locked = (
+            db.session.query(sm.User)
+            .filter(sm.User.user_id == user_id)
+            .with_for_update()
+            .one()
+        )
+        current_extras = getattr(locked, "extras", None)
+        extras_dict = (
+            current_extras
+            if isinstance(current_extras, dict)
+            else {}
+        )
+        sub = _subscription_dict(extras_dict)
+
+        default_total = (
+            PRO_MONTHLY_SCAN_LIMIT
+            if plan == "pro_monthly"
+            else PRO_YEARLY_SCAN_LIMIT
+        )
+        total_val = sub.get("pro_scan_total")
+        remaining_val = sub.get("pro_scan_remaining")
+
+        total = (
+            int(total_val)
+            if isinstance(total_val, (int, float)) and total_val > 0
+            else int(default_total)
+        )
+        remaining = (
+            int(remaining_val)
+            if isinstance(remaining_val, (int, float)) and remaining_val >= 0
+            else int(total)
+        )
+
+        if remaining <= 0:
+            raise _quota_exhausted_http(
+                detail_code="PRO_QUOTA_EXCEEDED",
+                message="Pro scan quota exhausted.",
+            )
+
+        new_sub = dict(sub)
+        new_sub["pro_scan_total"] = total
+        new_sub["pro_scan_remaining"] = int(remaining) - 1
+
+        new_extras = dict(extras_dict)
+        new_extras["subscription"] = new_sub
+        locked.extras = new_extras
+        db.session.add(locked)
         return
 
     if plan == "free":
@@ -201,7 +278,9 @@ def consume_quota_after_success(
         if int(used) >= FREE_DAILY_SCAN_LIMIT:
             raise _quota_exhausted_http(
                 detail_code="DAILY_SCAN_QUOTA_EXCEEDED",
-                message="Daily scan quota exceeded. Please try again tomorrow.",
+                message=(
+                    "Daily scan quota exceeded. Please try again tomorrow."
+                ),
             )
         return
 
