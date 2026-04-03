@@ -16,6 +16,7 @@ from utils.subscription import (
     apply_scan_pack_purchase,
     get_quota_remaining,
     preserved_scan_pack_fields_for_pro_upgrade,
+    should_skip_duplicate_pro_activation,
     subscription_dict_after_activate_free_plan,
 )
 
@@ -95,6 +96,30 @@ def activate_subscription(
             )
         extras["subscription"] = apply_scan_pack_purchase(prev_sub, add, now)
     else:
+        prev_sub = _get_user_subscription(extras)
+        if should_skip_duplicate_pro_activation(
+            prev_sub,
+            plan_type,
+            payload.get("apple_transaction_id"),
+            now,
+        ):
+            logger.info(
+                "subscription activate skipped duplicate pro grant user_id=%s plan=%s",
+                getattr(user, "user_id", None),
+                plan_type,
+            )
+            quota = get_quota_remaining(user, db.session, now=now)
+            sub_after = _get_user_subscription(getattr(user, "extras", None))
+            return {
+                "plan": quota["plan"],
+                "limit": quota["limit"],
+                "used": quota["used"],
+                "remaining": quota["remaining"],
+                "pro_expires_at_ts": quota["pro_expires_at_ts"],
+                "scan_pack_total": quota["scan_pack_total"],
+                "scan_pack_remaining": sub_after.get("scan_pack_remaining"),
+            }
+
         days = PRO_MONTHLY_DAYS if plan_type == "pro_monthly" else PRO_YEARLY_DAYS
         expires_ts = int((now + dt.timedelta(days=days)).timestamp())
         scan_total = (
@@ -102,7 +127,6 @@ def activate_subscription(
             if plan_type == "pro_monthly"
             else PRO_YEARLY_SCAN_LIMIT
         )
-        prev_sub = _get_user_subscription(extras)
         preserved_pack = preserved_scan_pack_fields_for_pro_upgrade(prev_sub)
 
         merged: dict[str, Any] = {

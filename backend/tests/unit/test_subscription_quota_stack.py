@@ -16,6 +16,7 @@ from utils.subscription import (
     get_quota_remaining,
     merge_scan_pack_into_active_pro_subscription,
     preserved_scan_pack_fields_for_pro_upgrade,
+    should_skip_duplicate_pro_activation,
     subscription_dict_after_activate_free_plan,
 )
 
@@ -252,6 +253,91 @@ def test_activate_free_plan_preserves_scan_pack_only():
     out = subscription_dict_after_activate_free_plan(prev, now)
     assert out is not None
     assert out["scan_pack_remaining"] == 30
+
+
+def test_activate_free_plan_preserves_apple_transaction_ids():
+    now = dt.datetime.now(dt.timezone.utc)
+    expires = _future_expires_ts(now)
+    prev = {
+        "type": "pro_monthly",
+        "pro_expires_at_ts": expires,
+        "pro_scan_total": PRO_MONTHLY_SCAN_LIMIT,
+        "pro_scan_remaining": 10,
+        "apple_original_transaction_id": "orig-1",
+        "apple_transaction_id": "tx-99",
+    }
+    out = subscription_dict_after_activate_free_plan(prev, now)
+    assert out is not None
+    assert out["apple_original_transaction_id"] == "orig-1"
+    assert out["apple_transaction_id"] == "tx-99"
+
+
+def test_skip_duplicate_pro_same_apple_transaction_id():
+    """同一 apple_transaction_id 重复激活：跳过重复发放。"""
+    now = dt.datetime.now(dt.timezone.utc)
+    expires = _future_expires_ts(now)
+    prev = {
+        "type": "pro_monthly",
+        "pro_expires_at_ts": expires,
+        "pro_scan_total": PRO_MONTHLY_SCAN_LIMIT,
+        "pro_scan_remaining": 50,
+        "apple_transaction_id": "1001",
+    }
+    assert (
+        should_skip_duplicate_pro_activation(prev, "pro_monthly", "1001", now) is True
+    )
+
+
+def test_skip_duplicate_pro_no_tid_but_still_active():
+    """无 transaction_id 时，已是未过期同方案 Pro：重复请求不重复发放。"""
+    now = dt.datetime.now(dt.timezone.utc)
+    expires = _future_expires_ts(now)
+    prev = {
+        "type": "pro_monthly",
+        "pro_expires_at_ts": expires,
+        "pro_scan_total": PRO_MONTHLY_SCAN_LIMIT,
+        "pro_scan_remaining": 10,
+    }
+    assert should_skip_duplicate_pro_activation(prev, "pro_monthly", None, now) is True
+
+
+def test_no_skip_pro_new_transaction_id():
+    now = dt.datetime.now(dt.timezone.utc)
+    expires = _future_expires_ts(now)
+    prev = {
+        "type": "pro_monthly",
+        "pro_expires_at_ts": expires,
+        "apple_transaction_id": "1001",
+        "pro_scan_remaining": 10,
+    }
+    assert (
+        should_skip_duplicate_pro_activation(prev, "pro_monthly", "1002", now) is False
+    )
+
+
+def test_no_skip_pro_from_scan_pack():
+    """从加量包升 Pro：无 stored tid，不视为重复。"""
+    now = dt.datetime.now(dt.timezone.utc)
+    prev = {
+        "type": "scan_pack",
+        "scan_pack_total": 50,
+        "scan_pack_remaining": 30,
+    }
+    assert (
+        should_skip_duplicate_pro_activation(prev, "pro_monthly", "1001", now) is False
+    )
+
+
+def test_skip_pro_after_cancel_scan_pack_keeps_same_apple_transaction_id():
+    """取消 Pro 后 scan_pack 仍带 apple_transaction_id，用同一 id 再激活 Pro → 不重复发放。"""
+    now = dt.datetime.now(dt.timezone.utc)
+    prev = {
+        "type": "scan_pack",
+        "scan_pack_total": 140,
+        "scan_pack_remaining": 140,
+        "apple_transaction_id": "9001",
+    }
+    assert should_skip_duplicate_pro_activation(prev, "pro_yearly", "9001", now) is True
 
 
 def test_activate_free_plan_returns_none_when_no_remaining():

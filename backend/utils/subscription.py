@@ -86,11 +86,59 @@ def subscription_dict_after_activate_free_plan(
     if total_remaining <= 0:
         return None
 
-    return {
+    out: dict[str, Any] = {
         "type": "scan_pack",
         "scan_pack_total": int(total_remaining),
         "scan_pack_remaining": int(total_remaining),
     }
+    # 保留 Apple 交易标识，便于 Pro 再次 activate 时与同一笔 IAP 去重（避免取消后反复刷额度）
+    otid = prev_sub.get("apple_original_transaction_id")
+    if otid:
+        out["apple_original_transaction_id"] = str(otid)
+    atid = prev_sub.get("apple_transaction_id")
+    if atid:
+        out["apple_transaction_id"] = str(atid)
+    return out
+
+
+def _norm_apple_txn_id(raw: Any) -> str | None:
+    if raw is None:
+        return None
+    s = str(raw).strip()
+    return s if s else None
+
+
+def should_skip_duplicate_pro_activation(
+    prev_sub: dict[str, Any],
+    plan_type: str,
+    incoming_tid: Any,
+    now: dt.datetime | None = None,
+) -> bool:
+    """
+    Pro 激活是否应跳过写入（不重复发放额度）：
+    - 请求中的 apple_transaction_id 与已存储的相同 → 同一笔 IAP（含取消后仍为 scan_pack
+      但保留了上次 Pro 的 transaction id），不重复发放；
+    - 未带 transaction_id 但当前已是同方案且未过期的 Pro → 客户端重复请求。
+    新交易 ID 时返回 False，正常发放。
+    """
+    if plan_type not in ("pro_monthly", "pro_yearly"):
+        return False
+    now = _now_utc(now)
+    incoming = _norm_apple_txn_id(incoming_tid)
+    stored = _norm_apple_txn_id(prev_sub.get("apple_transaction_id"))
+
+    if incoming and stored and incoming == stored:
+        return True
+
+    if incoming:
+        return False
+
+    if prev_sub.get("type") != plan_type:
+        return False
+    exp = prev_sub.get("pro_expires_at_ts")
+    if not isinstance(exp, (int, float)):
+        return False
+    return now.timestamp() < float(exp)
 
 
 def preserved_scan_pack_fields_for_pro_upgrade(
