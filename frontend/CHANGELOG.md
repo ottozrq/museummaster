@@ -1,3 +1,12 @@
+## [1.2.5](https://github.com/ottozrq/museummaster/compare/v1.2.4...v1.2.5) (2026-04-03)
+
+
+### Bug Fixes
+
+* sub switch prob ([11560b8](https://github.com/ottozrq/museummaster/commit/11560b8b6b51ff3f8dc40c1f6c46f14923cc410e))
+* unsub scan disappear ([5b875c6](https://github.com/ottozrq/museummaster/commit/5b875c6db9e7593495ff543595aad03601e367c6))
+* user sub and unsub ([26df019](https://github.com/ottozrq/museummaster/commit/26df01932443b6d0fd4e09e586ab7d473a6ad4a1))
+
 ## [1.2.4](https://github.com/ottozrq/museummaster/compare/v1.2.3...v1.2.4) (2026-04-03)
 
 
