@@ -15,11 +15,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
   loadIosStoreCatalog,
-  loadIosIapDiagnostics,
   purchaseIosPlanThenActivate,
   STORE_PRODUCT_UNAVAILABLE,
   storeDescriptionToDetailLines,
-  type IapDiagnostics,
   type StoreCatalog,
 } from "../src/iap/appleIap";
 import {
@@ -121,8 +119,6 @@ export default function SubscriptionScreen() {
   const [activating, setActivating] = useState<SubscriptionPlanType | null>(null);
   const [storeCatalog, setStoreCatalog] = useState<StoreCatalog>({});
   const [storeCatalogReady, setStoreCatalogReady] = useState(Platform.OS !== "ios");
-  const [iapDiag, setIapDiag] = useState<IapDiagnostics | null>(null);
-  const [diagLoading, setDiagLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -137,34 +133,6 @@ export default function SubscriptionScreen() {
     return () => {
       cancelled = true;
     };
-  }, []);
-
-  const refreshIapDiagnostics = async () => {
-    if (Platform.OS !== "ios") return;
-    setDiagLoading(true);
-    try {
-      const diag = await loadIosIapDiagnostics();
-      setIapDiag(diag);
-    } catch (e) {
-      setIapDiag({
-        platform: Platform.OS,
-        connected: false,
-        scanPackSku: "unknown",
-        subscriptionSkus: [],
-        getProductsCount: 0,
-        getSubscriptionsCount: 0,
-        getProductsIds: [],
-        getSubscriptionsIds: [],
-        error: e instanceof Error ? e.message : String(e),
-      });
-    } finally {
-      setDiagLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (Platform.OS !== "ios") return;
-    void refreshIapDiagnostics();
   }, []);
 
   useEffect(() => {
@@ -262,10 +230,10 @@ export default function SubscriptionScreen() {
         price: paidPrice("scan_pack", t("subscription.scanPackPrice")),
         details: paidDetails("scan_pack", ["* 50 Scans", "*Best for", "occasional visits"]),
         badge: undefined as string | undefined,
-        buttonText: isCurrent("scan_pack") ? "CURRENT PLAN" : "CHANGE PLAN",
+        buttonText: t("subscription.buyScanPack"),
         note: undefined as string | undefined,
-        theme: (isCurrent("scan_pack") ? "filled" : "outline") as CardTheme,
-        isCurrent: isCurrent("scan_pack"),
+        theme: "outline" as CardTheme,
+        isCurrent: false,
       },
       {
         plan: "pro_monthly" as const,
@@ -364,7 +332,9 @@ export default function SubscriptionScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headline}>unlock full{"\n"}exprience</Text>
+        <Text style={styles.headline} numberOfLines={2}>
+          unlock full{"\n"}experience
+        </Text>
         <Pressable style={styles.headerScan} onPress={() => router.push("/")}>
           <View style={styles.scanFrame}>
             <View style={[styles.scanCorner, styles.scanTopLeft]} />
@@ -377,34 +347,6 @@ export default function SubscriptionScreen() {
       </View>
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
-        {Platform.OS === "ios" ? (
-          <View style={styles.diagBox}>
-            <View style={styles.diagHead}>
-              <Text style={styles.diagTitle}>IAP 诊断</Text>
-              <Pressable style={styles.diagButton} onPress={() => void refreshIapDiagnostics()} disabled={diagLoading}>
-                <Text style={styles.diagButtonText}>{diagLoading ? "刷新中..." : "刷新诊断"}</Text>
-              </Pressable>
-            </View>
-            {iapDiag ? (
-              <Text style={styles.diagLine}>
-                {`connected=${iapDiag.connected ? "yes" : "no"} | getProducts=${iapDiag.getProductsCount} | getSubscriptions=${iapDiag.getSubscriptionsCount}`}
-              </Text>
-            ) : (
-              <Text style={styles.diagLine}>暂无诊断数据</Text>
-            )}
-            {iapDiag ? <Text style={styles.diagLine}>{`scan_pack sku: ${iapDiag.scanPackSku}`}</Text> : null}
-            {iapDiag ? (
-              <Text style={styles.diagLine}>{`subs skus: ${iapDiag.subscriptionSkus.join(", ") || "(empty)"}`}</Text>
-            ) : null}
-            {iapDiag ? (
-              <Text style={styles.diagLine}>{`products ids: ${iapDiag.getProductsIds.join(", ") || "(empty)"}`}</Text>
-            ) : null}
-            {iapDiag ? (
-              <Text style={styles.diagLine}>{`subs ids: ${iapDiag.getSubscriptionsIds.join(", ") || "(empty)"}`}</Text>
-            ) : null}
-            {iapDiag?.error ? <Text style={styles.diagErr}>{`error: ${iapDiag.error}`}</Text> : null}
-          </View>
-        ) : null}
         {showStoreCatalogHint ? (
           <Text style={styles.storeHint}>{t("subscription.storeCatalogEmpty")}</Text>
         ) : null}
@@ -463,51 +405,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     opacity: 0.92,
   },
-  diagBox: {
-    borderWidth: 1,
-    borderColor: BRAND_RED,
-    borderRadius: 12,
-    padding: 10,
-    marginBottom: 10,
-    backgroundColor: "#F7EFE4",
-  },
-  diagHead: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 6,
-  },
-  diagTitle: {
-    color: BRAND_RED,
-    fontWeight: "900",
-    fontSize: 13,
-  },
-  diagButton: {
-    borderWidth: 1,
-    borderColor: BRAND_RED,
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    backgroundColor: BRAND_RED,
-  },
-  diagButtonText: {
-    color: WHITE,
-    fontSize: 11,
-    fontWeight: "800",
-  },
-  diagLine: {
-    color: BRAND_RED,
-    fontSize: 11,
-    lineHeight: 15,
-    marginBottom: 3,
-  },
-  diagErr: {
-    color: "#A10F00",
-    fontSize: 11,
-    lineHeight: 15,
-    marginTop: 2,
-    fontWeight: "700",
-  },
   bottomBar: {
     alignItems: "center",
     paddingHorizontal: 16,
@@ -523,19 +420,23 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingTop: 52,
     paddingBottom: 14,
   },
+  /** 与 scanFrame 同高 88，两行 lineHeight 44 → 总高 88 */
   headline: {
     color: BRAND_RED,
-    fontSize: 50,
-    lineHeight: 52,
+    fontSize: 32,
+    lineHeight: 44,
+    height: 88,
     fontWeight: "900",
     letterSpacing: 0.2,
     flex: 1,
-    marginTop: 6,
+    marginTop: 0,
+    paddingRight: 8,
+    textAlignVertical: "center",
   },
   headerScan: {
     justifyContent: "space-between",

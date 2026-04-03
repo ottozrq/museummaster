@@ -32,18 +32,6 @@ export type StoreProductInfo = {
 
 export type StoreCatalog = Partial<Record<PaidPlanType, StoreProductInfo>>;
 
-export type IapDiagnostics = {
-  platform: string;
-  connected: boolean;
-  scanPackSku: string;
-  subscriptionSkus: string[];
-  getProductsCount: number;
-  getSubscriptionsCount: number;
-  getProductsIds: string[];
-  getSubscriptionsIds: string[];
-  error?: string;
-};
-
 /** 把 ASC / StoreKit 的 description 拆成卡片多行展示 */
 export function storeDescriptionToDetailLines(description: string, maxLines: number = 6): string[] {
   const raw = description.trim();
@@ -155,43 +143,6 @@ export async function loadIosStoreCatalog(): Promise<StoreCatalog> {
     }
     iapLog("Store catalog from App Store:", JSON.stringify(out));
     return out;
-  });
-}
-
-/** 返回可直接展示在 UI 的 IAP 诊断信息，便于 TestFlight/Preview 排查。 */
-export async function loadIosIapDiagnostics(): Promise<IapDiagnostics> {
-  const subSkus = [APPLE_PRODUCT_IDS.pro_monthly, APPLE_PRODUCT_IDS.pro_yearly];
-  const base: IapDiagnostics = {
-    platform: Platform.OS,
-    connected: false,
-    scanPackSku: APPLE_PRODUCT_IDS.scan_pack,
-    subscriptionSkus: subSkus,
-    getProductsCount: 0,
-    getSubscriptionsCount: 0,
-    getProductsIds: [],
-    getSubscriptionsIds: [],
-  };
-  if (Platform.OS !== "ios") return base;
-  return enqueueIosIap(async () => {
-    const connected = await ensureIapConnection();
-    if (!connected) {
-      return { ...base, connected: false, error: "initConnection=false" };
-    }
-    try {
-      const products = await getProducts({ skus: [APPLE_PRODUCT_IDS.scan_pack] });
-      const subs = await getSubscriptions({ skus: subSkus });
-      return {
-        ...base,
-        connected: true,
-        getProductsCount: products.length,
-        getSubscriptionsCount: subs.length,
-        getProductsIds: products.map((p) => p.productId).filter(Boolean),
-        getSubscriptionsIds: subs.map((s) => s.productId).filter(Boolean),
-      };
-    } catch (err) {
-      const error = err instanceof Error ? err.message : String(err);
-      return { ...base, connected: true, error };
-    }
   });
 }
 

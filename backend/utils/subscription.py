@@ -55,6 +55,90 @@ def preserved_scan_pack_fields_for_pro_upgrade(
     return preserved
 
 
+def merge_scan_pack_into_active_pro_subscription(
+    prev_sub: dict[str, Any],
+    add: int,
+    now: dt.datetime | None = None,
+) -> dict[str, Any] | None:
+    """
+    未过期 Pro：将本次加量包 add 次累加到 scan_pack_remaining / scan_pack_total。
+    非 Pro：返回 None，由路由写入独立 scan_pack 订阅。
+    """
+    now = _now_utc(now)
+    pro_type = _is_pro_active(prev_sub, now)
+    if pro_type is None:
+        return None
+    if add <= 0:
+        return None
+    prev_rem = prev_sub.get("scan_pack_remaining")
+    prev_total = prev_sub.get("scan_pack_total")
+    base_rem = (
+        int(prev_rem)
+        if isinstance(prev_rem, (int, float)) and float(prev_rem) > 0
+        else 0
+    )
+    base_total = (
+        int(prev_total)
+        if isinstance(prev_total, (int, float)) and float(prev_total) > 0
+        else 0
+    )
+    new_rem = base_rem + int(add)
+    new_total = base_total + int(add)
+    out = dict(prev_sub)
+    out["type"] = pro_type
+    out["scan_pack_remaining"] = new_rem
+    out["scan_pack_total"] = new_total
+    return out
+
+
+def apply_scan_pack_purchase(
+    prev_sub: dict[str, Any],
+    add: int,
+    now: dt.datetime | None = None,
+) -> dict[str, Any]:
+    """
+    一次加量包购买后应写入的 subscription 字典（持久化在 user.extras）：
+    - 有效 Pro：保留 pro_expires_at_ts、pro_scan_*，并累加 scan_pack_*；
+    - 仅 scan_pack：多次购买累加 remaining/total；
+    - 否则：新建 type=scan_pack（首购）。
+    """
+    now = _now_utc(now)
+    pro_merged = merge_scan_pack_into_active_pro_subscription(prev_sub, add, now)
+    if pro_merged is not None:
+        return pro_merged
+
+    if prev_sub.get("type") == "scan_pack":
+        prev_rem = prev_sub.get("scan_pack_remaining")
+        prev_total = prev_sub.get("scan_pack_total")
+        base_rem = (
+            int(prev_rem)
+            if isinstance(prev_rem, (int, float)) and float(prev_rem) >= 0
+            else 0
+        )
+        base_total = (
+            int(prev_total)
+            if isinstance(prev_total, (int, float)) and float(prev_total) > 0
+            else 0
+        )
+        new_rem = base_rem + int(add)
+        new_total = base_total + int(add)
+        return {
+            "type": "scan_pack",
+            "scan_pack_total": new_total,
+            "scan_pack_remaining": new_rem,
+        }
+
+    total = int(SCAN_PACK_DEFAULT_TOTAL)
+    rem = int(add)
+    if rem > total:
+        rem = total
+    return {
+        "type": "scan_pack",
+        "scan_pack_total": total,
+        "scan_pack_remaining": rem,
+    }
+
+
 def _subscription_dict(extras: Any) -> dict[str, Any]:
     if not isinstance(extras, dict):
         return {}

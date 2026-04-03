@@ -11,6 +11,7 @@ from utils.subscription import (
     PRO_YEARLY_DAYS,
     PRO_YEARLY_SCAN_LIMIT,
     SCAN_PACK_DEFAULT_TOTAL,
+    apply_scan_pack_purchase,
     get_quota_remaining,
     preserved_scan_pack_fields_for_pro_upgrade,
 )
@@ -59,7 +60,7 @@ def activate_subscription(
     """
     订阅激活（开发/内测用）：
     - 真实场景应由 Apple/Google 支付回调调用
-    - 这里只更新 user.extras，供前端联调“额度规则”
+    - 写入 user.extras.subscription：Pro 与 Scan Pack 可同时存在；加量包多次购买会累加额度。
     """
     plan_type = payload.get("plan_type")
     if plan_type not in ("free", "scan_pack", "pro_monthly", "pro_yearly"):
@@ -73,23 +74,13 @@ def activate_subscription(
     if plan_type == "free":
         extras.pop("subscription", None)
     elif plan_type == "scan_pack":
-        extras["subscription"] = {
-            "type": "scan_pack",
-            "scan_pack_total": SCAN_PACK_DEFAULT_TOTAL,
-            "scan_pack_remaining": int(
-                payload.get("scan_pack_remaining") or SCAN_PACK_DEFAULT_TOTAL
-            ),
-        }
-        if extras["subscription"]["scan_pack_remaining"] <= 0:
+        prev_sub = _get_user_subscription(extras)
+        add = int(payload.get("scan_pack_remaining") or SCAN_PACK_DEFAULT_TOTAL)
+        if add <= 0:
             raise HTTPException(
                 status_code=400, detail="scan_pack_remaining must be > 0"
             )
-        if int(extras["subscription"]["scan_pack_remaining"]) > int(
-            extras["subscription"]["scan_pack_total"]
-        ):
-            extras["subscription"]["scan_pack_remaining"] = int(
-                extras["subscription"]["scan_pack_total"]
-            )
+        extras["subscription"] = apply_scan_pack_purchase(prev_sub, add, now)
     else:
         days = PRO_MONTHLY_DAYS if plan_type == "pro_monthly" else PRO_YEARLY_DAYS
         expires_ts = int((now + dt.timedelta(days=days)).timestamp())

@@ -11,8 +11,10 @@ import pytest
 import sql_models as sm
 from utils.subscription import (
     PRO_MONTHLY_SCAN_LIMIT,
+    apply_scan_pack_purchase,
     consume_quota_after_success,
     get_quota_remaining,
+    merge_scan_pack_into_active_pro_subscription,
     preserved_scan_pack_fields_for_pro_upgrade,
 )
 
@@ -158,3 +160,80 @@ def test_preserved_scan_pack_empty_when_no_remaining():
         )
         == {}
     )
+
+
+def test_merge_scan_pack_into_pro_adds_on_top_of_pro_quota():
+    """Pro 有效时购买加量包：在既有 scan pack 剩余上累加，且 get_quota 仍为 pro 计划。"""
+    now = dt.datetime.now(dt.timezone.utc)
+    expires = _future_expires_ts(now)
+    prev = {
+        "type": "pro_monthly",
+        "pro_expires_at_ts": expires,
+        "pro_scan_total": PRO_MONTHLY_SCAN_LIMIT,
+        "pro_scan_remaining": 100,
+        "scan_pack_total": 50,
+        "scan_pack_remaining": 10,
+    }
+    merged = merge_scan_pack_into_active_pro_subscription(prev, 50, now)
+    assert merged is not None
+    assert merged["type"] == "pro_monthly"
+    assert merged["pro_scan_remaining"] == 100
+    assert merged["scan_pack_total"] == 100
+    assert merged["scan_pack_remaining"] == 60
+
+    user = SimpleNamespace(extras={"subscription": merged})
+    q = get_quota_remaining(user, None, now=now)
+    assert q["plan"] == "pro_monthly"
+    assert q["remaining"] == 160
+    assert q["limit"] == PRO_MONTHLY_SCAN_LIMIT + 100
+
+
+def test_merge_scan_pack_first_purchase_while_on_pro():
+    now = dt.datetime.now(dt.timezone.utc)
+    expires = _future_expires_ts(now)
+    prev = {
+        "type": "pro_yearly",
+        "pro_expires_at_ts": expires,
+        "pro_scan_total": PRO_MONTHLY_SCAN_LIMIT * 12,
+        "pro_scan_remaining": 200,
+    }
+    merged = merge_scan_pack_into_active_pro_subscription(prev, 50, now)
+    assert merged is not None
+    assert merged["scan_pack_remaining"] == 50
+    assert merged["scan_pack_total"] == 50
+
+
+def test_merge_scan_pack_returns_none_without_pro():
+    assert (
+        merge_scan_pack_into_active_pro_subscription({"type": "scan_pack"}, 50) is None
+    )
+
+
+def test_apply_scan_pack_standalone_stacks_multiple_purchases():
+    """无 Pro 时多次购买加量包：remaining/total 累加写入。"""
+    now = dt.datetime.now(dt.timezone.utc)
+    first = apply_scan_pack_purchase({}, 50, now)
+    assert first["type"] == "scan_pack"
+    assert first["scan_pack_remaining"] == 50
+    assert first["scan_pack_total"] == 50
+
+    second = apply_scan_pack_purchase(first, 50, now)
+    assert second["scan_pack_remaining"] == 100
+    assert second["scan_pack_total"] == 100
+
+
+def test_apply_scan_pack_preserves_pro_fields():
+    now = dt.datetime.now(dt.timezone.utc)
+    expires = _future_expires_ts(now)
+    prev = {
+        "type": "pro_monthly",
+        "pro_expires_at_ts": expires,
+        "pro_scan_total": PRO_MONTHLY_SCAN_LIMIT,
+        "pro_scan_remaining": 88,
+    }
+    out = apply_scan_pack_purchase(prev, 50, now)
+    assert out["type"] == "pro_monthly"
+    assert out["pro_scan_remaining"] == 88
+    assert out["pro_expires_at_ts"] == expires
+    assert out["scan_pack_remaining"] == 50
+    assert out["scan_pack_total"] == 50
