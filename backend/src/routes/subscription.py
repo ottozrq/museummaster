@@ -12,6 +12,7 @@ from utils.subscription import (
     PRO_YEARLY_SCAN_LIMIT,
     SCAN_PACK_DEFAULT_TOTAL,
     get_quota_remaining,
+    preserved_scan_pack_fields_for_pro_upgrade,
 )
 
 PlanType = Literal["free", "scan_pack", "pro_monthly", "pro_yearly"]
@@ -97,11 +98,15 @@ def activate_subscription(
             if plan_type == "pro_monthly"
             else PRO_YEARLY_SCAN_LIMIT
         )
+        prev_sub = _get_user_subscription(extras)
+        preserved_pack = preserved_scan_pack_fields_for_pro_upgrade(prev_sub)
+
         extras["subscription"] = {
             "type": plan_type,
             "pro_expires_at_ts": expires_ts,
             "pro_scan_total": scan_total,
             "pro_scan_remaining": scan_total,
+            **preserved_pack,
         }
 
     user.extras = extras
@@ -109,6 +114,7 @@ def activate_subscription(
     db.session.commit()
 
     quota = get_quota_remaining(user, db.session, now=now)
+    sub_after = _get_user_subscription(getattr(user, "extras", None))
     return {
         "plan": quota["plan"],
         "limit": quota["limit"],
@@ -116,6 +122,7 @@ def activate_subscription(
         "remaining": quota["remaining"],
         "pro_expires_at_ts": quota["pro_expires_at_ts"],
         "scan_pack_total": quota["scan_pack_total"],
+        "scan_pack_remaining": sub_after.get("scan_pack_remaining"),
     }
 
 

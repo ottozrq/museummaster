@@ -15,9 +15,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
   loadIosStoreCatalog,
+  loadIosIapDiagnostics,
   purchaseIosPlanThenActivate,
   STORE_PRODUCT_UNAVAILABLE,
   storeDescriptionToDetailLines,
+  type IapDiagnostics,
   type StoreCatalog,
 } from "../src/iap/appleIap";
 import {
@@ -119,6 +121,8 @@ export default function SubscriptionScreen() {
   const [activating, setActivating] = useState<SubscriptionPlanType | null>(null);
   const [storeCatalog, setStoreCatalog] = useState<StoreCatalog>({});
   const [storeCatalogReady, setStoreCatalogReady] = useState(Platform.OS !== "ios");
+  const [iapDiag, setIapDiag] = useState<IapDiagnostics | null>(null);
+  const [diagLoading, setDiagLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -133,6 +137,34 @@ export default function SubscriptionScreen() {
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  const refreshIapDiagnostics = async () => {
+    if (Platform.OS !== "ios") return;
+    setDiagLoading(true);
+    try {
+      const diag = await loadIosIapDiagnostics();
+      setIapDiag(diag);
+    } catch (e) {
+      setIapDiag({
+        platform: Platform.OS,
+        connected: false,
+        scanPackSku: "unknown",
+        subscriptionSkus: [],
+        getProductsCount: 0,
+        getSubscriptionsCount: 0,
+        getProductsIds: [],
+        getSubscriptionsIds: [],
+        error: e instanceof Error ? e.message : String(e),
+      });
+    } finally {
+      setDiagLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (Platform.OS !== "ios") return;
+    void refreshIapDiagnostics();
   }, []);
 
   useEffect(() => {
@@ -345,6 +377,34 @@ export default function SubscriptionScreen() {
       </View>
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+        {Platform.OS === "ios" ? (
+          <View style={styles.diagBox}>
+            <View style={styles.diagHead}>
+              <Text style={styles.diagTitle}>IAP 诊断</Text>
+              <Pressable style={styles.diagButton} onPress={() => void refreshIapDiagnostics()} disabled={diagLoading}>
+                <Text style={styles.diagButtonText}>{diagLoading ? "刷新中..." : "刷新诊断"}</Text>
+              </Pressable>
+            </View>
+            {iapDiag ? (
+              <Text style={styles.diagLine}>
+                {`connected=${iapDiag.connected ? "yes" : "no"} | getProducts=${iapDiag.getProductsCount} | getSubscriptions=${iapDiag.getSubscriptionsCount}`}
+              </Text>
+            ) : (
+              <Text style={styles.diagLine}>暂无诊断数据</Text>
+            )}
+            {iapDiag ? <Text style={styles.diagLine}>{`scan_pack sku: ${iapDiag.scanPackSku}`}</Text> : null}
+            {iapDiag ? (
+              <Text style={styles.diagLine}>{`subs skus: ${iapDiag.subscriptionSkus.join(", ") || "(empty)"}`}</Text>
+            ) : null}
+            {iapDiag ? (
+              <Text style={styles.diagLine}>{`products ids: ${iapDiag.getProductsIds.join(", ") || "(empty)"}`}</Text>
+            ) : null}
+            {iapDiag ? (
+              <Text style={styles.diagLine}>{`subs ids: ${iapDiag.getSubscriptionsIds.join(", ") || "(empty)"}`}</Text>
+            ) : null}
+            {iapDiag?.error ? <Text style={styles.diagErr}>{`error: ${iapDiag.error}`}</Text> : null}
+          </View>
+        ) : null}
         {showStoreCatalogHint ? (
           <Text style={styles.storeHint}>{t("subscription.storeCatalogEmpty")}</Text>
         ) : null}
@@ -402,6 +462,51 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     marginBottom: 12,
     opacity: 0.92,
+  },
+  diagBox: {
+    borderWidth: 1,
+    borderColor: BRAND_RED,
+    borderRadius: 12,
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: "#F7EFE4",
+  },
+  diagHead: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 6,
+  },
+  diagTitle: {
+    color: BRAND_RED,
+    fontWeight: "900",
+    fontSize: 13,
+  },
+  diagButton: {
+    borderWidth: 1,
+    borderColor: BRAND_RED,
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    backgroundColor: BRAND_RED,
+  },
+  diagButtonText: {
+    color: WHITE,
+    fontSize: 11,
+    fontWeight: "800",
+  },
+  diagLine: {
+    color: BRAND_RED,
+    fontSize: 11,
+    lineHeight: 15,
+    marginBottom: 3,
+  },
+  diagErr: {
+    color: "#A10F00",
+    fontSize: 11,
+    lineHeight: 15,
+    marginTop: 2,
+    fontWeight: "700",
   },
   bottomBar: {
     alignItems: "center",

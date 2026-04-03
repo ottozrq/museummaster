@@ -15,9 +15,9 @@ import { activateSubscriptionPlan, type SubscriptionPlanType } from "../services
 
 /** 与 App Store Connect 中 In-App Purchase 的 Product ID 一致 */
 export const APPLE_PRODUCT_IDS = {
-  scan_pack: "com.ottozhang.artiou.scan_pack",
-  pro_monthly: "com.ottozhang.artiou.subscription.scan_pro.monthly",
-  pro_yearly: "com.ottozhang.artiou.subscription.scan_pro.ywarly",
+  scan_pack: "com.ottozhang.artiou.iap.scan",
+  pro_monthly: "com.ottozhang.artiou.sub.scan.pro.monthly",
+  pro_yearly: "com.ottozhang.artiou.sub.scan.pro.yearly",
 } as const;
 
 export type PaidPlanType = Exclude<SubscriptionPlanType, "free">;
@@ -32,6 +32,18 @@ export type StoreProductInfo = {
 
 export type StoreCatalog = Partial<Record<PaidPlanType, StoreProductInfo>>;
 
+export type IapDiagnostics = {
+  platform: string;
+  connected: boolean;
+  scanPackSku: string;
+  subscriptionSkus: string[];
+  getProductsCount: number;
+  getSubscriptionsCount: number;
+  getProductsIds: string[];
+  getSubscriptionsIds: string[];
+  error?: string;
+};
+
 /** 把 ASC / StoreKit 的 description 拆成卡片多行展示 */
 export function storeDescriptionToDetailLines(description: string, maxLines: number = 6): string[] {
   const raw = description.trim();
@@ -45,6 +57,22 @@ export function storeDescriptionToDetailLines(description: string, maxLines: num
 }
 
 let connectionPromise: Promise<boolean> | null = null;
+
+/**
+ * iOS：RN IAP 对 getProducts / getSubscriptions / 购买等若并发发起，会取消前一个并报
+ * "Previous request was cancelled due to a new request"。全项目共用一条队列串行执行。
+ */
+let iosIapQueueTail: Promise<void> = Promise.resolve();
+
+function enqueueIosIap<T>(fn: () => Promise<T>): Promise<T> {
+  if (Platform.OS !== "ios") return fn();
+  const run = iosIapQueueTail.then(() => fn());
+  iosIapQueueTail = run.then(
+    () => undefined,
+    () => undefined,
+  );
+  return run;
+}
 
 /** 统一前缀，Release 下也能在 Xcode / 设备日志里搜到 */
 function iapLog(...args: unknown[]) {
@@ -86,48 +114,85 @@ export async function loadIosStoreCatalog(): Promise<StoreCatalog> {
     iapLog("loadIosStoreCatalog skipped (not iOS)");
     return {};
   }
-  iapLog("loadIosStoreCatalog: start");
-  const connected = await ensureIapConnection();
-  if (!connected) {
-    console.warn("[IAP] initConnection returned false — StoreKit unavailable, catalog empty");
-    return {};
-  }
-  // Scan Pack 在 ASC 为消耗型/一次性 IAP → 仅 getProducts；勿放进 getSubscriptions
+  return enqueueIosIap(async () => {
+    iapLog("loadIosStoreCatalog: start");
+    const connected = await ensureIapConnection();
+    if (!connected) {
+      console.warn("[IAP] initConnection returned false — StoreKit unavailable, catalog empty");
+      return {};
+    }
+    // Scan Pack 在 ASC 为消耗型/一次性 IAP → 仅 getProducts；勿放进 getSubscriptions
+    const subSkus = [APPLE_PRODUCT_IDS.pro_monthly, APPLE_PRODUCT_IDS.pro_yearly];
+    let packProducts: Awaited<ReturnType<typeof getProducts>> = [];
+    let subs: Awaited<ReturnType<typeof getSubscriptions>> = [];
+    try {
+      packProducts = await getProducts({ skus: [APPLE_PRODUCT_IDS.scan_pack] });
+      subs = await getSubscriptions({ skus: subSkus });
+    } catch (err) {
+      console.warn("[IAP] getProducts / getSubscriptions threw:", err);
+      return {};
+    }
+    iapLog(
+      "raw counts — getProducts:",
+      packProducts?.length ?? 0,
+      "getSubscriptions:",
+      subs?.length ?? 0,
+    );
+    const out: StoreCatalog = {};
+    const pack = packProducts[0];
+    if (pack?.productId) {
+      const info = pickInfo(pack.productId, pack.localizedPrice, pack.title, pack.description);
+      if (info) out.scan_pack = info;
+    }
+    for (const s of subs) {
+      if (!("localizedPrice" in s) || !s.productId) continue;
+      const title = "title" in s ? (s.title as string | undefined) : undefined;
+      const description = "description" in s ? (s.description as string | undefined) : undefined;
+      const info = pickInfo(s.productId, s.localizedPrice, title, description);
+      if (!info) continue;
+      if (s.productId === APPLE_PRODUCT_IDS.pro_monthly) out.pro_monthly = info;
+      if (s.productId === APPLE_PRODUCT_IDS.pro_yearly) out.pro_yearly = info;
+    }
+    iapLog("Store catalog from App Store:", JSON.stringify(out));
+    return out;
+  });
+}
+
+/** 返回可直接展示在 UI 的 IAP 诊断信息，便于 TestFlight/Preview 排查。 */
+export async function loadIosIapDiagnostics(): Promise<IapDiagnostics> {
   const subSkus = [APPLE_PRODUCT_IDS.pro_monthly, APPLE_PRODUCT_IDS.pro_yearly];
-  let packProducts: Awaited<ReturnType<typeof getProducts>> = [];
-  let subs: Awaited<ReturnType<typeof getSubscriptions>> = [];
-  try {
-    // 须串行：RN IAP 在 iOS 上对并发请求会取消前一个，报
-    // "Previous request was cancelled due to a new request"
-    packProducts = await getProducts({ skus: [APPLE_PRODUCT_IDS.scan_pack] });
-    subs = await getSubscriptions({ skus: subSkus });
-  } catch (err) {
-    console.warn("[IAP] getProducts / getSubscriptions threw:", err);
-    return {};
-  }
-  iapLog(
-    "raw counts — getProducts:",
-    packProducts?.length ?? 0,
-    "getSubscriptions:",
-    subs?.length ?? 0,
-  );
-  const out: StoreCatalog = {};
-  const pack = packProducts[0];
-  if (pack?.productId) {
-    const info = pickInfo(pack.productId, pack.localizedPrice, pack.title, pack.description);
-    if (info) out.scan_pack = info;
-  }
-  for (const s of subs) {
-    if (!("localizedPrice" in s) || !s.productId) continue;
-    const title = "title" in s ? (s.title as string | undefined) : undefined;
-    const description = "description" in s ? (s.description as string | undefined) : undefined;
-    const info = pickInfo(s.productId, s.localizedPrice, title, description);
-    if (!info) continue;
-    if (s.productId === APPLE_PRODUCT_IDS.pro_monthly) out.pro_monthly = info;
-    if (s.productId === APPLE_PRODUCT_IDS.pro_yearly) out.pro_yearly = info;
-  }
-  iapLog("Store catalog from App Store:", JSON.stringify(out));
-  return out;
+  const base: IapDiagnostics = {
+    platform: Platform.OS,
+    connected: false,
+    scanPackSku: APPLE_PRODUCT_IDS.scan_pack,
+    subscriptionSkus: subSkus,
+    getProductsCount: 0,
+    getSubscriptionsCount: 0,
+    getProductsIds: [],
+    getSubscriptionsIds: [],
+  };
+  if (Platform.OS !== "ios") return base;
+  return enqueueIosIap(async () => {
+    const connected = await ensureIapConnection();
+    if (!connected) {
+      return { ...base, connected: false, error: "initConnection=false" };
+    }
+    try {
+      const products = await getProducts({ skus: [APPLE_PRODUCT_IDS.scan_pack] });
+      const subs = await getSubscriptions({ skus: subSkus });
+      return {
+        ...base,
+        connected: true,
+        getProductsCount: products.length,
+        getSubscriptionsCount: subs.length,
+        getProductsIds: products.map((p) => p.productId).filter(Boolean),
+        getSubscriptionsIds: subs.map((s) => s.productId).filter(Boolean),
+      };
+    } catch (err) {
+      const error = err instanceof Error ? err.message : String(err);
+      return { ...base, connected: true, error };
+    }
+  });
 }
 
 function skuForPaidPlan(plan: PaidPlanType): string {
@@ -162,8 +227,21 @@ function normalizePurchase(result: Purchase | Purchase[] | void | null): Purchas
   return result;
 }
 
+/**
+ * 用户取消购买，或系统按「取消」返回（如 SKErrorPaymentCancelled = 2）。
+ * iOS 有时不以 PurchaseError 抛出，而是 NSError 文案「SKErrorDomain … error 2」。
+ */
 function isUserCancelled(e: unknown): boolean {
-  return e instanceof PurchaseError && e.code === ErrorCode.E_USER_CANCELLED;
+  if (e instanceof PurchaseError && e.code === ErrorCode.E_USER_CANCELLED) {
+    return true;
+  }
+  if (e instanceof Error) {
+    const msg = e.message;
+    if (/SKErrorDomain/i.test(msg) && (/\berror\s*2\b/i.test(msg) || /错误\s*2/.test(msg))) {
+      return true;
+    }
+  }
+  return false;
 }
 
 /**
@@ -174,29 +252,31 @@ export async function purchaseIosPlanThenActivate(token: string, plan: PaidPlanT
   if (Platform.OS !== "ios") {
     throw new Error("SUBSCRIPTION_IOS_ONLY");
   }
-  await ensureIapConnection();
   const sku = skuForPaidPlan(plan);
   const autoFinish = false;
+  await ensureIapConnection();
   try {
-    await ensureIosSkuLoadedBeforePurchase(plan, sku);
-    let purchase: Purchase | null = null;
-    if (plan === "scan_pack") {
-      purchase = normalizePurchase(
-        await requestPurchase({
-          sku,
-          andDangerouslyFinishTransactionAutomaticallyIOS: autoFinish,
-        }),
-      );
-    } else {
-      purchase = normalizePurchase(
+    const purchase = await enqueueIosIap(async () => {
+      await ensureIosSkuLoadedBeforePurchase(plan, sku);
+      if (plan === "scan_pack") {
+        return normalizePurchase(
+          await requestPurchase({
+            sku,
+            andDangerouslyFinishTransactionAutomaticallyIOS: autoFinish,
+          }),
+        );
+      }
+      return normalizePurchase(
         await requestSubscription({ sku, andDangerouslyFinishTransactionAutomaticallyIOS: autoFinish }),
       );
-    }
+    });
     await activateSubscriptionPlan(token, plan);
     if (purchase?.transactionId) {
-      await finishTransaction({
-        purchase,
-        isConsumable: plan === "scan_pack",
+      await enqueueIosIap(async () => {
+        await finishTransaction({
+          purchase,
+          isConsumable: plan === "scan_pack",
+        });
       });
     }
   } catch (e) {

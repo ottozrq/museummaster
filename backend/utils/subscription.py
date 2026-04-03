@@ -33,6 +33,28 @@ class QuotaResponse(TypedDict):
     scan_pack_total: int | None
 
 
+def preserved_scan_pack_fields_for_pro_upgrade(
+    prev_sub: dict[str, Any]
+) -> dict[str, Any]:
+    """
+    从当前 subscription 字典中取出升级到 Pro 时需保留的 scan pack 字段（若有剩余）。
+    与 routes/subscription.activate_subscription 中 pro 分支行为一致。
+    """
+    preserved: dict[str, Any] = {}
+    rem = prev_sub.get("scan_pack_remaining")
+    if isinstance(rem, (int, float)) and float(rem) > 0:
+        total_val = prev_sub.get("scan_pack_total")
+        st = (
+            int(total_val)
+            if isinstance(total_val, (int, float)) and float(total_val) > 0
+            else SCAN_PACK_DEFAULT_TOTAL
+        )
+        sr = min(int(rem), st)
+        preserved["scan_pack_total"] = st
+        preserved["scan_pack_remaining"] = sr
+    return preserved
+
+
 def _subscription_dict(extras: Any) -> dict[str, Any]:
     if not isinstance(extras, dict):
         return {}
@@ -169,16 +191,32 @@ def get_quota_remaining(
     # 防御：remaining 不能超过 total
     pro_scan_remaining = min(pro_scan_remaining, pro_scan_total)
 
-    used = max(0, pro_scan_total - pro_scan_remaining)
+    # 从 scan pack 升级到 pro 时保留的剩余次数，与订阅池叠加
+    sp_total_val = sub.get("scan_pack_total")
+    sp_rem_val = sub.get("scan_pack_remaining")
+    pack_total = 0
+    pack_remaining = 0
+    if isinstance(sp_rem_val, (int, float)) and float(sp_rem_val) > 0:
+        pack_remaining = int(sp_rem_val)
+        if isinstance(sp_total_val, (int, float)) and float(sp_total_val) > 0:
+            pack_total = int(sp_total_val)
+        else:
+            pack_total = pack_remaining
+        pack_remaining = min(pack_remaining, pack_total)
+
+    combined_limit = int(pro_scan_total) + int(pack_total)
+    combined_remaining = int(pro_scan_remaining) + int(pack_remaining)
+    combined_used = max(0, combined_limit - combined_remaining)
+
     return QuotaResponse(
         plan=plan,
-        limit=int(pro_scan_total),
-        used=int(used),
-        remaining=int(max(0, pro_scan_remaining)),
+        limit=int(combined_limit),
+        used=int(combined_used),
+        remaining=int(max(0, combined_remaining)),
         pro_expires_at_ts=(
             int(pro_expires_at_ts) if pro_expires_at_ts is not None else None
         ),
-        scan_pack_total=None,
+        scan_pack_total=int(pack_total) if pack_total > 0 else None,
     )
 
 
@@ -203,7 +241,7 @@ def consume_quota_after_success(
     plan = get_active_plan(user, now=now)
 
     if plan == "pro_monthly" or plan == "pro_yearly":
-        # 并发下强一致扣减：只扣减 1 次
+        # 并发下强一致扣减：只扣减 1 次；先扣订阅池，再扣升级 pro 时保留的 scan pack
         user_id = str(user.user_id)
         locked = (
             db.session.query(sm.User)
@@ -232,15 +270,20 @@ def consume_quota_after_success(
             else int(total)
         )
 
-        if remaining <= 0:
-            raise _quota_exhausted_http(
-                detail_code="PRO_QUOTA_EXCEEDED",
-                message="Pro scan quota exhausted.",
-            )
-
         new_sub = dict(sub)
-        new_sub["pro_scan_total"] = total
-        new_sub["pro_scan_remaining"] = int(remaining) - 1
+
+        if remaining > 0:
+            new_sub["pro_scan_total"] = total
+            new_sub["pro_scan_remaining"] = int(remaining) - 1
+        else:
+            sp_rem = sub.get("scan_pack_remaining")
+            if isinstance(sp_rem, (int, float)) and int(sp_rem) > 0:
+                new_sub["scan_pack_remaining"] = int(sp_rem) - 1
+            else:
+                raise _quota_exhausted_http(
+                    detail_code="PRO_QUOTA_EXCEEDED",
+                    message="Pro scan quota exhausted.",
+                )
 
         new_extras = dict(extras_dict)
         new_extras["subscription"] = new_sub
