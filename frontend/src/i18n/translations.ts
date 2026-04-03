@@ -116,6 +116,8 @@ export const translations = {
       headlineLine2: "experience",
       scanButton: "SCAN",
       bottomSlogan: "Discover art like never before.",
+      legalPrivacyLink: "Privacy Policy",
+      legalTermsEulaLink: "Terms of Use (EULA)",
       mostPopular: "MOST POPULAR !",
       activating: "…",
       freePlanDetail1: "* Basic artwork",
@@ -134,71 +136,9 @@ export const translations = {
       back: "← Back",
       privacyTitle: "Privacy Policy",
       termsTitle: "Terms of Service",
-      privacyBody: `
-Last updated: March 2025
-
-Artiou ("we", "our", or "the app") is a museum guide application that helps you discover and save information about artworks. This Privacy Policy explains how we collect, use, and protect your information when you use Artiou.
-
-1. Information We Collect
-
-1.1 Information you provide
-• Account: When you sign in with Apple, we receive a unique identifier from Apple. We do not receive your Apple email or name unless you choose to share them, and we do not store them beyond what is needed to provide your account.
-• Favorites: If you are logged in, we may store your saved artworks (images, descriptions, and audio) in association with your account so you can access them across devices.
-
-1.2 Information collected automatically
-• Photos: When you take or select a photo of an exhibit, that image is sent to our servers to generate an AI-generated description and audio guide. We do not use these images for advertising or to identify you personally beyond providing the service.
-• Usage: We may collect anonymous usage data (e.g., feature usage, errors) to improve the app. We do not sell this data.
-
-1.3 Device and permissions
-• Camera: Used only to capture photos of artworks for recognition and analysis.
-• Storage: Used to save your collection and cached audio on your device.
-• Microphone: Not used for voice recognition; the app only plays audio guides.
-
-2. How We Use Your Information
-
-We use the information we collect to:
-• Provide artwork recognition and AI-generated descriptions and audio guides.
-• Save and sync your collection when you are logged in.
-• Operate, secure, and improve the app and our services.
-• Comply with applicable law and protect our rights.
-
-We do not sell your personal information. We do not use your photos or data to train third-party AI models for purposes unrelated to providing the service to you.
-
-3. Data Sharing and Third Parties
-
-• Service providers: We use trusted providers (e.g., cloud hosting, AI and voice services) to run the app. They process data only on our instructions and in line with this policy.
-• Apple: Sign in with Apple is subject to Apple’s privacy policy. We only receive the identifier and optional contact info you approve.
-• Legal: We may disclose information if required by law or to protect our users, staff, or the public.
-
-4. Data Retention and Security
-
-• We retain your data only as long as needed to provide the service and as required by law.
-• We use industry-standard measures to protect your data in transit and at rest. No system is completely secure; we encourage you to use a strong Apple account and keep your device secure.
-
-5. Your Rights and Choices
-
-• Access and deletion: You can request access to or deletion of your data by contacting us (see below). If you delete your account or the app, we will delete or anonymize your personal data in line with our retention policy.
-• Sign out: You can sign out from your account in the app; we will stop associating new activity with your account.
-• Withdraw consent: Where we rely on your consent, you may withdraw it at any time without affecting the lawfulness of processing before withdrawal.
-
-6. Children
-
-Artiou is not directed at children under 13. We do not knowingly collect personal information from children under 13. If you believe we have collected such information, please contact us and we will delete it.
-
-7. International Use
-
-Your data may be processed in the country where our servers or service providers are located. By using Artiou, you consent to such transfer and processing in accordance with this policy.
-
-8. Changes to This Policy
-
-We may update this Privacy Policy from time to time. We will notify you of material changes by posting the new policy in the app or by other reasonable means. Your continued use of Artiou after changes take effect means you accept the updated policy.
-
-9. Contact Us
-
-If you have questions about this Privacy Policy or your data, please contact us at:
-Email: privacy@example.com
-(Replace with your actual contact email or support URL.)
-`.trim(),
+      privacyLoadError: "Could not load this page. Check your network connection.",
+      privacyWebHint: "View the full privacy policy in your browser.",
+      openInBrowser: "Open in browser",
       termsBody: `
 Last updated: March 2025
 
@@ -405,6 +345,8 @@ Email: legal@example.com
       headlineLine2: "沉浸体验",
       scanButton: "扫描",
       bottomSlogan: "从未如此走近艺术。",
+      legalPrivacyLink: "隐私政策",
+      legalTermsEulaLink: "使用条款（EULA）",
       mostPopular: "最受欢迎",
       activating: "…",
       freePlanDetail1: "* 基础作品",
@@ -423,71 +365,9 @@ Email: legal@example.com
       back: "← 返回",
       privacyTitle: "隐私政策",
       termsTitle: "服务条款",
-      privacyBody: `
-更新日期：2025 年 3 月
-
-Artiou（“我们”“本应用”）是一款博物馆导览应用，帮助你识别并保存作品信息。本隐私政策说明我们在你使用 Artiou 时如何收集、使用与保护你的信息。
-
-1. 我们收集的信息
-
-1.1 你提供的信息
-• 账号：当你使用 Apple 登录时，我们会从 Apple 获得一个唯一标识符。除非你主动授权，否则我们不会获得你的 Apple 邮箱或姓名；我们也不会在提供服务所需范围之外存储这些信息。
-• 收藏：当你登录后，我们可能会将你保存的作品（图片、文字讲解、音频）与你的账号关联，以便你跨设备访问。
-
-1.2 自动收集的信息
-• 图片：当你拍摄或选择展品图片时，该图片会被发送至服务器用于生成 AI 讲解与音频。我们不会将这些图片用于广告，也不会用于与提供服务无关的个人识别。
-• 使用情况：我们可能会收集匿名使用数据（例如功能使用、错误信息）以改进应用。我们不会出售这些数据。
-
-1.3 设备权限
-• 相机：仅用于拍摄作品图片以进行识别分析。
-• 存储：用于在设备端保存收藏与缓存音频。
-• 麦克风：不用于语音识别；应用仅播放讲解音频。
-
-2. 信息的使用方式
-
-我们会将收集的信息用于：
-• 提供作品识别、AI 讲解与音频服务；
-• 在你登录时保存并同步你的收藏；
-• 运营、保护并改进应用与相关服务；
-• 遵守法律法规并保护我们的权利。
-
-我们不会出售你的个人信息。我们不会将你的图片或数据用于与向你提供服务无关的第三方 AI 训练用途。
-
-3. 数据共享与第三方
-
-• 服务提供商：我们会使用可信的服务提供商（例如云服务、AI 与语音服务）来运行应用；他们仅会在我们的指示下并依照本政策处理数据。
-• Apple：Apple 登录受 Apple 自身隐私政策约束；我们只会获得你授权的标识符与可选信息。
-• 法律要求：如法律要求或为保护用户/工作人员/公众安全，我们可能会披露必要信息。
-
-4. 数据保存与安全
-
-• 我们仅在提供服务所需期限内、以及法律要求的范围内保存你的数据。
-• 我们采取行业通行的安全措施保护传输与存储中的数据。但任何系统都无法保证绝对安全；建议你使用安全的 Apple 账号并妥善保护设备。
-
-5. 你的权利
-
-• 访问与删除：你可以联系我们以请求访问或删除你的数据（见下文联系方式）。
-• 退出登录：你可以在应用内退出账号；我们将不再把新活动与你的账号关联。
-• 撤回同意：如我们基于你的同意处理数据，你可随时撤回，不影响撤回前处理的合法性。
-
-6. 未成年人
-
-Artiou 不面向 13 岁以下儿童。我们不会有意收集 13 岁以下儿童的个人信息。如你认为我们收集了相关信息，请联系我们，我们将删除。
-
-7. 跨境使用
-
-你的数据可能在服务器或服务提供商所在地处理。使用 Artiou 即表示你同意按本政策进行相关传输与处理。
-
-8. 政策更新
-
-我们可能不时更新本隐私政策。若有重大变更，我们会在应用内发布或以合理方式通知。继续使用即表示你接受更新后的政策。
-
-9. 联系我们
-
-如对本隐私政策或你的数据有疑问，请联系：
-邮箱：privacy@example.com
-（请替换为实际联系方式）
-`.trim(),
+      privacyLoadError: "无法加载此页面，请检查网络连接。",
+      privacyWebHint: "在浏览器中查看完整隐私政策。",
+      openInBrowser: "在浏览器中打开",
       termsBody: `
 更新日期：2025 年 3 月
 
@@ -697,6 +577,8 @@ Artiou 提供：
       headlineLine2: "l’expérience",
       scanButton: "SCAN",
       bottomSlogan: "Découvrez l’art comme jamais auparavant.",
+      legalPrivacyLink: "Politique de confidentialité",
+      legalTermsEulaLink: "Conditions d’utilisation (EULA)",
       mostPopular: "LE PLUS POPULAIRE !",
       activating: "…",
       freePlanDetail1: "* Reconnaissance d’œuvres",
@@ -715,44 +597,9 @@ Artiou 提供：
       back: "← Retour",
       privacyTitle: "Politique de confidentialité",
       termsTitle: "Conditions d’utilisation",
-      privacyBody: `
-Dernière mise à jour : mars 2025
-
-Artiou (« nous », « notre », « l’app ») est une application de guide de musée qui vous aide à découvrir et enregistrer des informations sur les œuvres. Cette politique explique comment nous collectons, utilisons et protégeons vos données.
-
-1. Informations collectées
-
-1.1 Informations que vous fournissez
-• Compte : lors de la connexion Apple, nous recevons un identifiant unique. Nous ne recevons pas votre e-mail ou nom Apple sauf si vous choisissez de les partager.
-• Favoris : si vous êtes connecté, nous pouvons stocker vos œuvres enregistrées (images, textes, audio) afin de les synchroniser.
-
-1.2 Informations collectées automatiquement
-• Photos : les images prises ou sélectionnées sont envoyées à nos serveurs pour générer une description et un guide audio. Nous ne les utilisons pas à des fins publicitaires.
-• Usage : nous pouvons collecter des données d’usage anonymes pour améliorer l’app. Nous ne les vendons pas.
-
-1.3 Appareil et autorisations
-• Caméra : uniquement pour capturer des photos à analyser.
-• Stockage : pour enregistrer la collection et le cache audio.
-• Microphone : non utilisé pour la reconnaissance vocale.
-
-2. Utilisation des informations
-
-Nous utilisons ces informations pour fournir la reconnaissance, les descriptions et guides audio, synchroniser votre collection, sécuriser et améliorer le service.
-
-3. Partage et tiers
-
-Nous pouvons travailler avec des prestataires de confiance. La connexion Apple est soumise à la politique d’Apple. Nous pouvons divulguer des informations si la loi l’exige.
-
-4. Conservation et sécurité
-
-Nous conservons les données uniquement le temps nécessaire et appliquons des mesures de sécurité raisonnables.
-
-5. Vos droits
-
-Vous pouvez demander l’accès ou la suppression de vos données en nous contactant.
-
-Contact : privacy@example.com
-`.trim(),
+      privacyLoadError: "Impossible de charger cette page. Vérifiez votre connexion.",
+      privacyWebHint: "Consultez la politique de confidentialité complète dans votre navigateur.",
+      openInBrowser: "Ouvrir dans le navigateur",
       termsBody: `
 Dernière mise à jour : mars 2025
 

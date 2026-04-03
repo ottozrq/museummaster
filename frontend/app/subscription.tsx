@@ -36,6 +36,22 @@ const WHITE = "#FFFFFF";
 
 type CardTheme = "outline" | "filled";
 
+function SubscriptionLegalLinks() {
+  const router = useRouter();
+  const { t } = useI18n();
+  return (
+    <View style={styles.legalRow} accessibilityLabel="Legal links">
+      <Pressable onPress={() => router.push("/privacy")} accessibilityRole="link">
+        <Text style={styles.legalLink}>{t("subscription.legalPrivacyLink")}</Text>
+      </Pressable>
+      <Text style={styles.legalSep}> · </Text>
+      <Pressable onPress={() => router.push("/terms")} accessibilityRole="link">
+        <Text style={styles.legalLink}>{t("subscription.legalTermsEulaLink")}</Text>
+      </Pressable>
+    </View>
+  );
+}
+
 function PlanCard(props: {
   titleMain: string;
   titleSub?: string;
@@ -337,6 +353,7 @@ export default function SubscriptionScreen() {
         <Pressable style={styles.primaryButton} onPress={() => router.push("/collection")}>
           <Text style={styles.primaryButtonText}>{t("result.goSignIn")}</Text>
         </Pressable>
+        <SubscriptionLegalLinks />
       </View>
     );
   }
@@ -390,6 +407,8 @@ export default function SubscriptionScreen() {
         </View>
       </ScrollView>
 
+      <SubscriptionLegalLinks />
+
       <View style={[styles.bottomBar, { paddingBottom: Math.max(insets.bottom, 6) }]}>
         <Pressable style={styles.closeWrap} onPress={() => router.back()}>
           <View style={styles.closeXLeft} />
@@ -421,6 +440,27 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     marginBottom: 12,
     opacity: 0.92,
+  },
+  legalRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingTop: 4,
+    paddingBottom: 6,
+    gap: 4,
+  },
+  legalLink: {
+    color: BRAND_RED,
+    fontSize: 12,
+    fontWeight: "700",
+    textDecorationLine: "underline",
+  },
+  legalSep: {
+    color: BRAND_RED,
+    fontSize: 12,
+    opacity: 0.65,
   },
   bottomBar: {
     alignItems: "center",
