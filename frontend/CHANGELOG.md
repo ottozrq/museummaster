@@ -1,3 +1,10 @@
+## [1.2.4](https://github.com/ottozrq/museummaster/compare/v1.2.3...v1.2.4) (2026-04-03)
+
+
+### Bug Fixes
+
+* **frontend:** track policyUrls for EAS build; remove deprecated expo-router/babel ([6a2224d](https://github.com/ottozrq/museummaster/commit/6a2224d425f70c2b1f5e10fe6a7c86627d8f347d))
+
 ## [1.2.3](https://github.com/ottozrq/museummaster/compare/v1.2.2...v1.2.3) (2026-04-03)
 
 
