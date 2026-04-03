@@ -33,6 +33,7 @@ p, role_base, /users/me/, DELETE
 p, role_base, /scan-quota/remaining, GET
 p, role_base, /subscription/current, GET
 p, role_base, /subscription/activate, POST
+p, *, /subscription/appstore-notifications, POST
 
 p, role_base, /reset_password, POST
 p, role_base, /images*, POST 

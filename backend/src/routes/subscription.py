@@ -1,10 +1,12 @@
 import datetime as dt
+import logging
 from typing import Any, Dict, Literal
 
-from fastapi import Depends, HTTPException
+from fastapi import Body, Depends, HTTPException
 
 import sql_models as sm
 from src.routes import TAG, MuseumDb, app, d
+from utils.appstore_server_notifications import process_appstore_notification_body
 from utils.subscription import (
     PRO_MONTHLY_DAYS,
     PRO_MONTHLY_SCAN_LIMIT,
@@ -17,6 +19,8 @@ from utils.subscription import (
 )
 
 PlanType = Literal["free", "scan_pack", "pro_monthly", "pro_yearly"]
+
+logger = logging.getLogger(__name__)
 
 
 def _get_user_subscription(extras: Any) -> dict[str, Any]:
@@ -48,6 +52,9 @@ def get_subscription_current(
         "scan_pack_total": quota["scan_pack_total"],
         "scan_pack_remaining": sub.get("scan_pack_remaining"),
         "daily_limit": quota.get("limit") if quota["plan"] == "free" else None,
+        # App Store Server Notifications 同步：1=将自动续费 0=已关闭自动续费 None=未知
+        "apple_auto_renew_status": sub.get("apple_auto_renew_status"),
+        "apple_original_transaction_id": sub.get("apple_original_transaction_id"),
     }
 
 
@@ -92,13 +99,20 @@ def activate_subscription(
         prev_sub = _get_user_subscription(extras)
         preserved_pack = preserved_scan_pack_fields_for_pro_upgrade(prev_sub)
 
-        extras["subscription"] = {
+        merged: dict[str, Any] = {
             "type": plan_type,
             "pro_expires_at_ts": expires_ts,
             "pro_scan_total": scan_total,
             "pro_scan_remaining": scan_total,
             **preserved_pack,
         }
+        otid = payload.get("apple_original_transaction_id")
+        if otid:
+            merged["apple_original_transaction_id"] = str(otid)
+        tid = payload.get("apple_transaction_id")
+        if tid:
+            merged["apple_transaction_id"] = str(tid)
+        extras["subscription"] = merged
 
     user.extras = extras
     db.session.add(user)
@@ -117,4 +131,33 @@ def activate_subscription(
     }
 
 
-__all__ = ["get_subscription_current", "activate_subscription"]
+@app.post("/subscription/appstore-notifications", tags=[TAG.Analyze])
+def appstore_server_notifications(
+    payload: Dict[str, Any] = Body(...),
+    db: MuseumDb = Depends(d.get_psql),
+) -> Dict[str, Any]:
+    """
+    App Store Server Notifications v2 入口（无需登录）。
+    在 App Store Connect → App → 综合 → App 内购买项目 → 服务器通知 中配置生产/沙盒 URL。
+
+    客户端开通 Pro 时须上报 apple_original_transaction_id，否则无法将通知关联到用户。
+    """
+    try:
+        ok = process_appstore_notification_body(payload, db.session)
+        if ok:
+            db.session.commit()
+        else:
+            db.session.rollback()
+    except Exception:
+        logger.exception("appstore notification handler failed")
+        db.session.rollback()
+        ok = False
+    # Apple 要求尽快返回 200；解析失败也返回 200，避免无限重试淹没日志
+    return {"ok": ok}
+
+
+__all__ = [
+    "get_subscription_current",
+    "activate_subscription",
+    "appstore_server_notifications",
+]

@@ -59,6 +59,7 @@ class CasbinMiddleware:
                     "/docs",
                     "/openapi.json",
                     "/redoc",
+                    "/subscription/appstore-notifications",
                 }
                 or normalized_path.startswith("/static/")
                 or normalized_path.startswith("/analyze/")

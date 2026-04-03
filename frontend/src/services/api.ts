@@ -329,6 +329,9 @@ export type SubscriptionCurrent = {
   scan_pack_total?: number | null;
   scan_pack_remaining?: number | null;
   daily_limit?: number | null;
+  /** App Store：1=自动续费开启 0=已关闭（未过期前仍可用 Pro） */
+  apple_auto_renew_status?: number | null;
+  apple_original_transaction_id?: string | null;
 };
 
 export async function fetchSubscriptionCurrent(token: string): Promise<SubscriptionCurrent> {
@@ -350,7 +353,11 @@ export type SubscriptionPlanType = "free" | "scan_pack" | "pro_monthly" | "pro_y
 export async function activateSubscriptionPlan(
   token: string,
   plan_type: SubscriptionPlanType,
-  opts?: { scan_pack_remaining?: number },
+  opts?: {
+    scan_pack_remaining?: number;
+    apple_original_transaction_id?: string;
+    apple_transaction_id?: string;
+  },
 ): Promise<SubscriptionCurrent> {
   const response = await fetch(`${API_BASE_URL}/subscription/activate`, {
     method: "POST",
@@ -363,6 +370,10 @@ export async function activateSubscriptionPlan(
       ...(plan_type === "scan_pack" && opts?.scan_pack_remaining != null
         ? { scan_pack_remaining: opts.scan_pack_remaining }
         : {}),
+      ...(opts?.apple_original_transaction_id != null
+        ? { apple_original_transaction_id: opts.apple_original_transaction_id }
+        : {}),
+      ...(opts?.apple_transaction_id != null ? { apple_transaction_id: opts.apple_transaction_id } : {}),
     }),
   });
   if (!response.ok) {

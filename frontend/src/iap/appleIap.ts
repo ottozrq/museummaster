@@ -221,7 +221,14 @@ export async function purchaseIosPlanThenActivate(token: string, plan: PaidPlanT
         await requestSubscription({ sku, andDangerouslyFinishTransactionAutomaticallyIOS: autoFinish }),
       );
     });
-    await activateSubscriptionPlan(token, plan);
+    await activateSubscriptionPlan(token, plan, {
+      ...(purchase
+        ? {
+            apple_original_transaction_id: purchase.originalTransactionIdentifierIOS ?? undefined,
+            apple_transaction_id: purchase.transactionId ?? undefined,
+          }
+        : {}),
+    });
     if (purchase?.transactionId) {
       await enqueueIosIap(async () => {
         await finishTransaction({
