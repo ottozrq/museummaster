@@ -33,6 +33,66 @@ class QuotaResponse(TypedDict):
     scan_pack_total: int | None
 
 
+def subscription_dict_after_activate_free_plan(
+    prev_sub: dict[str, Any],
+    now: dt.datetime | None = None,
+) -> dict[str, Any] | None:
+    """
+    用户在前端选择「免费」同步到后端时：不再保留 Pro 订阅，但将 Pro 池与加量包池的剩余次数合并为
+    type=scan_pack，避免取消订阅后清空账户内剩余识别次数。
+    若合并后无可保留次数，返回 None（表示可清除 subscription）。
+    """
+    now = _now_utc(now)
+    if not prev_sub:
+        return None
+
+    pack_rem = 0
+    sp_rem = prev_sub.get("scan_pack_remaining")
+    if isinstance(sp_rem, (int, float)) and float(sp_rem) > 0:
+        pack_rem = int(sp_rem)
+        sp_total = prev_sub.get("scan_pack_total")
+        cap = (
+            int(sp_total)
+            if isinstance(sp_total, (int, float)) and float(sp_total) > 0
+            else pack_rem
+        )
+        pack_rem = min(pack_rem, cap)
+
+    pro_type = prev_sub.get("type")
+    pro_rem = 0
+    if pro_type in ("pro_monthly", "pro_yearly"):
+        default_total = (
+            PRO_MONTHLY_SCAN_LIMIT
+            if pro_type == "pro_monthly"
+            else PRO_YEARLY_SCAN_LIMIT
+        )
+        pt = prev_sub.get("pro_scan_total")
+        pr_total = (
+            int(pt)
+            if isinstance(pt, (int, float)) and float(pt) > 0
+            else int(default_total)
+        )
+        pr_val = prev_sub.get("pro_scan_remaining")
+        pr_rem = (
+            int(pr_val)
+            if isinstance(pr_val, (int, float)) and float(pr_val) >= 0
+            else int(pr_total)
+        )
+        pr_rem = min(max(0, pr_rem), pr_total)
+        # 未过期 / 已过期 Pro 均保留 pro_scan_remaining
+        pro_rem = pr_rem
+
+    total_remaining = pro_rem + pack_rem
+    if total_remaining <= 0:
+        return None
+
+    return {
+        "type": "scan_pack",
+        "scan_pack_total": int(total_remaining),
+        "scan_pack_remaining": int(total_remaining),
+    }
+
+
 def preserved_scan_pack_fields_for_pro_upgrade(
     prev_sub: dict[str, Any]
 ) -> dict[str, Any]:

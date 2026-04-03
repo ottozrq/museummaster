@@ -16,6 +16,7 @@ from utils.subscription import (
     apply_scan_pack_purchase,
     get_quota_remaining,
     preserved_scan_pack_fields_for_pro_upgrade,
+    subscription_dict_after_activate_free_plan,
 )
 
 PlanType = Literal["free", "scan_pack", "pro_monthly", "pro_yearly"]
@@ -79,7 +80,12 @@ def activate_subscription(
         extras.pop("subscription", None)
 
     if plan_type == "free":
-        extras.pop("subscription", None)
+        prev_sub = _get_user_subscription(extras)
+        new_sub = subscription_dict_after_activate_free_plan(prev_sub, now)
+        if new_sub is None:
+            extras.pop("subscription", None)
+        else:
+            extras["subscription"] = new_sub
     elif plan_type == "scan_pack":
         prev_sub = _get_user_subscription(extras)
         add = int(payload.get("scan_pack_remaining") or SCAN_PACK_DEFAULT_TOTAL)

@@ -16,6 +16,7 @@ from utils.subscription import (
     get_quota_remaining,
     merge_scan_pack_into_active_pro_subscription,
     preserved_scan_pack_fields_for_pro_upgrade,
+    subscription_dict_after_activate_free_plan,
 )
 
 
@@ -220,6 +221,55 @@ def test_apply_scan_pack_standalone_stacks_multiple_purchases():
     second = apply_scan_pack_purchase(first, 50, now)
     assert second["scan_pack_remaining"] == 100
     assert second["scan_pack_total"] == 100
+
+
+def test_activate_free_plan_preserves_pro_and_pack_remaining():
+    """前端选择免费：Pro 剩余与加量包剩余合并为 scan_pack。"""
+    now = dt.datetime.now(dt.timezone.utc)
+    expires = _future_expires_ts(now)
+    prev = {
+        "type": "pro_monthly",
+        "pro_expires_at_ts": expires,
+        "pro_scan_total": PRO_MONTHLY_SCAN_LIMIT,
+        "pro_scan_remaining": 120,
+        "scan_pack_total": 50,
+        "scan_pack_remaining": 20,
+    }
+    out = subscription_dict_after_activate_free_plan(prev, now)
+    assert out is not None
+    assert out["type"] == "scan_pack"
+    assert out["scan_pack_remaining"] == 140
+    assert out["scan_pack_total"] == 140
+
+
+def test_activate_free_plan_preserves_scan_pack_only():
+    now = dt.datetime.now(dt.timezone.utc)
+    prev = {
+        "type": "scan_pack",
+        "scan_pack_total": 50,
+        "scan_pack_remaining": 30,
+    }
+    out = subscription_dict_after_activate_free_plan(prev, now)
+    assert out is not None
+    assert out["scan_pack_remaining"] == 30
+
+
+def test_activate_free_plan_returns_none_when_no_remaining():
+    now = dt.datetime.now(dt.timezone.utc)
+    expires = _future_expires_ts(now)
+    assert (
+        subscription_dict_after_activate_free_plan(
+            {
+                "type": "pro_monthly",
+                "pro_expires_at_ts": expires,
+                "pro_scan_total": PRO_MONTHLY_SCAN_LIMIT,
+                "pro_scan_remaining": 0,
+                "scan_pack_remaining": 0,
+            },
+            now,
+        )
+        is None
+    )
 
 
 def test_apply_scan_pack_preserves_pro_fields():
