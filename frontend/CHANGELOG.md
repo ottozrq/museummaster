@@ -1,3 +1,14 @@
+## [1.2.3](https://github.com/ottozrq/museummaster/compare/v1.2.2...v1.2.3) (2026-04-03)
+
+
+### Bug Fixes
+
+* plan finally working ([95996cb](https://github.com/ottozrq/museummaster/commit/95996cb982641b0abe651d447bb74d79950b9f1a))
+* pro plan and pack conflicts ([43a083c](https://github.com/ottozrq/museummaster/commit/43a083cd1b2f1a03f40641e561feb0301818bc10))
+* sub private policy ([9197da1](https://github.com/ottozrq/museummaster/commit/9197da19559de64a552ab731076c92a005bc3c49))
+* subscription UI ([d6b1979](https://github.com/ottozrq/museummaster/commit/d6b1979b26ceeda07361953c01b6eaeb5f91a425))
+* unsub ([faa2e7e](https://github.com/ottozrq/museummaster/commit/faa2e7e51240235e8f9adc49509f63ea6b22c5c4))
+
 ## [1.2.2](https://github.com/ottozrq/museummaster/compare/v1.2.1...v1.2.2) (2026-04-02)
 
 
