@@ -10,10 +10,15 @@ import pytest
 
 import sql_models as sm
 from utils.subscription import (
+    PRO_MONTHLY_DAYS,
     PRO_MONTHLY_SCAN_LIMIT,
+    PRO_YEARLY_DAYS,
+    apply_pro_period_resets_to_dict,
     apply_scan_pack_purchase,
+    compute_pro_activation_expires_at_ts,
     consume_quota_after_success,
     get_quota_remaining,
+    is_pro_crossgrade,
     merge_scan_pack_into_active_pro_subscription,
     preserved_scan_pack_fields_for_pro_upgrade,
     should_skip_duplicate_pro_activation,
@@ -196,7 +201,7 @@ def test_merge_scan_pack_first_purchase_while_on_pro():
     prev = {
         "type": "pro_yearly",
         "pro_expires_at_ts": expires,
-        "pro_scan_total": PRO_MONTHLY_SCAN_LIMIT * 12,
+        "pro_scan_total": PRO_MONTHLY_SCAN_LIMIT,
         "pro_scan_remaining": 200,
     }
     merged = merge_scan_pack_into_active_pro_subscription(prev, 50, now)
@@ -356,6 +361,87 @@ def test_activate_free_plan_returns_none_when_no_remaining():
         )
         is None
     )
+
+
+def test_pro_period_resets_at_next_month_same_calendar_day_utc():
+    """跨过 pro_next_quota_reset_ts 后重置为 200，下一锚点为次月同日 0:00 UTC。"""
+    now = dt.datetime(2026, 3, 15, 14, 0, 0, tzinfo=dt.timezone.utc)
+    expires = int(dt.datetime(2027, 1, 1, tzinfo=dt.timezone.utc).timestamp())
+    nxt = int(dt.datetime(2026, 3, 15, 0, 0, 0, tzinfo=dt.timezone.utc).timestamp())
+    sub = {
+        "type": "pro_monthly",
+        "pro_expires_at_ts": expires,
+        "pro_scan_total": 200,
+        "pro_scan_remaining": 3,
+        "pro_next_quota_reset_ts": nxt,
+    }
+    new_sub, changed = apply_pro_period_resets_to_dict(sub, now)
+    assert changed
+    assert new_sub["pro_scan_remaining"] == 200
+    apr15 = dt.datetime(2026, 4, 15, 0, 0, 0, tzinfo=dt.timezone.utc)
+    assert new_sub["pro_next_quota_reset_ts"] == int(apr15.timestamp())
+
+
+def test_legacy_yearly_lump_clamped_to_period_limit():
+    """旧版年订一次性 total=2400 迁移为每周期 200 上限。"""
+    now = dt.datetime.now(dt.timezone.utc)
+    expires = _future_expires_ts(now)
+    sub = {
+        "type": "pro_yearly",
+        "pro_expires_at_ts": expires,
+        "pro_scan_total": 2400,
+        "pro_scan_remaining": 500,
+    }
+    new_sub, changed = apply_pro_period_resets_to_dict(sub, now)
+    assert changed
+    assert new_sub["pro_scan_total"] == PRO_MONTHLY_SCAN_LIMIT
+    assert new_sub["pro_scan_remaining"] == min(500, PRO_MONTHLY_SCAN_LIMIT)
+
+
+def test_crossgrade_monthly_to_yearly_expires_from_monthly_end():
+    """月订未结束时改年订：年周期从「当前月订结束」起 +365 天。"""
+    now = dt.datetime(2026, 1, 10, 12, 0, 0, tzinfo=dt.timezone.utc)
+    monthly_end = dt.datetime(2026, 2, 1, 0, 0, 0, tzinfo=dt.timezone.utc)
+    prev = {
+        "type": "pro_monthly",
+        "pro_expires_at_ts": int(monthly_end.timestamp()),
+    }
+    assert is_pro_crossgrade(prev, "pro_yearly", now) is True
+    exp = compute_pro_activation_expires_at_ts(prev, "pro_yearly", now)
+    want_end = monthly_end + timedelta(days=PRO_YEARLY_DAYS)
+    assert exp == int(want_end.timestamp())
+
+
+def test_crossgrade_yearly_to_monthly_expires_from_yearly_end():
+    """年订未结束时改月订：新月周期从「当前年订结束」起 +30 天。"""
+    now = dt.datetime(2026, 1, 10, tzinfo=dt.timezone.utc)
+    yearly_end = dt.datetime(2026, 12, 1, 0, 0, 0, tzinfo=dt.timezone.utc)
+    prev = {
+        "type": "pro_yearly",
+        "pro_expires_at_ts": int(yearly_end.timestamp()),
+    }
+    assert is_pro_crossgrade(prev, "pro_monthly", now) is True
+    exp = compute_pro_activation_expires_at_ts(prev, "pro_monthly", now)
+    want_end = yearly_end + timedelta(days=PRO_MONTHLY_DAYS)
+    assert exp == int(want_end.timestamp())
+
+
+def test_same_pro_plan_not_crossgrade():
+    now = dt.datetime.now(dt.timezone.utc)
+    expires = _future_expires_ts(now)
+    prev = {"type": "pro_monthly", "pro_expires_at_ts": expires}
+    assert is_pro_crossgrade(prev, "pro_monthly", now) is False
+
+
+def test_crossgrade_false_when_previous_pro_expired():
+    now = dt.datetime(2026, 6, 1, tzinfo=dt.timezone.utc)
+    prev = {
+        "type": "pro_monthly",
+        "pro_expires_at_ts": int(
+            dt.datetime(2026, 1, 1, tzinfo=dt.timezone.utc).timestamp()
+        ),
+    }
+    assert is_pro_crossgrade(prev, "pro_yearly", now) is False
 
 
 def test_apply_scan_pack_preserves_pro_fields():

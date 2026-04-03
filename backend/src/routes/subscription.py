@@ -8,13 +8,13 @@ import sql_models as sm
 from src.routes import TAG, MuseumDb, app, d
 from utils.appstore_server_notifications import process_appstore_notification_body
 from utils.subscription import (
-    PRO_MONTHLY_DAYS,
-    PRO_MONTHLY_SCAN_LIMIT,
-    PRO_YEARLY_DAYS,
-    PRO_YEARLY_SCAN_LIMIT,
+    PRO_PERIOD_SCAN_LIMIT,
     SCAN_PACK_DEFAULT_TOTAL,
     apply_scan_pack_purchase,
+    compute_pro_activation_expires_at_ts,
+    first_quota_reset_ts_from_anchor_utc,
     get_quota_remaining,
+    is_pro_crossgrade,
     preserved_scan_pack_fields_for_pro_upgrade,
     should_skip_duplicate_pro_activation,
     subscription_dict_after_activate_free_plan,
@@ -57,6 +57,8 @@ def get_subscription_current(
         # App Store Server Notifications 同步：1=将自动续费 0=已关闭自动续费 None=未知
         "apple_auto_renew_status": sub.get("apple_auto_renew_status"),
         "apple_original_transaction_id": sub.get("apple_original_transaction_id"),
+        # Pro 月度额度下次重置（UTC 次月同日 0:00），Unix 秒
+        "pro_next_quota_reset_ts": sub.get("pro_next_quota_reset_ts"),
     }
 
 
@@ -118,24 +120,51 @@ def activate_subscription(
                 "pro_expires_at_ts": quota["pro_expires_at_ts"],
                 "scan_pack_total": quota["scan_pack_total"],
                 "scan_pack_remaining": sub_after.get("scan_pack_remaining"),
+                "pro_next_quota_reset_ts": sub_after.get("pro_next_quota_reset_ts"),
             }
 
-        days = PRO_MONTHLY_DAYS if plan_type == "pro_monthly" else PRO_YEARLY_DAYS
-        expires_ts = int((now + dt.timedelta(days=days)).timestamp())
-        scan_total = (
-            PRO_MONTHLY_SCAN_LIMIT
-            if plan_type == "pro_monthly"
-            else PRO_YEARLY_SCAN_LIMIT
-        )
+        expires_ts = compute_pro_activation_expires_at_ts(prev_sub, plan_type, now)
+        scan_total = PRO_PERIOD_SCAN_LIMIT
         preserved_pack = preserved_scan_pack_fields_for_pro_upgrade(prev_sub)
 
-        merged: dict[str, Any] = {
-            "type": plan_type,
-            "pro_expires_at_ts": expires_ts,
-            "pro_scan_total": scan_total,
-            "pro_scan_remaining": scan_total,
-            **preserved_pack,
-        }
+        if is_pro_crossgrade(prev_sub, plan_type, now):
+            pt = prev_sub.get("pro_scan_total")
+            pr = prev_sub.get("pro_scan_remaining")
+            pt_i = (
+                int(pt)
+                if isinstance(pt, (int, float)) and float(pt) > 0
+                else PRO_PERIOD_SCAN_LIMIT
+            )
+            pr_i = (
+                int(pr)
+                if isinstance(pr, (int, float)) and float(pr) >= 0
+                else PRO_PERIOD_SCAN_LIMIT
+            )
+            pt_i = min(pt_i, PRO_PERIOD_SCAN_LIMIT)
+            pr_i = min(pr_i, pt_i)
+            nxt_raw = prev_sub.get("pro_next_quota_reset_ts")
+            nxt = (
+                int(nxt_raw)
+                if isinstance(nxt_raw, (int, float))
+                else first_quota_reset_ts_from_anchor_utc(now)
+            )
+            merged = {
+                "type": plan_type,
+                "pro_expires_at_ts": expires_ts,
+                "pro_scan_total": pt_i,
+                "pro_scan_remaining": pr_i,
+                "pro_next_quota_reset_ts": nxt,
+                **preserved_pack,
+            }
+        else:
+            merged = {
+                "type": plan_type,
+                "pro_expires_at_ts": expires_ts,
+                "pro_scan_total": scan_total,
+                "pro_scan_remaining": scan_total,
+                "pro_next_quota_reset_ts": first_quota_reset_ts_from_anchor_utc(now),
+                **preserved_pack,
+            }
         otid = payload.get("apple_original_transaction_id")
         if otid:
             merged["apple_original_transaction_id"] = str(otid)
@@ -158,6 +187,7 @@ def activate_subscription(
         "pro_expires_at_ts": quota["pro_expires_at_ts"],
         "scan_pack_total": quota["scan_pack_total"],
         "scan_pack_remaining": sub_after.get("scan_pack_remaining"),
+        "pro_next_quota_reset_ts": sub_after.get("pro_next_quota_reset_ts"),
     }
 
 

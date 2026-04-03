@@ -1,3 +1,4 @@
+import calendar
 import datetime as dt
 from typing import Any, Literal, TypedDict
 
@@ -17,10 +18,11 @@ SCAN_PACK_DEFAULT_TOTAL = 50
 PRO_MONTHLY_DAYS = 30
 PRO_YEARLY_DAYS = 365
 
-# pro 扫描额度（每次 analyze 成功扣减 1）
-PRO_MONTHLY_SCAN_LIMIT = 200
-# 默认理解：年订也是“每月 200 次”，即一年 2400 次
-PRO_YEARLY_SCAN_LIMIT = 200 * 12
+# Pro：月订 / 年订均为「每自然月周期」200 次（UTC：次月同一日历日 00:00 重置），非年订一次性 2400
+PRO_PERIOD_SCAN_LIMIT = 200
+PRO_MONTHLY_SCAN_LIMIT = PRO_PERIOD_SCAN_LIMIT
+# 兼容旧引用：与 PRO_PERIOD_SCAN_LIMIT 相同（不再表示年度总池）
+PRO_YEARLY_SCAN_LIMIT = PRO_PERIOD_SCAN_LIMIT
 
 
 class QuotaResponse(TypedDict):
@@ -31,6 +33,155 @@ class QuotaResponse(TypedDict):
     # 额外信息：前端展示/调试用
     pro_expires_at_ts: int | None
     scan_pack_total: int | None
+
+
+def add_calendar_months(d: dt.date, months: int) -> dt.date:
+    """日历月加法（如 1/31 + 1 月 → 2/28 或 2/29）。"""
+    m = d.month - 1 + months
+    y = d.year + m // 12
+    m = m % 12 + 1
+    last = calendar.monthrange(y, m)[1]
+    day = min(d.day, last)
+    return dt.date(y, m, day)
+
+
+def first_quota_reset_ts_from_anchor_utc(anchor: dt.datetime) -> int:
+    """以 anchor 的 UTC 日历日为锚，次月同一日 00:00:00 UTC 为下一次重置时刻。"""
+    a = anchor if anchor.tzinfo else anchor.replace(tzinfo=dt.timezone.utc)
+    next_d = add_calendar_months(a.date(), 1)
+    reset = dt.datetime.combine(next_d, dt.time.min, tzinfo=dt.timezone.utc)
+    return int(reset.timestamp())
+
+
+def apply_pro_period_resets_to_dict(
+    sub: dict[str, Any], now: dt.datetime
+) -> tuple[dict[str, Any], bool]:
+    """
+    Pro 月订/年订：跨过 pro_next_quota_reset_ts（UTC 次月同日 0 点）则重置为每周期 PRO_PERIOD_SCAN_LIMIT。
+    处理旧数据（无 next_ts、年订一次性大额 total）迁移。
+    返回 (新 subscription 字典, 是否修改)。
+    """
+    now = _now_utc(now)
+    if sub.get("type") not in ("pro_monthly", "pro_yearly"):
+        return sub, False
+    exp = sub.get("pro_expires_at_ts")
+    if not isinstance(exp, (int, float)):
+        return sub, False
+    if now.timestamp() >= float(exp):
+        return sub, False
+
+    out = dict(sub)
+    changed = False
+
+    nxt_raw = out.get("pro_next_quota_reset_ts")
+    pt = out.get("pro_scan_total")
+
+    if not isinstance(nxt_raw, (int, float)):
+        if isinstance(pt, (int, float)) and int(pt) > PRO_PERIOD_SCAN_LIMIT:
+            pr = out.get("pro_scan_remaining")
+            pr_i = (
+                int(pr)
+                if isinstance(pr, (int, float)) and float(pr) >= 0
+                else PRO_PERIOD_SCAN_LIMIT
+            )
+            out["pro_scan_total"] = PRO_PERIOD_SCAN_LIMIT
+            out["pro_scan_remaining"] = min(pr_i, PRO_PERIOD_SCAN_LIMIT)
+        out["pro_next_quota_reset_ts"] = first_quota_reset_ts_from_anchor_utc(now)
+        changed = True
+    elif isinstance(pt, (int, float)) and int(pt) > PRO_PERIOD_SCAN_LIMIT:
+        pr = out.get("pro_scan_remaining")
+        pr_i = (
+            int(pr)
+            if isinstance(pr, (int, float)) and float(pr) >= 0
+            else PRO_PERIOD_SCAN_LIMIT
+        )
+        out["pro_scan_total"] = PRO_PERIOD_SCAN_LIMIT
+        out["pro_scan_remaining"] = min(pr_i, PRO_PERIOD_SCAN_LIMIT)
+        changed = True
+
+    exp_f = float(exp)
+    while True:
+        nxt_v = out.get("pro_next_quota_reset_ts")
+        if not isinstance(nxt_v, (int, float)):
+            break
+        nxt_f = float(nxt_v)
+        if now.timestamp() < nxt_f:
+            break
+        if nxt_f >= exp_f:
+            break
+        out["pro_scan_total"] = PRO_PERIOD_SCAN_LIMIT
+        out["pro_scan_remaining"] = PRO_PERIOD_SCAN_LIMIT
+        reset_dt = dt.datetime.fromtimestamp(nxt_f, tz=dt.timezone.utc)
+        next_d = add_calendar_months(reset_dt.date(), 1)
+        next_reset = dt.datetime.combine(next_d, dt.time.min, tzinfo=dt.timezone.utc)
+        new_nxt = int(next_reset.timestamp())
+        out["pro_next_quota_reset_ts"] = new_nxt
+        changed = True
+
+    return out, changed
+
+
+def is_pro_crossgrade(
+    prev_sub: dict[str, Any],
+    plan_type: str,
+    now: dt.datetime,
+) -> bool:
+    """
+    是否为「未过期的月订 ↔ 年订」切换：新套餐时长从当前 Pro 周期结束时刻起算（而非立即从 now 起算）。
+    """
+    now = _now_utc(now)
+    if plan_type not in ("pro_monthly", "pro_yearly"):
+        return False
+    prev_type = prev_sub.get("type")
+    if prev_type not in ("pro_monthly", "pro_yearly") or prev_type == plan_type:
+        return False
+    exp = prev_sub.get("pro_expires_at_ts")
+    if not isinstance(exp, (int, float)):
+        return False
+    return now.timestamp() < float(exp)
+
+
+def compute_pro_activation_expires_at_ts(
+    prev_sub: dict[str, Any],
+    plan_type: str,
+    now: dt.datetime,
+) -> int:
+    """
+    写入新 Pro 时的 pro_expires_at_ts（Unix 秒）：
+    - 月↔年跨档且当前周期未结束：当前周期结束时间 + 新套餐天数（年订 +365 天、月订 +30 天）；
+    - 否则：now + 新套餐天数。
+    """
+    now = _now_utc(now)
+    days = PRO_MONTHLY_DAYS if plan_type == "pro_monthly" else PRO_YEARLY_DAYS
+    if is_pro_crossgrade(prev_sub, plan_type, now):
+        exp = prev_sub.get("pro_expires_at_ts")
+        if not isinstance(exp, (int, float)):
+            return int((now + dt.timedelta(days=days)).timestamp())
+        anchor_end = dt.datetime.fromtimestamp(float(exp), tz=dt.timezone.utc)
+        return int((anchor_end + dt.timedelta(days=days)).timestamp())
+    return int((now + dt.timedelta(days=days)).timestamp())
+
+
+def refresh_pro_monthly_quota_if_due(
+    user: sm.User,
+    db_session,
+    now: dt.datetime | None = None,
+) -> None:
+    """在读额度或扣减前调用：若跨过重置日则写回 extras（有 db 时 commit）。"""
+    now = _now_utc(now)
+    extras = getattr(user, "extras", None) or {}
+    sub = _subscription_dict(extras)
+    if not _is_pro_active(sub, now):
+        return
+    new_sub, changed = apply_pro_period_resets_to_dict(sub, now)
+    if not changed:
+        return
+    new_extras = dict(extras)
+    new_extras["subscription"] = new_sub
+    user.extras = new_extras
+    if db_session is not None:
+        db_session.add(user)
+        db_session.commit()
 
 
 def subscription_dict_after_activate_free_plan(
@@ -61,11 +212,7 @@ def subscription_dict_after_activate_free_plan(
     pro_type = prev_sub.get("type")
     pro_rem = 0
     if pro_type in ("pro_monthly", "pro_yearly"):
-        default_total = (
-            PRO_MONTHLY_SCAN_LIMIT
-            if pro_type == "pro_monthly"
-            else PRO_YEARLY_SCAN_LIMIT
-        )
+        default_total = PRO_PERIOD_SCAN_LIMIT
         pt = prev_sub.get("pro_scan_total")
         pr_total = (
             int(pt)
@@ -337,6 +484,10 @@ def get_quota_remaining(
             scan_pack_total=None,
         )
 
+    if plan in ("pro_monthly", "pro_yearly"):
+        refresh_pro_monthly_quota_if_due(user, db_session, now=now)
+        sub = _subscription_dict(getattr(user, "extras", None))
+
     if plan == "scan_pack":
         scan_pack_total_val = sub.get("scan_pack_total")
         scan_pack_remaining_val = sub.get("scan_pack_remaining")
@@ -367,9 +518,7 @@ def get_quota_remaining(
     if not isinstance(pro_expires_at_ts, (int, float)):
         pro_expires_at_ts = None
 
-    default_total = (
-        PRO_MONTHLY_SCAN_LIMIT if plan == "pro_monthly" else PRO_YEARLY_SCAN_LIMIT
-    )
+    default_total = PRO_PERIOD_SCAN_LIMIT
     pro_scan_total_val = sub.get("pro_scan_total")
     pro_scan_remaining_val = sub.get("pro_scan_remaining")
 
@@ -444,10 +593,13 @@ def consume_quota_after_success(
         current_extras = getattr(locked, "extras", None)
         extras_dict = current_extras if isinstance(current_extras, dict) else {}
         sub = _subscription_dict(extras_dict)
+        sub, reset_changed = apply_pro_period_resets_to_dict(sub, now)
+        if reset_changed:
+            extras_dict = dict(extras_dict)
+            extras_dict["subscription"] = sub
+            locked.extras = extras_dict
 
-        default_total = (
-            PRO_MONTHLY_SCAN_LIMIT if plan == "pro_monthly" else PRO_YEARLY_SCAN_LIMIT
-        )
+        default_total = PRO_PERIOD_SCAN_LIMIT
         total_val = sub.get("pro_scan_total")
         remaining_val = sub.get("pro_scan_remaining")
 

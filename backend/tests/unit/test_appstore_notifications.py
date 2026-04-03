@@ -74,3 +74,29 @@ def test_apply_expired_sets_expires():
         now,
     )
     assert out["subscription"]["pro_expires_at_ts"] == int(now.timestamp())
+
+
+def test_apply_did_renew_refills_pro_quota_and_next_reset():
+    now = dt.datetime(2026, 2, 1, tzinfo=dt.timezone.utc)
+    purchase_ms = int(now.timestamp() * 1000)
+    extras: dict = {
+        "subscription": {
+            "type": "pro_monthly",
+            "pro_expires_at_ts": 2000000000,
+            "pro_scan_remaining": 3,
+        }
+    }
+    out = apply_notification_to_user_subscription(
+        extras,
+        "DID_RENEW",
+        None,
+        {
+            "originalTransactionId": "x",
+            "purchaseDate": purchase_ms,
+            "expiresDate": 2000000000000,
+        },
+        {},
+        now,
+    )
+    assert out["subscription"]["pro_scan_remaining"] == 200
+    assert "pro_next_quota_reset_ts" in out["subscription"]

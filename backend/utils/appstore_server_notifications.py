@@ -17,6 +17,10 @@ from typing import Any
 import jwt
 
 import sql_models as sm
+from utils.subscription import (
+    PRO_PERIOD_SCAN_LIMIT,
+    first_quota_reset_ts_from_anchor_utc,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -128,6 +132,25 @@ def apply_notification_to_user_subscription(
         if expires_ts is not None and sub.get("type") in ("pro_monthly", "pro_yearly"):
             sub["pro_expires_at_ts"] = expires_ts
         sub["apple_last_renewal_at_ts"] = now_ts
+        if sub.get("type") in ("pro_monthly", "pro_yearly"):
+            sub["pro_scan_total"] = PRO_PERIOD_SCAN_LIMIT
+            sub["pro_scan_remaining"] = PRO_PERIOD_SCAN_LIMIT
+            pms = transaction_info.get("purchaseDate")
+            if pms is not None:
+                try:
+                    ms = float(pms)
+                    pdt = dt.datetime.fromtimestamp(ms / 1000.0, tz=dt.timezone.utc)
+                    sub["pro_next_quota_reset_ts"] = (
+                        first_quota_reset_ts_from_anchor_utc(pdt)
+                    )
+                except (TypeError, ValueError, OSError):
+                    sub["pro_next_quota_reset_ts"] = (
+                        first_quota_reset_ts_from_anchor_utc(now)
+                    )
+            else:
+                sub["pro_next_quota_reset_ts"] = first_quota_reset_ts_from_anchor_utc(
+                    now
+                )
 
     elif notification_type in ("EXPIRED", "GRACE_PERIOD_EXPIRED"):
         sub["pro_expires_at_ts"] = expires_ts if expires_ts is not None else now_ts

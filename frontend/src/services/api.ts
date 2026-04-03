@@ -332,6 +332,8 @@ export type SubscriptionCurrent = {
   /** App Store：1=自动续费开启 0=已关闭（未过期前仍可用 Pro） */
   apple_auto_renew_status?: number | null;
   apple_original_transaction_id?: string | null;
+  /** Pro：下一期 200 次额度重置时刻（UTC 次月同日 0:00），Unix 秒 */
+  pro_next_quota_reset_ts?: number | null;
 };
 
 export async function fetchSubscriptionCurrent(token: string): Promise<SubscriptionCurrent> {
