@@ -213,12 +213,12 @@ export default function SubscriptionScreen() {
     return [
       {
         plan: "free" as const,
-        titleMain: "FREE PLAN",
+        titleMain: t("subscription.freePlan"),
         titleSub: "",
         price: t("subscription.freePlanSubtitle"),
-        details: ["* Basic artwork", "recognition"],
+        details: [t("subscription.freePlanDetail1"), t("subscription.freePlanDetail2")],
         badge: undefined as string | undefined,
-        buttonText: isCurrent("free") ? "CURRENT PLAN" : "CHANGE PLAN",
+        buttonText: isCurrent("free") ? t("subscription.currentPlan") : t("subscription.changePlan"),
         note: undefined as string | undefined,
         theme: (isCurrent("free") ? "filled" : "outline") as CardTheme,
         isCurrent: isCurrent("free"),
@@ -228,7 +228,11 @@ export default function SubscriptionScreen() {
         titleMain: sp.main,
         titleSub: sp.sub,
         price: paidPrice("scan_pack", t("subscription.scanPackPrice")),
-        details: paidDetails("scan_pack", ["* 50 Scans", "*Best for", "occasional visits"]),
+        details: paidDetails("scan_pack", [
+          t("subscription.scanPackFallback1"),
+          t("subscription.scanPackFallback2"),
+          t("subscription.scanPackFallback3"),
+        ]),
         badge: undefined as string | undefined,
         buttonText: t("subscription.buyScanPack"),
         note: undefined as string | undefined,
@@ -240,10 +244,14 @@ export default function SubscriptionScreen() {
         titleMain: pm.main,
         titleSub: pm.sub,
         price: paidPrice("pro_monthly", t("subscription.proMonthlyPrice")),
-        details: paidDetails("pro_monthly", ["* 200 scans / month", "*Perfect for", "museum lovers"]),
-        badge: "MOST POPULAR !",
-        buttonText: isCurrent("pro_monthly") ? "CURRENT PLAN" : "START PRO",
-        note: "Cancel anytime",
+        details: paidDetails("pro_monthly", [
+          t("subscription.proMonthlyFallback1"),
+          t("subscription.proMonthlyFallback2"),
+          t("subscription.proMonthlyFallback3"),
+        ]),
+        badge: t("subscription.mostPopular"),
+        buttonText: isCurrent("pro_monthly") ? t("subscription.currentPlan") : t("subscription.startPro"),
+        note: t("subscription.cancelAnytime"),
         theme: (isCurrent("pro_monthly") ? "filled" : "outline") as CardTheme,
         isCurrent: isCurrent("pro_monthly"),
       },
@@ -252,10 +260,14 @@ export default function SubscriptionScreen() {
         titleMain: py.main,
         titleSub: py.sub,
         price: paidPrice("pro_yearly", t("subscription.proYearlyPrice")),
-        details: paidDetails("pro_yearly", ["* 200 scans / month", "*2,400 scans / year", "*Best for frequent visitors"]),
+        details: paidDetails("pro_yearly", [
+          t("subscription.proYearlyFallback1"),
+          t("subscription.proYearlyFallback2"),
+          t("subscription.proYearlyFallback3"),
+        ]),
         badge: undefined as string | undefined,
-        buttonText: isCurrent("pro_yearly") ? "CURRENT PLAN" : "CHANGE PLAN",
-        note: "Cancel anytime",
+        buttonText: isCurrent("pro_yearly") ? t("subscription.currentPlan") : t("subscription.changePlan"),
+        note: t("subscription.cancelAnytime"),
         theme: (isCurrent("pro_yearly") ? "filled" : "outline") as CardTheme,
         isCurrent: isCurrent("pro_yearly"),
       },
@@ -320,7 +332,7 @@ export default function SubscriptionScreen() {
   if (!token) {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Subscription</Text>
+        <Text style={styles.title}>{t("subscription.title")}</Text>
         <Text style={styles.hint}>{t("collection.saveFavoritesSubtitle")}</Text>
         <Pressable style={styles.primaryButton} onPress={() => router.push("/collection")}>
           <Text style={styles.primaryButtonText}>{t("result.goSignIn")}</Text>
@@ -332,16 +344,21 @@ export default function SubscriptionScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headline} numberOfLines={2}>
-          unlock full{"\n"}experience
-        </Text>
+        <View style={styles.headlineWrap}>
+          <Text style={styles.headlineLine} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.65}>
+            {t("subscription.headlineLine1")}
+          </Text>
+          <Text style={styles.headlineLine} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.65}>
+            {t("subscription.headlineLine2")}
+          </Text>
+        </View>
         <Pressable style={styles.headerScan} onPress={() => router.push("/")}>
           <View style={styles.scanFrame}>
             <View style={[styles.scanCorner, styles.scanTopLeft]} />
             <View style={[styles.scanCorner, styles.scanTopRight]} />
             <View style={[styles.scanCorner, styles.scanBottomLeft]} />
             <View style={[styles.scanCorner, styles.scanBottomRight]} />
-            <Text style={styles.scanText}>SCAN</Text>
+            <Text style={styles.scanText}>{t("subscription.scanButton")}</Text>
           </View>
         </Pressable>
       </View>
@@ -359,7 +376,7 @@ export default function SubscriptionScreen() {
               price={c.price}
               details={c.details}
               badge={c.badge}
-              buttonText={activating === c.plan ? "..." : c.buttonText}
+              buttonText={activating === c.plan ? t("subscription.activating") : c.buttonText}
               note={c.note}
               theme={c.theme}
               onPress={() => onActivate(c.plan)}
@@ -378,7 +395,7 @@ export default function SubscriptionScreen() {
           <View style={styles.closeXLeft} />
           <View style={styles.closeXRight} />
         </Pressable>
-        <Text style={styles.bottomSlogan}>Discover art like never before.</Text>
+        <Text style={styles.bottomSlogan}>{t("subscription.bottomSlogan")}</Text>
       </View>
     </View>
   );
@@ -425,18 +442,19 @@ const styles = StyleSheet.create({
     paddingTop: 52,
     paddingBottom: 14,
   },
-  /** 与 scanFrame 同高 88，两行 lineHeight 44 → 总高 88 */
-  headline: {
+  /** 与 scanFrame 对齐：两行固定结构，避免窄屏下「unlock full」自动折行挤掉第三行 experience */
+  headlineWrap: {
+    flex: 1,
+    minHeight: 88,
+    justifyContent: "center",
+    paddingRight: 8,
+  },
+  headlineLine: {
     color: BRAND_RED,
     fontSize: 32,
-    lineHeight: 44,
-    height: 88,
+    lineHeight: 40,
     fontWeight: "900",
     letterSpacing: 0.2,
-    flex: 1,
-    marginTop: 0,
-    paddingRight: 8,
-    textAlignVertical: "center",
   },
   headerScan: {
     justifyContent: "space-between",
