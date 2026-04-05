@@ -1,2 +1,0 @@
-"NSCameraUsageDescription" = "Artiou utilise la caméra pour prendre des photos d’œuvres afin que notre IA puisse les reconnaître et générer un guide audio/texte. Nous n’enregistrons pas de vidéo et rien n’est capturé sans votre action.";
-"NSPhotoLibraryUsageDescription" = "Artiou a besoin d’accéder à votre photothèque pour choisir une image existante et générer un guide par IA. Nous n’utilisons que la photo que vous sélectionnez.";

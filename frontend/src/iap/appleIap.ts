@@ -3,6 +3,7 @@ import {
   ErrorCode,
   PurchaseError,
   finishTransaction,
+  getAvailablePurchases,
   getProducts,
   getSubscriptions,
   initConnection,
@@ -11,7 +12,10 @@ import {
   type Purchase,
 } from "react-native-iap";
 
-import { activateSubscriptionPlan, type SubscriptionPlanType } from "../services/api";
+import {
+  activateSubscriptionPlan,
+  type SubscriptionPlanType,
+} from "../services/api";
 
 /** 与 App Store Connect 中 In-App Purchase 的 Product ID 一致 */
 export const APPLE_PRODUCT_IDS = {
@@ -148,6 +152,61 @@ export async function loadIosStoreCatalog(): Promise<StoreCatalog> {
 
 function skuForPaidPlan(plan: PaidPlanType): string {
   return APPLE_PRODUCT_IDS[plan];
+}
+
+function paidPlanFromProductId(productId: string): PaidPlanType | null {
+  if (productId === APPLE_PRODUCT_IDS.scan_pack) return "scan_pack";
+  if (productId === APPLE_PRODUCT_IDS.pro_monthly) return "pro_monthly";
+  if (productId === APPLE_PRODUCT_IDS.pro_yearly) return "pro_yearly";
+  return null;
+}
+
+/** 无可用交易（当前 Apple ID 在设备上无可恢复的已购项） */
+export const RESTORE_NOTHING_FOUND = "RESTORE_NOTHING_FOUND";
+
+/**
+ * iOS：用户主动点击「恢复购买」时调用。向 StoreKit 查询当前 Apple ID 的可用交易，
+ * 映射到商品后同步后端（与 App Review 要求的显式 Restore 流程一致；勿仅在启动时静默恢复）。
+ */
+export async function restoreIosPurchasesThenActivate(token: string): Promise<SubscriptionPlanType> {
+  if (Platform.OS !== "ios") {
+    throw new Error("SUBSCRIPTION_IOS_ONLY");
+  }
+  await ensureIapConnection();
+  const purchases = await enqueueIosIap(() =>
+    getAvailablePurchases({
+      onlyIncludeActiveItems: true,
+      alsoPublishToEventListener: false,
+    }),
+  );
+  const matched: { plan: PaidPlanType; purchase: Purchase }[] = [];
+  for (const p of purchases) {
+    const plan = paidPlanFromProductId(p.productId);
+    if (plan) matched.push({ plan, purchase: p });
+  }
+  if (matched.length === 0) {
+    throw new Error(RESTORE_NOTHING_FOUND);
+  }
+  const rank: Record<PaidPlanType, number> = {
+    scan_pack: 1,
+    pro_monthly: 2,
+    pro_yearly: 3,
+  };
+  const best = matched.reduce((a, b) => (rank[b.plan] > rank[a.plan] ? b : a));
+  const { plan, purchase } = best;
+  await activateSubscriptionPlan(token, plan, {
+    apple_original_transaction_id: purchase.originalTransactionIdentifierIOS ?? undefined,
+    apple_transaction_id: purchase.transactionId ?? undefined,
+  });
+  if (purchase.transactionId) {
+    await enqueueIosIap(async () => {
+      await finishTransaction({
+        purchase,
+        isConsumable: plan === "scan_pack",
+      });
+    });
+  }
+  return plan;
 }
 
 /** App Store 未返回该 SKU（或未就绪）时抛出，供 UI 映射为本地化说明 */

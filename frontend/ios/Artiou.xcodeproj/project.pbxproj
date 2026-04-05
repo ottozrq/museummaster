@@ -7,13 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		09FC7FE0E753EBA5D61FEEB5 /* libPods-Artiou.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27E18D820D8796BDC967BBCA /* libPods-Artiou.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		1A3FEE7A2C00000100000001 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1A3FEE792C00000100000001 /* InfoPlist.strings */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
+		406804BC52B86562439302E7 /* libPods-Artiou.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B15654D9A8E2855D40765805 /* libPods-Artiou.a */; };
+		6C8431C90B0CBE7A4AFC2742 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62E9AEEAE196ABD51FBB265 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		BC1E066ABFE0AD5E0FBBD797 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE51A98BE459E993AE88203D /* ExpoModulesProvider.swift */; };
-		CBAE38928838B790638696F2 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 8AB4505E59D6323A5FBC1E22 /* PrivacyInfo.xcprivacy */; };
+		F098CE8151ACD30410BE32ED /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D7AD746BF9F4BE0F8AB0639B /* PrivacyInfo.xcprivacy */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -21,17 +20,14 @@
 		13B07F961A680F5B00A75B9A /* Artiou.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Artiou.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Artiou/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Artiou/Info.plist; sourceTree = "<group>"; };
-		177C6222BCC1AB7013586040 /* Pods-Artiou.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Artiou.release.xcconfig"; path = "Target Support Files/Pods-Artiou/Pods-Artiou.release.xcconfig"; sourceTree = "<group>"; };
-		1A3FEE762C00000100000001 /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = Artiou/en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		1A3FEE772C00000100000001 /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = Artiou/fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		1A3FEE782C00000100000001 /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = "Artiou/zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
-		27E18D820D8796BDC967BBCA /* libPods-Artiou.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Artiou.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		597C2EEC9E100D9C1CB73415 /* Pods-Artiou.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Artiou.debug.xcconfig"; path = "Target Support Files/Pods-Artiou/Pods-Artiou.debug.xcconfig"; sourceTree = "<group>"; };
-		8AB4505E59D6323A5FBC1E22 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Artiou/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		27C4BC2E1C7B78798C45675C /* Pods-Artiou.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Artiou.debug.xcconfig"; path = "Target Support Files/Pods-Artiou/Pods-Artiou.debug.xcconfig"; sourceTree = "<group>"; };
+		6563A74B78B85209209CC130 /* Pods-Artiou.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Artiou.release.xcconfig"; path = "Target Support Files/Pods-Artiou/Pods-Artiou.release.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = Artiou/SplashScreen.storyboard; sourceTree = "<group>"; };
+		B15654D9A8E2855D40765805 /* libPods-Artiou.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Artiou.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B62E9AEEAE196ABD51FBB265 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Artiou/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		D7AD746BF9F4BE0F8AB0639B /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Artiou/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		EE51A98BE459E993AE88203D /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Artiou/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Artiou/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* Artiou-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Artiou-Bridging-Header.h"; path = "Artiou/Artiou-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -41,21 +37,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				09FC7FE0E753EBA5D61FEEB5 /* libPods-Artiou.a in Frameworks */,
+				406804BC52B86562439302E7 /* libPods-Artiou.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0CC48B05CD5B4E2287442645 /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				8732AEB323EFBC3521614DC0 /* Artiou */,
-			);
-			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
 		13B07FAE1A68108700A75B9A /* Artiou */ = {
 			isa = PBXGroup;
 			children = (
@@ -64,9 +52,8 @@
 				BB2F792B24A3F905000567C9 /* Supporting */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				1A3FEE792C00000100000001 /* InfoPlist.strings */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				8AB4505E59D6323A5FBC1E22 /* PrivacyInfo.xcprivacy */,
+				D7AD746BF9F4BE0F8AB0639B /* PrivacyInfo.xcprivacy */,
 			);
 			name = Artiou;
 			sourceTree = "<group>";
@@ -75,9 +62,17 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				27E18D820D8796BDC967BBCA /* libPods-Artiou.a */,
+				B15654D9A8E2855D40765805 /* libPods-Artiou.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8155CE3877F55E1883FEC991 /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				F5E6F56CC5CAE1AE9309DBA7 /* Artiou */,
+			);
+			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -94,8 +89,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				859144C6766F2D3137FB0DBA /* Pods */,
-				0CC48B05CD5B4E2287442645 /* ExpoModulesProviders */,
+				CE0060D9C324E7530F3AB0DB /* Pods */,
+				8155CE3877F55E1883FEC991 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -110,24 +105,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		859144C6766F2D3137FB0DBA /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				597C2EEC9E100D9C1CB73415 /* Pods-Artiou.debug.xcconfig */,
-				177C6222BCC1AB7013586040 /* Pods-Artiou.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		8732AEB323EFBC3521614DC0 /* Artiou */ = {
-			isa = PBXGroup;
-			children = (
-				EE51A98BE459E993AE88203D /* ExpoModulesProvider.swift */,
-			);
-			name = Artiou;
-			sourceTree = "<group>";
-		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
 			isa = PBXGroup;
 			children = (
@@ -135,6 +112,24 @@
 			);
 			name = Supporting;
 			path = Artiou/Supporting;
+			sourceTree = "<group>";
+		};
+		CE0060D9C324E7530F3AB0DB /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				27C4BC2E1C7B78798C45675C /* Pods-Artiou.debug.xcconfig */,
+				6563A74B78B85209209CC130 /* Pods-Artiou.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		F5E6F56CC5CAE1AE9309DBA7 /* Artiou */ = {
+			isa = PBXGroup;
+			children = (
+				B62E9AEEAE196ABD51FBB265 /* ExpoModulesProvider.swift */,
+			);
+			name = Artiou;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -145,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Artiou" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				1F36570674323A764CE6DD43 /* [Expo] Configure project */,
+				4DB06BBBE3F7B875E21C0D69 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				BC38E8DF26BA4BD7F47B3894 /* [CP] Embed Pods Frameworks */,
+				9908EE9610D88A3A070D4EFD /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -171,7 +166,7 @@
 				LastUpgradeCheck = 1130;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 473PJ4N4PY;
+						DevelopmentTeam = P27TYR72TH;
 						LastSwiftMigration = 1250;
 						ProvisioningStyle = Automatic;
 					};
@@ -184,8 +179,6 @@
 			knownRegions = (
 				en,
 				Base,
-				fr,
-				"zh-Hans",
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
@@ -204,9 +197,8 @@
 			files = (
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				1A3FEE7A2C00000100000001 /* InfoPlist.strings in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				CBAE38928838B790638696F2 /* PrivacyInfo.xcprivacy in Resources */,
+				F098CE8151ACD30410BE32ED /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,7 +244,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		1F36570674323A764CE6DD43 /* [Expo] Configure project */ = {
+		4DB06BBBE3F7B875E21C0D69 /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -330,7 +322,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Artiou/Pods-Artiou-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		BC38E8DF26BA4BD7F47B3894 /* [CP] Embed Pods Frameworks */ = {
+		9908EE9610D88A3A070D4EFD /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -356,29 +348,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				BC1E066ABFE0AD5E0FBBD797 /* ExpoModulesProvider.swift in Sources */,
+				6C8431C90B0CBE7A4AFC2742 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXVariantGroup section */
-		1A3FEE792C00000100000001 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				1A3FEE762C00000100000001 /* InfoPlist.strings */,
-				1A3FEE772C00000100000001 /* InfoPlist.strings */,
-				1A3FEE782C00000100000001 /* InfoPlist.strings */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 597C2EEC9E100D9C1CB73415 /* Pods-Artiou.debug.xcconfig */;
+			baseConfigurationReference = 27C4BC2E1C7B78798C45675C /* Pods-Artiou.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -386,7 +365,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 473PJ4N4PY;
+				DEVELOPMENT_TEAM = P27TYR72TH;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -417,7 +396,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 177C6222BCC1AB7013586040 /* Pods-Artiou.release.xcconfig */;
+			baseConfigurationReference = 6563A74B78B85209209CC130 /* Pods-Artiou.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -425,7 +404,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 473PJ4N4PY;
+				DEVELOPMENT_TEAM = P27TYR72TH;
 				INFOPLIST_FILE = Artiou/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (

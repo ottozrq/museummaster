@@ -16,6 +16,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   loadIosStoreCatalog,
   purchaseIosPlanThenActivate,
+  RESTORE_NOTHING_FOUND,
+  restoreIosPurchasesThenActivate,
   STORE_PRODUCT_UNAVAILABLE,
   storeDescriptionToDetailLines,
   type StoreCatalog,
@@ -135,6 +137,7 @@ export default function SubscriptionScreen() {
   const [activating, setActivating] = useState<SubscriptionPlanType | null>(null);
   const [storeCatalog, setStoreCatalog] = useState<StoreCatalog>({});
   const [storeCatalogReady, setStoreCatalogReady] = useState(Platform.OS !== "ios");
+  const [restoringPurchases, setRestoringPurchases] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -337,6 +340,35 @@ export default function SubscriptionScreen() {
     }
   };
 
+  const onRestorePurchases = async () => {
+    if (Platform.OS !== "ios") return;
+    if (!token) {
+      Alert.alert(t("subscription.restoreNeedSignInTitle"), t("subscription.restoreNeedSignInBody"), [
+        { text: t("result.goSignIn"), onPress: () => router.push("/collection") },
+        { text: t("result.cancel"), style: "cancel" },
+      ]);
+      return;
+    }
+    try {
+      setRestoringPurchases(true);
+      await restoreIosPurchasesThenActivate(token);
+      const data = await fetchSubscriptionCurrent(token);
+      setCurrent(data);
+      Alert.alert(t("subscription.restoreSuccessTitle"), t("subscription.restoreSuccessBody"));
+    } catch (e) {
+      if (e instanceof Error && e.message === RESTORE_NOTHING_FOUND) {
+        Alert.alert(t("subscription.restoreNothingTitle"), t("subscription.restoreNothingBody"));
+        return;
+      }
+      Alert.alert(
+        t("result.recognizeFailedTitle"),
+        e instanceof Error ? e.message : t("camera.unknownError"),
+      );
+    } finally {
+      setRestoringPurchases(false);
+    }
+  };
+
   if (loading) {
     return (
       <View style={styles.loading}>
@@ -353,6 +385,16 @@ export default function SubscriptionScreen() {
         <Pressable style={styles.primaryButton} onPress={() => router.push("/collection")}>
           <Text style={styles.primaryButtonText}>{t("result.goSignIn")}</Text>
         </Pressable>
+        {Platform.OS === "ios" ? (
+          <Pressable
+            style={[styles.restoreButton, styles.restoreButtonMarginGuest]}
+            onPress={onRestorePurchases}
+            accessibilityRole="button"
+            accessibilityLabel={t("subscription.restorePurchases")}
+          >
+            <Text style={styles.restoreButtonText}>{t("subscription.restorePurchases")}</Text>
+          </Pressable>
+        ) : null}
         <SubscriptionLegalLinks />
       </View>
     );
@@ -405,6 +447,20 @@ export default function SubscriptionScreen() {
             />
           ))}
         </View>
+        {Platform.OS === "ios" ? (
+          <Pressable
+            style={styles.restoreButton}
+            onPress={onRestorePurchases}
+            disabled={restoringPurchases || activating !== null}
+            accessibilityRole="button"
+            accessibilityLabel={t("subscription.restorePurchases")}
+            accessibilityState={{ disabled: restoringPurchases || activating !== null }}
+          >
+            <Text style={[styles.restoreButtonText, (restoringPurchases || activating !== null) && styles.disabledText]}>
+              {restoringPurchases ? t("subscription.restoringPurchases") : t("subscription.restorePurchases")}
+            </Text>
+          </Pressable>
+        ) : null}
       </ScrollView>
 
       <SubscriptionLegalLinks />
@@ -440,6 +496,27 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     marginBottom: 12,
     opacity: 0.92,
+  },
+  restoreButton: {
+    marginTop: 18,
+    alignSelf: "stretch",
+    borderWidth: 2,
+    borderColor: BRAND_RED,
+    borderRadius: 999,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: CARD_BG,
+  },
+  restoreButtonMarginGuest: {
+    marginTop: 20,
+  },
+  restoreButtonText: {
+    color: BRAND_RED,
+    fontWeight: "800",
+    fontSize: 16,
+    letterSpacing: 0.2,
   },
   legalRow: {
     flexDirection: "row",

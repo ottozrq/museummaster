@@ -131,6 +131,15 @@ export const translations = {
       proYearlyFallback1: "* 200 scans / month",
       proYearlyFallback2: "* 2,400 scans / year",
       proYearlyFallback3: "* Best for frequent visitors",
+      restorePurchases: "Restore Purchases",
+      restoringPurchases: "Restoring…",
+      restoreSuccessTitle: "Restored",
+      restoreSuccessBody: "Your App Store purchases have been synced to your account.",
+      restoreNothingTitle: "Nothing to restore",
+      restoreNothingBody:
+        "We could not find any active purchases for this Apple ID on this device. Use the same Apple ID you used to buy, or purchase a plan below.",
+      restoreNeedSignInTitle: "Sign in required",
+      restoreNeedSignInBody: "Sign in with your Artiou account so we can apply your restored purchases to your subscription.",
     },
     legal: {
       back: "← Back",
@@ -360,6 +369,15 @@ Email: legal@example.com
       proYearlyFallback1: "* 每月 200 次识别",
       proYearlyFallback2: "* 每年共 2,400 次识别",
       proYearlyFallback3: "* 适合常访客",
+      restorePurchases: "恢复购买",
+      restoringPurchases: "正在恢复…",
+      restoreSuccessTitle: "已恢复",
+      restoreSuccessBody: "已将 App Store 购买同步到你的账号。",
+      restoreNothingTitle: "没有可恢复项",
+      restoreNothingBody:
+        "未在本设备上找到该 Apple ID 的有效购买记录。请使用购买时所用的 Apple ID，或在下方选购套餐。",
+      restoreNeedSignInTitle: "需要先登录",
+      restoreNeedSignInBody: "请登录 Artiou 账号，以便将恢复的购买同步到订阅权益。",
     },
     legal: {
       back: "← 返回",
@@ -592,6 +610,15 @@ Artiou 提供：
       proYearlyFallback1: "* 200 scans / mois",
       proYearlyFallback2: "* 2 400 scans / an",
       proYearlyFallback3: "* Idéal pour les visiteurs assidus",
+      restorePurchases: "Restaurer les achats",
+      restoringPurchases: "Restauration…",
+      restoreSuccessTitle: "Restauré",
+      restoreSuccessBody: "Vos achats App Store ont été synchronisés avec votre compte.",
+      restoreNothingTitle: "Aucun achat à restaurer",
+      restoreNothingBody:
+        "Aucun achat actif trouvé pour cet identifiant Apple sur cet appareil. Utilisez le même compte Apple que lors de l’achat, ou choisissez une offre ci-dessous.",
+      restoreNeedSignInTitle: "Connexion requise",
+      restoreNeedSignInBody: "Connectez-vous à Artiou pour appliquer vos achats restaurés à votre abonnement.",
     },
     legal: {
       back: "← Retour",
