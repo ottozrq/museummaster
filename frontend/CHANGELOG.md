@@ -1,3 +1,11 @@
+## [1.2.6](https://github.com/ottozrq/museummaster/compare/v1.2.5...v1.2.6) (2026-04-05)
+
+
+### Bug Fixes
+
+* policy display in app ([aaaeb58](https://github.com/ottozrq/museummaster/commit/aaaeb585cf7d0e9550273c7aed7609578b4b86dd))
+* restore purchase ([e0b5a77](https://github.com/ottozrq/museummaster/commit/e0b5a77836f577709b7d66a111c748a9b807d475))
+
 ## [1.2.5](https://github.com/ottozrq/museummaster/compare/v1.2.4...v1.2.5) (2026-04-03)
 
 
