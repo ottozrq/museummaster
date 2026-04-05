@@ -50,7 +50,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Artiou needs camera access to capture exhibit photos for recognition.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Allow $(PRODUCT_NAME) to access your microphone</string>
+	<string>Artiou needs microphone access to play audio guides and voice content.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Artiou needs access to your photos so you can choose an image from your library.</string>
 	<key>NSUserActivityTypes</key>

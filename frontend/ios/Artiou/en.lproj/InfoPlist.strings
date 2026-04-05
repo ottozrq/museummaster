@@ -1,0 +1,4 @@
+/* Localized permission dialogs (English) — matches base Info.plist */
+"NSCameraUsageDescription" = "Artiou needs camera access to capture exhibit photos for recognition.";
+"NSPhotoLibraryUsageDescription" = "Artiou needs access to your photos so you can choose an image from your library.";
+"NSMicrophoneUsageDescription" = "Artiou needs microphone access to play audio guides and voice content.";

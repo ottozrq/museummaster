@@ -1,0 +1,4 @@
+/* Localized permission dialogs (French) */
+"NSCameraUsageDescription" = "Artiou a besoin de la caméra pour photographier les œuvres et les reconnaître.";
+"NSPhotoLibraryUsageDescription" = "Artiou a besoin d’accéder à vos photos pour que vous puissiez choisir une image dans la bibliothèque.";
+"NSMicrophoneUsageDescription" = "Artiou a besoin du micro pour la lecture audio et les guides vocaux.";

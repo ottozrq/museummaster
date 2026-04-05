@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Linking,
   Platform,
   Pressable,
   ScrollView,
@@ -28,6 +29,7 @@ import {
   type SubscriptionCurrent,
   type SubscriptionPlanType,
 } from "../src/services/api";
+import { getArtiouPrivacyPolicyUrl, getSubscriptionTermsOfUseUrl } from "../src/legal/policyUrls";
 import { useI18n } from "../src/i18n";
 
 const TOKEN_KEY = "museum_auth_token";
@@ -38,18 +40,77 @@ const WHITE = "#FFFFFF";
 
 type CardTheme = "outline" | "filled";
 
+const APP_STORE_SUBSCRIPTIONS_URL = "https://apps.apple.com/account/subscriptions";
+
 function SubscriptionLegalLinks() {
-  const router = useRouter();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+
+  const openUrl = (url: string) => {
+    void Linking.openURL(url).catch(() => {
+      Alert.alert(t("result.loadFailedTitle"), t("legal.privacyLoadError"));
+    });
+  };
+
   return (
     <View style={styles.legalRow} accessibilityLabel="Legal links">
-      <Pressable onPress={() => router.push("/privacy")} accessibilityRole="link">
+      <Pressable
+        onPress={() => openUrl(getArtiouPrivacyPolicyUrl(locale))}
+        accessibilityRole="link"
+      >
         <Text style={styles.legalLink}>{t("subscription.legalPrivacyLink")}</Text>
       </Pressable>
       <Text style={styles.legalSep}> · </Text>
-      <Pressable onPress={() => router.push("/terms")} accessibilityRole="link">
+      <Pressable onPress={() => openUrl(getSubscriptionTermsOfUseUrl())} accessibilityRole="link">
         <Text style={styles.legalLink}>{t("subscription.legalTermsEulaLink")}</Text>
       </Pressable>
+    </View>
+  );
+}
+
+function ManageSubscriptionsLink() {
+  const { t } = useI18n();
+  if (Platform.OS !== "ios") return null;
+  return (
+    <Pressable
+      style={styles.manageSubLink}
+      onPress={() => void Linking.openURL(APP_STORE_SUBSCRIPTIONS_URL)}
+      accessibilityRole="link"
+    >
+      <Text style={styles.manageSubLinkText}>{t("subscription.manageSubscriptions")}</Text>
+    </Pressable>
+  );
+}
+
+function SubscriptionAgreeNotice() {
+  const { t, locale } = useI18n();
+
+  const openUrl = (url: string) => {
+    void Linking.openURL(url).catch(() => {
+      Alert.alert(t("result.loadFailedTitle"), t("legal.privacyLoadError"));
+    });
+  };
+
+  return (
+    <View style={styles.agreeNoticeWrap}>
+      <Text style={styles.agreeNoticeText}>
+        <Text>{t("subscription.agreeSubscribeIntro")}</Text>
+        <Text
+          style={styles.agreeNoticeLink}
+          onPress={() => openUrl(getSubscriptionTermsOfUseUrl())}
+          accessibilityRole="link"
+        >
+          {t("subscription.agreeTermsLabel")}
+        </Text>
+        <Text>{t("subscription.agreeSubscribeBetween")}</Text>
+        <Text
+          style={styles.agreeNoticeLink}
+          onPress={() => openUrl(getArtiouPrivacyPolicyUrl(locale))}
+          accessibilityRole="link"
+        >
+          {t("subscription.agreePrivacyLabel")}
+        </Text>
+        <Text>{t("subscription.agreeSubscribeOutro")}</Text>
+      </Text>
     </View>
   );
 }
@@ -229,6 +290,15 @@ export default function SubscriptionScreen() {
     const pm = paidTitle("pro_monthly", t("subscription.proMonthlyPlan"), "");
     const py = paidTitle("pro_yearly", t("subscription.proYearlyPlan"), "");
 
+    const iosRenewalDetailPrefix = (plan: "pro_monthly" | "pro_yearly"): string[] => {
+      if (Platform.OS !== "ios") return [];
+      return [
+        plan === "pro_monthly"
+          ? t("subscription.autoRenewPeriodMonthly")
+          : t("subscription.autoRenewPeriodYearly"),
+      ];
+    };
+
     return [
       {
         plan: "free" as const,
@@ -263,11 +333,14 @@ export default function SubscriptionScreen() {
         titleMain: pm.main,
         titleSub: pm.sub,
         price: paidPrice("pro_monthly", t("subscription.proMonthlyPrice")),
-        details: paidDetails("pro_monthly", [
-          t("subscription.proMonthlyFallback1"),
-          t("subscription.proMonthlyFallback2"),
-          t("subscription.proMonthlyFallback3"),
-        ]),
+        details: [
+          ...iosRenewalDetailPrefix("pro_monthly"),
+          ...paidDetails("pro_monthly", [
+            t("subscription.proMonthlyFallback1"),
+            t("subscription.proMonthlyFallback2"),
+            t("subscription.proMonthlyFallback3"),
+          ]),
+        ],
         badge: t("subscription.mostPopular"),
         buttonText: isCurrent("pro_monthly") ? t("subscription.currentPlan") : t("subscription.startPro"),
         note: t("subscription.cancelAnytime"),
@@ -279,11 +352,14 @@ export default function SubscriptionScreen() {
         titleMain: py.main,
         titleSub: py.sub,
         price: paidPrice("pro_yearly", t("subscription.proYearlyPrice")),
-        details: paidDetails("pro_yearly", [
-          t("subscription.proYearlyFallback1"),
-          t("subscription.proYearlyFallback2"),
-          t("subscription.proYearlyFallback3"),
-        ]),
+        details: [
+          ...iosRenewalDetailPrefix("pro_yearly"),
+          ...paidDetails("pro_yearly", [
+            t("subscription.proYearlyFallback1"),
+            t("subscription.proYearlyFallback2"),
+            t("subscription.proYearlyFallback3"),
+          ]),
+        ],
         badge: undefined as string | undefined,
         buttonText: isCurrent("pro_yearly") ? t("subscription.currentPlan") : t("subscription.changePlan"),
         note: t("subscription.cancelAnytime"),
@@ -395,6 +471,7 @@ export default function SubscriptionScreen() {
             <Text style={styles.restoreButtonText}>{t("subscription.restorePurchases")}</Text>
           </Pressable>
         ) : null}
+        <SubscriptionAgreeNotice />
         <SubscriptionLegalLinks />
       </View>
     );
@@ -426,6 +503,10 @@ export default function SubscriptionScreen() {
         {showStoreCatalogHint ? (
           <Text style={styles.storeHint}>{t("subscription.storeCatalogEmpty")}</Text>
         ) : null}
+        {Platform.OS === "ios" ? (
+          <Text style={styles.renewalDisclaimer}>{t("subscription.renewalDisclaimer")}</Text>
+        ) : null}
+        <SubscriptionAgreeNotice />
         <View style={styles.grid}>
           {cards.map((c) => (
             <PlanCard
@@ -461,6 +542,7 @@ export default function SubscriptionScreen() {
             </Text>
           </Pressable>
         ) : null}
+        <ManageSubscriptionsLink />
       </ScrollView>
 
       <SubscriptionLegalLinks />
@@ -496,6 +578,44 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     marginBottom: 12,
     opacity: 0.92,
+  },
+  renewalDisclaimer: {
+    color: "#4B3621",
+    fontSize: 11,
+    lineHeight: 16,
+    textAlign: "center",
+    marginBottom: 14,
+    paddingHorizontal: 4,
+    opacity: 0.92,
+  },
+  agreeNoticeWrap: {
+    marginBottom: 12,
+    paddingHorizontal: 4,
+  },
+  agreeNoticeText: {
+    color: "#4B3621",
+    fontSize: 12,
+    lineHeight: 18,
+    textAlign: "center",
+  },
+  agreeNoticeLink: {
+    color: BRAND_RED,
+    fontWeight: "700",
+    textDecorationLine: "underline",
+  },
+  manageSubLink: {
+    alignSelf: "center",
+    marginTop: 10,
+    marginBottom: 4,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+  },
+  manageSubLinkText: {
+    color: BRAND_RED,
+    fontSize: 13,
+    fontWeight: "700",
+    textDecorationLine: "underline",
+    textAlign: "center",
   },
   restoreButton: {
     marginTop: 18,
