@@ -290,13 +290,13 @@ export default function CameraScreen() {
         />
       </View>
 
-      {/* Top hint text */}
-      <View style={styles.topSection}>
+      {/* Top hint text — 不参与命中测试，避免挡住双指缩放 */}
+      <View style={styles.topSection} pointerEvents="none">
         <Text style={styles.topHint}>{t("camera.topHint")}</Text>
       </View>
 
-      {/* Focus frame */}
-      <View style={styles.focusGuide}>
+      {/* Focus frame — 全屏装饰层，必须穿透触摸，否则 pinch 到不了下层 CameraView */}
+      <View style={styles.focusGuide} pointerEvents="none">
         <View style={styles.focusBox}>
           <View style={[styles.corner, styles.topLeft]} />
           <View style={[styles.corner, styles.topRight]} />
