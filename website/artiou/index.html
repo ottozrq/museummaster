@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="艺游 Artiou — 博物馆 AI 导览：拍照识展，中文讲解，随身收藏你的艺术旅程。"
+    />
+    <meta name="theme-color" content="#F6E7D7" />
+    <title>艺游 - Artiou</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23E2461B'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='%23ffffff' font-size='14' font-family='system-ui,sans-serif' font-weight='700'%3EA%3C/text%3E%3C/svg%3E"
+    />
+    <!--
+      部署前可配置商店链接（留空则按钮为置灰占位）：
+      <script>window.ARTIOU_STORE_URLS = { appStore: "https://apps.apple.com/cn/app/%E8%89%BA%E6%B8%B8-artiou/id6759812990", playStore: "" };</script>
+    -->
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap inner">
+        <div class="brand">
+          <span class="brand-mark">Artiou</span>
+          <span class="brand-sub" data-i18n="brand.sub">博物馆 AI 导览</span>
+        </div>
+        <nav class="nav-lang" aria-label="Language">
+          <button type="button" data-lang="zh" aria-pressed="true">中文</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+          <button type="button" data-lang="fr" aria-pressed="false">FR</button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="wrap hero-grid">
+          <div>
+            <p class="hero-kicker" data-i18n="hero.kicker">拍照识展 · 即时讲解</p>
+            <h1 data-i18n="hero.title">把展厅装进你的口袋</h1>
+            <p class="hero-lead" data-i18n="hero.lead">
+              艺游 Artiou 用视觉识别与中文语音，帮你在博物馆里听懂每一件作品——少排队，多沉浸。
+            </p>
+            <div class="cta-row">
+              <a class="btn btn-primary" id="cta-store-top" href="#download" data-i18n="cta.primary">下载 App</a>
+              <button type="button" class="btn btn-ghost" id="cta-secondary" data-i18n="cta.secondary">
+                了解功能
+              </button>
+            </div>
+          </div>
+          <aside class="hero-card" aria-labelledby="card-title">
+            <h2 id="card-title" data-i18n="hero.card.title">为观展而生</h2>
+            <ul>
+              <li data-i18n="hero.card.li1">对准展品拍照，快速识别并生成讲解</li>
+              <li data-i18n="hero.card.li2">自然中文语音，边走边听</li>
+              <li data-i18n="hero.card.li3">收藏与管理你的艺术旅程</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section id="visuals" class="visuals">
+        <div class="wrap">
+          <h2 class="section-title" data-i18n="visuals.title">品牌视觉</h2>
+          <p class="section-intro" data-i18n="visuals.intro">以下展示素材会跟随当前语言切换。</p>
+          <div class="visual-grid" data-lang-media="zh">
+            <img src="./assets/1Z-9ba750aa-baf8-413c-b8fe-b84d48e35d58.png" alt="Artiou 中文海报 1" loading="lazy" />
+            <img src="./assets/2Z-197a7356-e946-49c6-83fd-267b3610d4af.png" alt="Artiou 中文海报 2" loading="lazy" />
+            <img src="./assets/3Z-754d8676-97ad-4ee8-8c48-d2d99441049c.png" alt="Artiou 中文海报 3" loading="lazy" />
+            <img src="./assets/4Z-a96e0289-e23e-4c40-a8b8-f221eedf4e3c.png" alt="Artiou 中文海报 4" loading="lazy" />
+            <img src="./assets/5Z-20a46990-a46a-4a19-822f-4fb04fd1b3b3.png" alt="Artiou 中文海报 5" loading="lazy" />
+          </div>
+          <div class="visual-grid" data-lang-media="en" hidden>
+            <img src="./assets/1e-f05674fc-439d-4fb7-b16c-0d254a0fc88d.png" alt="Artiou English poster 1" loading="lazy" />
+            <img src="./assets/2E-212fba33-657b-49d2-8e42-efe0103ad6d0.png" alt="Artiou English poster 2" loading="lazy" />
+            <img src="./assets/3E-b2e35c9b-51e7-49a1-b474-a43a0d1c5d58.png" alt="Artiou English poster 3" loading="lazy" />
+            <img src="./assets/4E-32410ac0-3030-40bf-8a7b-b1a38cf098b2.png" alt="Artiou English poster 4" loading="lazy" />
+            <img src="./assets/5E-339d8dc6-0330-4970-bf95-58f31e6a7fce.png" alt="Artiou English poster 5" loading="lazy" />
+          </div>
+          <div class="visual-grid" data-lang-media="fr" hidden>
+            <img src="./assets/1F-e01f5905-7038-4137-a0c2-2ac1159af0b5.png" alt="Affiche Artiou francais 1" loading="lazy" />
+            <img src="./assets/2F-22229847-f7aa-44f2-8873-2fb7eb8fc326.png" alt="Affiche Artiou francais 2" loading="lazy" />
+            <img src="./assets/3f-cdb2f4a9-9d0f-4fa6-b103-ee457c14be9a.png" alt="Affiche Artiou francais 3" loading="lazy" />
+            <img src="./assets/4F-662d1226-992a-4748-a348-09661e1b16af.png" alt="Affiche Artiou francais 4" loading="lazy" />
+            <img src="./assets/5F-a292dc97-7f20-4739-8cd7-8191e99a27e7.png" alt="Affiche Artiou francais 5" loading="lazy" />
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="features-section">
+        <div class="wrap">
+          <h2 class="section-title" data-i18n="features.title">为什么用艺游</h2>
+          <p class="section-intro" data-i18n="features.intro">更少准备，更多专注。让参观回到作品本身。</p>
+          <div class="features">
+            <article class="feature">
+              <h3 data-i18n="f1.title">一拍即识</h3>
+              <p data-i18n="f1.body">用相机捕捉展品，AI 协助识别并整理关键信息。</p>
+            </article>
+            <article class="feature">
+              <h3 data-i18n="f2.title">中文讲解</h3>
+              <p data-i18n="f2.body">生成易听易懂的讲解音频，适配展厅里的节奏。</p>
+            </article>
+            <article class="feature">
+              <h3 data-i18n="f3.title">你的收藏</h3>
+              <p data-i18n="f3.body">保存喜欢的作品与讲解，随时回顾。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="how-it-works" class="how-it-works">
+        <div class="wrap">
+          <h2 class="section-title" data-i18n="how.title">三步开始你的导览</h2>
+          <p class="section-intro" data-i18n="how.intro">从举起手机到听懂作品，不到一分钟。</p>
+          <ol class="steps">
+            <li class="step">
+              <span class="step-no">01</span>
+              <h3 data-i18n="how.s1.title">对准展品</h3>
+              <p data-i18n="how.s1.body">打开 Artiou，用相机框住你想了解的作品。</p>
+            </li>
+            <li class="step">
+              <span class="step-no">02</span>
+              <h3 data-i18n="how.s2.title">获取讲解</h3>
+              <p data-i18n="how.s2.body">AI 识别内容后，生成简洁准确的中文导览。</p>
+            </li>
+            <li class="step">
+              <span class="step-no">03</span>
+              <h3 data-i18n="how.s3.title">边走边听</h3>
+              <p data-i18n="how.s3.body">佩戴耳机或外放收听，把节奏留给展厅与自己。</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="scenes" class="scenes">
+        <div class="wrap">
+          <h2 class="section-title" data-i18n="scenes.title">适合哪些场景</h2>
+          <div class="scene-grid">
+            <article class="scene-card">
+              <h3 data-i18n="scenes.c1.title">第一次来美术馆</h3>
+              <p data-i18n="scenes.c1.body">快速建立理解，不再只看“看不懂”的标签。</p>
+            </article>
+            <article class="scene-card">
+              <h3 data-i18n="scenes.c2.title">城市旅行</h3>
+              <p data-i18n="scenes.c2.body">在陌生展馆里，也能获得熟悉语言的讲解体验。</p>
+            </article>
+            <article class="scene-card">
+              <h3 data-i18n="scenes.c3.title">亲子共学</h3>
+              <p data-i18n="scenes.c3.body">把作品讲给孩子听，让参观更像一场共同探索。</p>
+            </article>
+            <article class="scene-card">
+              <h3 data-i18n="scenes.c4.title">深度回顾</h3>
+              <p data-i18n="scenes.c4.body">把喜欢的展品加入收藏，离开展馆后继续回看。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="trust" class="trust">
+        <div class="wrap trust-grid">
+          <div>
+            <h2 class="section-title" data-i18n="trust.title">隐私与数据说明</h2>
+            <p class="section-intro" data-i18n="trust.intro">
+              我们把“可解释、可控制”放在第一位。你可以在应用内随时管理收藏与账号数据。
+            </p>
+            <ul class="trust-list">
+              <li data-i18n="trust.l1">仅在你主动拍照或上传时处理图像。</li>
+              <li data-i18n="trust.l2">提供隐私政策与使用条款公开链接。</li>
+              <li data-i18n="trust.l3">支持账号注销与历史数据清理。</li>
+            </ul>
+          </div>
+          <aside class="trust-panel">
+            <h3 data-i18n="trust.panel.title">给机构与策展团队</h3>
+            <p data-i18n="trust.panel.body">
+              如果你希望在展览活动中试用 Artiou，欢迎联系合作测试与内容共建。
+            </p>
+            <a class="btn btn-ghost" href="mailto:hello@ottozhang.com" data-i18n="trust.panel.cta">联系合作</a>
+          </aside>
+        </div>
+      </section>
+
+      <section id="faq" class="faq">
+        <div class="wrap">
+          <h2 class="section-title" data-i18n="faq.title">常见问题</h2>
+          <div class="faq-list">
+            <details>
+              <summary data-i18n="faq.q1">是否必须登录才能使用识别？</summary>
+              <p data-i18n="faq.a1">可以先游客体验，登录后可获得更多额度并同步收藏记录。</p>
+            </details>
+            <details>
+              <summary data-i18n="faq.q2">支持哪些语言的讲解？</summary>
+              <p data-i18n="faq.a2">当前主打中文讲解，后续会根据需求扩展更多语言。</p>
+            </details>
+            <details>
+              <summary data-i18n="faq.q3">识别结果不准确怎么办？</summary>
+              <p data-i18n="faq.a3">建议在光线稳定时正对作品拍摄，也可更换角度重新识别。</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section id="download" class="download">
+        <div class="wrap">
+          <div class="box">
+            <h2 class="section-title" data-i18n="download.title">在手机上开启艺游</h2>
+            <p class="section-intro" data-i18n="download.intro">
+              iOS 与 Android 版本陆续上架中。点击下方按钮前往应用商店（链接可在部署前替换）。
+            </p>
+            <div class="store-badges">
+              <a id="link-app-store" href="#" rel="noopener" data-i18n="download.appstore">App Store</a>
+              <a id="link-play-store" href="#" rel="noopener" data-i18n="download.play">Google Play</a>
+            </div>
+            <p class="store-hint" data-i18n="download.hint">若商店链接尚未公开，可先通过 TestFlight / 内测渠道获取。</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="cols">
+          <p data-i18n="footer.tagline">艺游 Artiou — 博物馆里的私人导览。</p>
+          <div class="footer-links">
+            <a id="privacy-link" href="https://www.ottozhang.com/it/policy/artiou/zh" data-i18n="footer.privacy">隐私政策</a>
+            <a id="terms-link" href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" data-i18n="footer.terms">使用条款（Apple 标准 EULA）</a>
+          </div>
+        </div>
+        <p class="copyright">© <span id="year"></span> Artiou. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+      window.ARTIOU_STORE_URLS = {
+        appStore: "https://apps.apple.com/cn/app/%E8%89%BA%E6%B8%B8-artiou/id6759812990",
+        playStore: "",
+      };
+    </script>
+    <script src="./main.js" defer></script>
+  </body>
+</html>
