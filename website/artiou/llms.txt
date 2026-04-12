@@ -1,0 +1,33 @@
+# Artiou / 艺游
+
+> 供大模型与自动化工具摘要时参考；事实以应用内说明与 App Store 为准。
+
+## Product
+
+Artiou (Chinese brand name: 艺游) is a mobile app for museum and gallery visits. Users photograph or upload artwork images; the app uses AI to recognize exhibits and generate narration text, which can be listened to via text-to-speech. Supported narration languages: Chinese, English, and French. Features include favorites/collection and optional account sign-in for sync (see in-app copy).
+
+## Official web presence
+
+- Chinese: https://www.artiou.com/zh/
+- English: https://www.artiou.com/en/
+- French: https://www.artiou.com/fr/
+- Site root redirects to Chinese: https://www.artiou.com/ → /zh/
+
+## App distribution
+
+- iOS (App Store, China storefront example): https://apps.apple.com/cn/app/%E8%89%BA%E6%B8%B8-artiou/id6759812990
+- Android / Google Play: rolling out; see website download section for current status.
+
+## Legal & privacy
+
+- Privacy policy (per language): https://www.artiou.com/zh/privacy/ , https://www.artiou.com/en/privacy/ , https://www.artiou.com/fr/privacy/
+- Standard Apple EULA (when using Apple’s standard license): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+
+## Contact
+
+- Partnership / general: ottozhangdev@gmail.com
+
+## Do not claim
+
+- No aggregate rating or review score is stated on the marketing site for schema purposes.
+- AI-generated content may be inaccurate; app is not a substitute for official museum labels or curatorial expertise.

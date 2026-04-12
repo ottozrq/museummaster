@@ -1,0 +1,35 @@
+# Artiou
+
+> Machine-readable summary for LLMs and automated tools. Ground truth is in-app copy and the App Store listing.
+
+## Product
+
+Artiou (Chinese brand name: 艺游, pronounced Yìyóu) is a mobile application for museum and gallery visits. Users take or upload photos of artworks; the app uses AI to recognize exhibits and generate explanatory text, which can be listened to via text-to-speech. Narration is available in **Chinese, English, and French**. The app supports favorites/collection and optional account sign-in for cross-device sync (see in-app UI for limits and behavior).
+
+## Official website
+
+- English: https://www.artiou.com/en/
+- Chinese: https://www.artiou.com/zh/
+- French: https://www.artiou.com/fr/
+- The site root https://www.artiou.com/ redirects to the Chinese homepage (/zh/).
+
+A shorter bilingual index file also exists at https://www.artiou.com/llms.txt (mixed Chinese notes + English facts).
+
+## App distribution
+
+- iOS (example App Store URL, China storefront): https://apps.apple.com/cn/app/%E8%89%BA%E6%B8%B8-artiou/id6759812990
+- Android / Google Play: rollout in progress; check the download section on https://www.artiou.com/en/ and in-app notices.
+
+## Legal and privacy
+
+- Privacy policy (per language): https://www.artiou.com/zh/privacy/ , https://www.artiou.com/en/privacy/ , https://www.artiou.com/fr/privacy/
+- When the app uses Apple’s standard license, the standard EULA is: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+
+## Contact
+
+- Partnership and general inquiries: ottozhangdev@gmail.com
+
+## Do not infer or invent
+
+- The marketing site does not publish aggregate ratings or review scores for structured-data purposes.
+- AI-generated guides may be wrong or incomplete; Artiou does not replace official museum labels, wall text, or curatorial expertise.

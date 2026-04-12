@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta
+      name="description"
+      content="Reconnaissance d'œuvres, commentaires audio en plusieurs langues et favoris : Artiou vous accompagne au musée avec une expérience fluide."
+    />
+    <meta name="theme-color" content="#F6E7D7" />
+    <title>Artiou — Guide audio IA pour musées</title>
+    <link rel="canonical" href="https://www.artiou.com/fr/" />
+    <link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/" />
+    <link rel="alternate" hreflang="en" href="https://www.artiou.com/en/" />
+    <link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/" />
+    <link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Artiou" />
+    <meta property="og:title" content="Artiou — Guide IA pour votre visite au musée" />
+    <meta
+      property="og:description"
+      content="Reconnaissance d'œuvres, commentaires audio en plusieurs langues et favoris : Artiou vous accompagne au musée avec une expérience fluide."
+    />
+    <meta property="og:url" content="https://www.artiou.com/fr/" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:locale:alternate" content="zh_CN" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:image" content="https://www.artiou.com/artiou-og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Artiou — Guide IA pour votre visite au musée" />
+    <meta
+      name="twitter:description"
+      content="Reconnaissance d'œuvres, commentaires audio en plusieurs langues et favoris : Artiou vous accompagne au musée avec une expérience fluide."
+    />
+    <meta name="twitter:image" content="https://www.artiou.com/artiou-og.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="icon" href="../icon.png" type="image/jpeg" />
+    <link rel="apple-touch-icon" href="../icon.png" />
+    <script>
+      window.ARTIOU_SITE_BASE = "https://www.artiou.com";
+      window.ARTIOU_STORE_URLS = {
+        appStore: "https://apps.apple.com/cn/app/%E8%89%BA%E6%B8%B8-artiou/id6759812990",
+        playStore: "",
+      };
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <div class="noscript-banner">
+        <div class="wrap">
+          <p>
+            Artiou est une application de guide audio pour le musée : reconnaissance d'œuvres et commentaires multilingues.
+            <a href="https://apps.apple.com/cn/app/%E8%89%BA%E6%B8%B8-artiou/id6759812990">Ouvrir sur l'App Store</a>
+            ou rechercher Artiou. Activez JavaScript pour le site complet.
+          </p>
+        </div>
+      </div>
+    </noscript>
+    <header class="site-header">
+      <div class="wrap inner">
+        <div class="brand">
+          <span class="brand-mark">Artiou</span>
+          <span class="brand-sub">Guide IA de musée</span>
+        </div>
+        <nav class="nav-lang" aria-label="Langue">
+          <a href="../zh/" hreflang="zh-Hans">中文</a>
+          <a href="../en/" hreflang="en">EN</a>
+          <a href="./" hreflang="fr" aria-current="page">FR</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="wrap hero-grid">
+          <div>
+            <p class="hero-kicker">Scanner · Écouter · Explorer</p>
+            <h1>Votre guide de poche au musée</h1>
+            <p class="hero-lead">
+              Artiou utilise la reconnaissance visuelle et une narration en chinois, anglais ou français pour vous aider à
+              comprendre les œuvres sans casser votre rythme de visite.
+            </p>
+            <div class="cta-row">
+              <a class="btn btn-primary" id="cta-store-top" href="#download">Télécharger l'app</a>
+              <button type="button" class="btn btn-ghost" id="cta-secondary">Voir les fonctionnalités</button>
+            </div>
+          </div>
+          <aside class="hero-card" aria-labelledby="card-title">
+            <h2 id="card-title">Conçu pour la visite</h2>
+            <ul>
+              <li>Cadrez une œuvre et obtenez rapidement du contexte</li>
+              <li>Écoutez un commentaire clair au fil des salles</li>
+              <li>Sauvegardez vos œuvres préférées</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section class="entity-profile" id="entity" aria-labelledby="entity-title">
+        <div class="wrap">
+          <h2 class="section-title" id="entity-title">Produit et marque</h2>
+          <p class="entity-lead" id="artiou-entity-description">
+            <strong>Artiou</strong> (nom chinois : <strong>艺游</strong>, Yìyóu) est une application mobile pour les visites de
+            musée et de galerie : vous photographiez ou importez une œuvre ; l’IA reconnaît le sujet et génère une narration que
+            vous pouvez écouter en <strong>chinois, anglais ou français</strong>. Favoris et synchronisation de compte optionnelle
+            (voir l’app pour le détail).
+          </p>
+          <dl class="entity-facts">
+            <dt>Nom anglais</dt>
+            <dd>Artiou</dd>
+            <dt>Nom chinois</dt>
+            <dd>艺游</dd>
+            <dt>Type</dt>
+            <dd>Guide audio IA pour musées et galeries</dd>
+            <dt>Langues de narration</dt>
+            <dd>Chinois, anglais, français</dd>
+            <dt>iOS</dt>
+            <dd>
+              <a href="https://apps.apple.com/cn/app/%E8%89%BA%E6%B8%B8-artiou/id6759812990">Artiou sur l’App Store</a>
+            </dd>
+            <dt>Site officiel</dt>
+            <dd>
+              <a href="https://www.artiou.com/fr/">https://www.artiou.com/fr/</a>
+              (<a href="https://www.artiou.com/zh/">中文</a>,
+              <a href="https://www.artiou.com/en/">English</a>)
+            </dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="seo-landing" id="intro" aria-label="Présentation">
+        <div class="wrap">
+          <p class="seo-landing-text">
+            Que vous parcouriez un grand musée national ou une galerie d'art contemporain, Artiou se veut un guide audio de
+            visite au musée : photographiez l'œuvre pour une reconnaissance rapide, puis écoutez un commentaire adapté au rythme
+            des salles—en chinois, anglais ou français—pour moins chercher un QR code et plus regarder les œuvres. Après la
+            sortie, retrouvez vos favoris dans l'application et prolongez l'exposition chez vous.
+          </p>
+        </div>
+      </section>
+
+      <section id="visuals" class="visuals">
+        <div class="wrap">
+          <h2 class="section-title">Visuels de marque</h2>
+          <p class="section-intro">Visuels pour cette langue.</p>
+          <div class="visual-grid">
+            <img src="../assets/1F-e01f5905-7038-4137-a0c2-2ac1159af0b5.png" alt="Affiche Artiou français 1" loading="lazy" />
+            <img src="../assets/2F-22229847-f7aa-44f2-8873-2fb7eb8fc326.png" alt="Affiche Artiou français 2" loading="lazy" />
+            <img src="../assets/3f-cdb2f4a9-9d0f-4fa6-b103-ee457c14be9a.png" alt="Affiche Artiou français 3" loading="lazy" />
+            <img src="../assets/4F-662d1226-992a-4748-a348-09661e1b16af.png" alt="Affiche Artiou français 4" loading="lazy" />
+            <img src="../assets/5F-a292dc97-7f20-4739-8cd7-8191e99a27e7.png" alt="Affiche Artiou français 5" loading="lazy" />
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="features-section">
+        <div class="wrap">
+          <h2 class="section-title">Pourquoi Artiou</h2>
+          <p class="section-intro">Moins de friction, plus d'immersion devant les œuvres.</p>
+          <div class="features">
+            <article class="feature">
+              <h3>Identifier en un scan</h3>
+              <p>Utilisez l'appareil photo pour identifier une œuvre et afficher les points essentiels.</p>
+            </article>
+            <article class="feature">
+              <h3>Narration multilingue</h3>
+              <p>Un audio simple et naturel, adapté au rythme du musée.</p>
+            </article>
+            <article class="feature">
+              <h3>Votre collection</h3>
+              <p>Conservez les œuvres et guides que vous aimez pour y revenir plus tard.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="how-it-works" class="how-it-works">
+        <div class="wrap">
+          <h2 class="section-title">Commencez en trois étapes</h2>
+          <p class="section-intro">De la prise de vue à la compréhension d'une œuvre, en moins d'une minute.</p>
+          <ol class="steps">
+            <li class="step">
+              <span class="step-no">01</span>
+              <h3>Cadrez l'œuvre</h3>
+              <p>Ouvrez Artiou et pointez la caméra vers l'œuvre que vous souhaitez explorer.</p>
+            </li>
+            <li class="step">
+              <span class="step-no">02</span>
+              <h3>Recevez un guide instantané</h3>
+              <p>L'IA reconnaît l'œuvre et génère une explication concise.</p>
+            </li>
+            <li class="step">
+              <span class="step-no">03</span>
+              <h3>Écoutez en vous déplaçant</h3>
+              <p>Avec des écouteurs ou le haut-parleur, gardez votre propre cadence dans l'exposition.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="scenes" class="scenes">
+        <div class="wrap">
+          <h2 class="section-title">Cas d'usage idéaux</h2>
+          <div class="scene-grid">
+            <article class="scene-card">
+              <h3>Première visite de musée</h3>
+              <p>Comprenez vite les œuvres, au-delà de simples étiquettes.</p>
+            </article>
+            <article class="scene-card">
+              <h3>Voyage en ville</h3>
+              <p>Profitez d'un guidage dans votre langue, même dans un musée inconnu.</p>
+            </article>
+            <article class="scene-card">
+              <h3>Visite en famille</h3>
+              <p>Transformez chaque œuvre en conversation partagée avec les enfants.</p>
+            </article>
+            <article class="scene-card">
+              <h3>Relecture approfondie</h3>
+              <p>Sauvegardez vos coups de cœur et revisitez-les après votre sortie.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="trust" class="trust">
+        <div class="wrap trust-grid">
+          <div>
+            <h2 class="section-title">Confidentialité et données</h2>
+            <p class="section-intro">
+              Nous privilégions la transparence et le contrôle utilisateur. Vous pouvez gérer vos données à tout moment.
+            </p>
+            <ul class="trust-list">
+              <li>Les images sont traitées uniquement quand vous prenez ou envoyez une photo.</li>
+              <li>Les liens vers la politique de confidentialité et les conditions d'utilisation sont publics.</li>
+              <li>La suppression de compte et le nettoyage des données sont disponibles dans l'app.</li>
+            </ul>
+          </div>
+          <aside class="trust-panel">
+            <h3>Pour institutions et curateurs</h3>
+            <p>Vous souhaitez tester Artiou pour une exposition ? Contactez-nous pour une collaboration.</p>
+            <a class="btn btn-ghost" href="mailto:ottozhangdev@gmail.com">Nous contacter</a>
+          </aside>
+        </div>
+      </section>
+
+      <section id="faq" class="faq">
+        <div class="wrap">
+          <h2 class="section-title">FAQ</h2>
+          <div class="faq-list">
+            <details>
+              <summary>Faut-il se connecter pour scanner ?</summary>
+              <p>Vous pouvez commencer en mode invité. La connexion débloque plus de quota et la synchro des favoris.</p>
+            </details>
+            <details>
+              <summary>Quelles langues de narration sont prises en charge ?</summary>
+              <p>La narration est actuellement disponible en chinois, anglais et français.</p>
+            </details>
+            <details>
+              <summary>Que faire si la reconnaissance est imprécise ?</summary>
+              <p>
+                Les erreurs viennent surtout des limites du modèle (œuvres abstraites, matériaux atypiques, ou peu de
+                métadonnées). Reprenez une photo frontale plus nette, ou ajoutez le titre ou l'artiste pour améliorer le
+                résultat.
+              </p>
+            </details>
+            <details>
+              <summary>Quelle est la relation entre Artiou et 艺游 ?</summary>
+              <p>
+                Il s’agit du même produit : « Artiou » est le nom anglais utilisé sur l’App Store et dans les supports ;
+                « 艺游 » (Yìyóu) est le nom chinois utilisé dans l’interface et les contenus orientés Chine.
+              </p>
+            </details>
+            <details>
+              <summary>Où obtenir les versions iOS et Android ?</summary>
+              <p>
+                Sur iOS, utilisez le lien App Store en bas de page ou recherchez Artiou / 艺游. Les versions Android / Google
+                Play déploient progressivement : consultez la section Téléchargement sur ce site et les messages dans l’app.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section id="download" class="download">
+        <div class="wrap">
+          <div class="box">
+            <h2 class="section-title">Emportez Artiou avec vous</h2>
+            <p class="section-intro">
+              Les versions iOS et Android arrivent progressivement. Utilisez les boutons ci-dessous une fois les fiches stores publiées.
+            </p>
+            <div class="store-badges">
+              <a id="link-app-store" href="#" rel="noopener">App Store</a>
+              <a id="link-play-store" href="#" rel="noopener">Google Play</a>
+            </div>
+            <p class="store-hint">En attendant les liens publics, utilisez TestFlight ou les canaux de test interne.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="cols">
+          <p>Artiou — une visite plus fluide au musée.</p>
+          <div class="footer-links">
+            <a href="./privacy/">Politique de confidentialité</a>
+            <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Conditions d'utilisation (EULA Apple standard)</a>
+            <a href="../llms.txt">llms.txt</a>
+          </div>
+        </div>
+        <p class="copyright">© <span id="year"></span> Artiou. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Faut-il se connecter pour scanner ?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Vous pouvez commencer en mode invité. La connexion débloque plus de quota et la synchro des favoris."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Quelles langues de narration sont prises en charge ?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "La narration est actuellement disponible en chinois, anglais et français."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Que faire si la reconnaissance est imprécise ?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Les erreurs viennent surtout des limites du modèle (œuvres abstraites, matériaux atypiques, ou peu de métadonnées). Reprenez une photo frontale plus nette, ou ajoutez le titre/l'artiste pour améliorer le résultat."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Quelle est la relation entre Artiou et 艺游 ?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Il s'agit du même produit : « Artiou » est le nom anglais utilisé sur l'App Store et dans les supports ; « 艺游 » (Yìyóu) est le nom chinois utilisé dans l'interface et les contenus orientés Chine."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Où obtenir les versions iOS et Android ?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Sur iOS, utilisez le lien App Store en bas de page ou recherchez Artiou / 艺游. Les versions Android / Google Play déploient progressivement : consultez la section Téléchargement sur ce site et les messages dans l'app."
+                }
+              }
+            ]
+          },
+          {
+            "@type": "MobileApplication",
+            "name": "Artiou",
+            "alternateName": ["艺游"],
+            "url": "https://www.artiou.com/fr/",
+            "description": "Artiou (nom chinois 艺游) est une application mobile pour les visites de musée et de galerie : photo ou import d'une œuvre, reconnaissance IA et narration en chinois, anglais ou français ; favoris et compte optionnel. Site officiel https://www.artiou.com/fr/ .",
+            "applicationCategory": "LifestyleApplication",
+            "operatingSystem": "iOS, Android",
+            "image": "https://www.artiou.com/artiou-og.png",
+            "downloadUrl": "https://apps.apple.com/cn/app/%E8%89%BA%E6%B8%B8-artiou/id6759812990",
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+          },
+          {
+            "@type": "Organization",
+            "name": "Artiou",
+            "alternateName": ["艺游"],
+            "url": "https://www.artiou.com/fr/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://www.artiou.com/artiou-og.png"
+            },
+            "sameAs": [
+              "https://apps.apple.com/cn/app/%E8%89%BA%E6%B8%B8-artiou/id6759812990",
+              "https://www.artiou.com"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "name": "Artiou",
+            "alternateName": ["艺游"],
+            "url": "https://www.artiou.com",
+            "inLanguage": ["zh-Hans", "en", "fr"]
+          }
+        ]
+      }
+    </script>
+    <script src="../static-site.js" defer></script>
+  </body>
+</html>

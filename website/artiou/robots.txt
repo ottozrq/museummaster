@@ -1,0 +1,5 @@
+# 若官网部署在站点根目录，可将本文件合并进域名根目录的 robots.txt，并保留下方 Sitemap 绝对地址。
+User-agent: *
+Allow: /
+
+Sitemap: https://www.artiou.com/sitemap.xml
