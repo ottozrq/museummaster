@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="{{HTML_LANG}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ARTICLE_TITLE}}</title>
+    <meta name="description" content="{{ARTICLE_DESCRIPTION}}">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="{{CANONICAL_URL}}">
+{{HREFLANG_LINKS}}
+    <meta property="og:type" content="article">
+    <meta property="og:locale" content="{{OG_LOCALE}}">
+    <meta property="og:title" content="{{ARTICLE_TITLE}}">
+    <meta property="og:description" content="{{ARTICLE_DESCRIPTION}}">
+    <meta property="og:url" content="{{CANONICAL_URL}}">
+    <meta property="og:image" content="{{ARTICLE_OG_IMAGE}}">
+    <meta property="article:published_time" content="{{ARTICLE_PUBLISHED_TIME}}">
+    <meta property="article:modified_time" content="{{ARTICLE_MODIFIED_TIME}}">
+    <meta property="article:section" content="{{ARTICLE_CATEGORY}}">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="{{ARTICLE_TITLE}}">
+    <meta property="twitter:description" content="{{ARTICLE_DESCRIPTION}}">
+    <meta property="twitter:url" content="{{CANONICAL_URL}}">
+    <link rel="icon" type="image/png" href="{{ASSET_PREFIX}}images/favicon.png">
+    <link rel="stylesheet" href="{{ASSET_PREFIX}}styles.css">
+    <link rel="stylesheet" href="{{ASSET_PREFIX}}news.css">
+    <script type="application/ld+json">
+    {{ARTICLE_JSON_LD}}
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar news-navbar">
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo"><a class="news-logo-link" href="{{ASSET_PREFIX}}">cacaou</a></div>
+                <ul class="nav-menu">
+{{NAV_MENU_ITEMS}}
+                </ul>
+                <div class="language-selector news-lang-switch" role="navigation" aria-label="News language">
+{{LANG_SWITCHER}}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="article-page">
+        <article class="article-shell container">
+            <header class="article-header">
+                <p class="article-meta">
+                    <span>{{ARTICLE_CATEGORY}}</span>
+                    <span>·</span>
+                    <time datetime="{{ARTICLE_PUBLISHED_TIME}}">{{ARTICLE_PUBLISHED_TEXT}}</time>
+                </p>
+                <h1>{{ARTICLE_HEADING}}</h1>
+                <p class="article-description">{{ARTICLE_DESCRIPTION}}</p>
+            </header>
+
+            <div class="article-body">
+                {{ARTICLE_CONTENT}}
+            </div>
+
+            <section class="article-tags">
+                {{ARTICLE_TAGS}}
+            </section>
+
+            <section class="article-cta">
+                <h2>{{CTA_TITLE}}</h2>
+                <p>{{CTA_DESC}}</p>
+                <a class="btn btn-primary" href="{{ASSET_PREFIX}}#download">{{CTA_BUTTON}}</a>
+            </section>
+        </article>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; {{CURRENT_YEAR}} cacaou. {{FOOTER_RIGHTS}}</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

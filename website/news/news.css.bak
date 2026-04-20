@@ -1,0 +1,153 @@
+/* Artiou News - 用官网样式 */
+:root {
+  --bg: #f6e7d7;
+  --bg-elevated: #fff5ec;
+  --surface: #ffffff;
+  --text: #4b3621;
+  --muted: #b07557;
+  --accent: #e2461b;
+  --accent-hover: #c93d17;
+  --line: rgba(75, 54, 33, 0.12);
+  --radius: 12px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "DM Sans", "PingFang SC", system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* Header - 与官网一致 */
+.site-header {
+  background: var(--bg-elevated);
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.site-header .inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand-link { text-decoration: none; }
+
+.brand-mark {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.brand-sub {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin-left: 0.5rem;
+}
+
+.nav-lang button {
+  background: none;
+  border: none;
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.nav-lang button[aria-pressed="true"] {
+  opacity: 1;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Hero */
+.news-hero {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.news-hero h1 {
+  font-size: 2rem;
+  margin: 0 0 0.5rem;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 1.125rem;
+}
+
+/* News Grid */
+.news-grid {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1rem 3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.news-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.news-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.news-card a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.news-cover img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.news-content {
+  padding: 1rem;
+}
+
+.news-content time {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.news-content h2 {
+  font-size: 1.125rem;
+  margin: 0.5rem 0;
+  line-height: 1.3;
+}
+
+.news-content p {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Footer */
+.site-footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.875rem;
+}
