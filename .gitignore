@@ -96,3 +96,16 @@ yarn-error.log*
 # === Project specific ===
 # Uploaded/static files generated at runtime
 backend/static/
+
+# === Website generated outputs ===
+# News static pages generated from website/build-news.mjs
+website/news/
+website/en/news/
+website/fr/news/
+website/sitemap.xml
+
+# Local preview alias paths (symlinks/helpers)
+website/artiou/artiou/
+website/artiou/en/news
+website/artiou/fr/news
+website/artiou/zh/news

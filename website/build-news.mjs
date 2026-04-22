@@ -272,6 +272,17 @@ function getLocalePaths(locale) {
   };
 }
 
+function getArticleCoverPath(article) {
+  return article.cover || article.coverImage || "/artiou/assets/1F-e01f5905-7038-4137-a0c2-2ac1159af0b5.png";
+}
+
+function toAbsoluteImageUrl(imagePath) {
+  if (/^https?:\/\//i.test(imagePath)) {
+    return imagePath;
+  }
+  return `${SITE_URL}${imagePath}`;
+}
+
 function loadArticlesForLocale(locale) {
   const dir = path.join(CONTENT_ROOT, locale);
   if (!fs.existsSync(dir)) {
@@ -408,6 +419,7 @@ function writeArticlePagesForLocale(
 
     const canonicalUrl = paths.siteArticleUrl(article.slug);
     const hreflang = buildHreflangArticle(article.slug, byLocale);
+    const coverPath = getArticleCoverPath(article);
 
     const articleJsonLd = JSON.stringify(
       {
@@ -425,6 +437,7 @@ function writeArticlePagesForLocale(
           "@type": "Organization",
           name: "Artiou",
         },
+        image: toAbsoluteImageUrl(coverPath),
         description: article.description,
         mainEntityOfPage: canonicalUrl,
       },
@@ -451,7 +464,9 @@ function writeArticlePagesForLocale(
       ARTICLE_PUBLISHED_TEXT: escapeHtml(
         formatDate(article.date, ui.dateLocale),
       ),
-      ARTICLE_OG_IMAGE: `${SITE_URL}${article.coverImage || "/artiou/assets/1F-e01f5905-7038-4137-a0c2-2ac1159af0b5.png"}`,
+      ARTICLE_OG_IMAGE: toAbsoluteImageUrl(coverPath),
+      ARTICLE_COVER_IMAGE: coverPath,
+      ARTICLE_COVER_ALT: escapeHtml(article.title),
       ARTICLE_TAGS: tagsHtml,
       ARTICLE_JSON_LD: articleJsonLd,
       CANONICAL_URL: canonicalUrl,

@@ -149,6 +149,27 @@ a:hover {
   font-weight: 700;
 }
 
+.nav-lang a.nav-news-entry {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.hero-news-link {
+  margin: 0.85rem 0 0;
+  font-size: 0.95rem;
+}
+
+.hero-news-link a {
+  color: var(--accent);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.hero-news-link a:hover {
+  color: var(--accent-hover);
+}
+
 .entity-profile {
   padding: clamp(1.25rem, 3vw, 2rem) 0;
   border-bottom: 1px solid var(--line);

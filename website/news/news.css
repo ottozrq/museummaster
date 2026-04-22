@@ -242,6 +242,17 @@ body {
   padding-top: 2.25rem;
 }
 
+.news-empty {
+  margin: 0;
+  grid-column: 1 / -1;
+  padding: 1.5rem 1.25rem;
+  border: 1px dashed rgba(75, 54, 33, 0.2);
+  border-radius: var(--news-radius-sm);
+  background: rgba(255, 255, 255, 0.58);
+  color: var(--news-muted);
+  text-align: center;
+}
+
 .news-card {
   position: relative;
   display: flex;
@@ -385,6 +396,20 @@ body {
   font-size: clamp(1.05rem, 2vw, 1.2rem);
   line-height: 1.65;
   color: var(--news-text-soft);
+}
+
+.article-cover {
+  margin: 0 0 1.75rem;
+  border-radius: var(--news-radius-sm);
+  overflow: hidden;
+  box-shadow: var(--news-shadow-soft);
+  border: 1px solid rgba(75, 54, 33, 0.08);
+}
+
+.article-cover img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .article-body {
