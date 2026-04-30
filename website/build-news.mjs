@@ -64,7 +64,7 @@ const LOCALE_UI = {
     articleCta: {
       title: "Live Paris info with Artiou",
       desc: "Scan artworks, get expert commentary, explore art easily.",
-      button: "下载 Artiou",
+      button: "Download Artiou",
     },
   },
   fr: {
@@ -93,6 +93,19 @@ const LOCALE_UI = {
     },
   },
 };
+
+/** 与中文 frontmatter 中 category 字段对齐，用于 en/fr 列表与正文元信息 */
+const CATEGORY_I18N = {
+  展览资讯: { en: "Exhibition news", fr: "Actualités expositions" },
+};
+
+function localizeCategory(rawCategory, locale) {
+  const raw = (rawCategory || "").trim();
+  if (!raw || locale === "zh") return rawCategory;
+  const row = CATEGORY_I18N[raw];
+  if (row && row[locale]) return row[locale];
+  return rawCategory;
+}
 
 function escapeHtml(value = "") {
   return value
@@ -458,7 +471,7 @@ function writeArticlePagesForLocale(
       ARTICLE_HEADING: escapeHtml(article.title),
       ARTICLE_DESCRIPTION: escapeHtml(article.description),
       ARTICLE_CONTENT: article.bodyHtml,
-      ARTICLE_CATEGORY: escapeHtml(article.category),
+      ARTICLE_CATEGORY: escapeHtml(localizeCategory(article.category, locale)),
       ARTICLE_PUBLISHED_TIME: new Date(article.date).toISOString(),
       ARTICLE_MODIFIED_TIME: new Date(article.updated).toISOString(),
       ARTICLE_PUBLISHED_TEXT: escapeHtml(
@@ -497,7 +510,7 @@ function writeNewsIndexForLocale(locale, articles, indexTemplate) {
       const cardHref = paths.articlePath(article.slug);
       return `
         <a class="news-card" href="${cardHref}">
-          <p class="news-card-meta">${escapeHtml(article.category)} · ${escapeHtml(formatDate(article.date, ui.dateLocale))}</p>
+          <p class="news-card-meta">${escapeHtml(localizeCategory(article.category, locale))} · ${escapeHtml(formatDate(article.date, ui.dateLocale))}</p>
           <h2>${escapeHtml(article.title)}</h2>
           <p>${escapeHtml(article.description)}</p>
           <div class="news-chip-row">${tagsHtml}</div>
