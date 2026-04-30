@@ -1,3 +1,11 @@
+## [1.3.1](https://github.com/ottozrq/museummaster/compare/v1.3.0...v1.3.1) (2026-04-30)
+
+
+### Bug Fixes
+
+* polish news page typography and background layers ([f6c4dd2](https://github.com/ottozrq/museummaster/commit/f6c4dd2da7daca1a427953a38e35317d52bb9d7a))
+* **release:** sync mobile app version during semantic release ([c49ed8a](https://github.com/ottozrq/museummaster/commit/c49ed8aa8f93b6a7ac1034d773e018fb90f4f887))
+
 # [1.3.0](https://github.com/ottozrq/museummaster/compare/v1.2.6...v1.3.0) (2026-04-30)
 
 
