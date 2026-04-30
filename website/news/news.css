@@ -24,12 +24,15 @@ html {
 
 body,
 body.news-page,
+main.news-page,
 .news-page {
   font-family: "DM Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui,
     sans-serif;
 }
 
 body {
+  position: relative;
+  min-height: 100vh;
   color: var(--news-text);
   background:
     radial-gradient(circle at top center, rgba(226, 70, 27, 0.14), transparent 34%),
@@ -41,12 +44,18 @@ body {
   margin-inline: auto;
 }
 
+body.news-page,
+main.news-page,
 .news-page {
   position: relative;
   overflow: hidden;
   overflow: clip;
 }
 
+body.news-page::before,
+body.news-page::after,
+main.news-page::before,
+main.news-page::after,
 .news-page::before,
 .news-page::after {
   content: "";
@@ -56,6 +65,8 @@ body {
   z-index: 0;
 }
 
+body.news-page::before,
+main.news-page::before,
 .news-page::before {
   width: 34rem;
   height: 34rem;
@@ -64,6 +75,8 @@ body {
   background: radial-gradient(circle, rgba(226, 70, 27, 0.12) 0%, rgba(226, 70, 27, 0) 72%);
 }
 
+body.news-page::after,
+main.news-page::after,
 .news-page::after {
   width: 26rem;
   height: 26rem;
@@ -72,6 +85,8 @@ body {
   background: radial-gradient(circle, rgba(255, 255, 255, 0.56) 0%, rgba(255, 255, 255, 0) 74%);
 }
 
+body.news-page > *,
+main.news-page > *,
 .news-page > * {
   position: relative;
   z-index: 1;
