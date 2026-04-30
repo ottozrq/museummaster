@@ -247,9 +247,9 @@ function renderTemplate(template, replacements) {
 
 /** Per-locale URL & asset paths */
 function getLocalePaths(locale) {
-  // 静态资源一律用站点根绝对路径，避免当某条路由误返回首页 HTML 时相对路径解析到错误目录
-  //（例如 /news/script.js 返回 HTML → Unexpected token '<'）。
-  const assetRoot = "/";
+  // 统一挂载到 /artiou/，避免部署到静态主机时因根目录差异导致 CSS 404。
+  // 同时减少对软链接路径解析行为的依赖。
+  const assetRoot = "/artiou/";
   if (locale === "zh") {
     return {
       newsRootDir: path.join(WEBSITE_DIR, "news"),
