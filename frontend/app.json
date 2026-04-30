@@ -3,7 +3,7 @@
     "name": "Artiou",
     "slug": "museum-guide",
     "scheme": "museumguide",
-    "version": "1.0.0",
+    "version": "1.3.0",
     "newArchEnabled": false,
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -23,7 +23,9 @@
         "NSCameraUsageDescription": "Artiou needs camera access to capture exhibit photos for recognition.",
         "NSPhotoLibraryUsageDescription": "Artiou needs access to your photos so you can choose an image from your library.",
         "NSMicrophoneUsageDescription": "Artiou needs microphone access to play audio guides and voice content.",
-        "UIBackgroundModes": ["audio"]
+        "UIBackgroundModes": [
+          "audio"
+        ]
       },
       "bundleIdentifier": "com.ottozhang.artiou"
     },

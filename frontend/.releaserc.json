@@ -5,7 +5,24 @@
     "@semantic-release/release-notes-generator",
     "@semantic-release/changelog",
     "@semantic-release/npm",
-    "@semantic-release/git",
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "node scripts/sync-app-version.js ${nextRelease.version}"
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": [
+          "CHANGELOG.md",
+          "package.json",
+          "package-lock.json",
+          "app.json",
+          "ios/Artiou/Info.plist"
+        ]
+      }
+    ],
     "@semantic-release/github"
   ]
 }
