@@ -247,9 +247,9 @@ function renderTemplate(template, replacements) {
 
 /** Per-locale URL & asset paths */
 function getLocalePaths(locale) {
-  // 统一挂载到 /artiou/，避免部署到静态主机时因根目录差异导致 CSS 404。
-  // 同时减少对软链接路径解析行为的依赖。
-  const assetRoot = "/artiou/";
+  // 新闻站静态资源按站点根路径提供（/styles.css, /news.css）。
+  // 与当前线上 nginx 映射保持一致，避免 /artiou/*.css 回退到 HTML。
+  const assetRoot = "/";
   if (locale === "zh") {
     return {
       newsRootDir: path.join(WEBSITE_DIR, "news"),
