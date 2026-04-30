@@ -1,3 +1,20 @@
+# [1.3.0](https://github.com/ottozrq/museummaster/compare/v1.2.6...v1.3.0) (2026-04-30)
+
+
+### Bug Fixes
+
+* camera zoom ([5f32c84](https://github.com/ottozrq/museummaster/commit/5f32c84a9de9758366d95aad573b96415add3f4c))
+* **website:** clean up generated news content and local preview paths ([818a543](https://github.com/ottozrq/museummaster/commit/818a543f0edcb023390e929ba9b9ce837dbf7e72))
+* **website:** 为本地静态服务添加 news 目录符号链接 ([bc7e9ba](https://github.com/ottozrq/museummaster/commit/bc7e9ba28f8bb78a16cc4c2645f0c131053ea386))
+* **website:** 仓库根目录添加 artiou 符号链接便于本地预览 ([7721e80](https://github.com/ottozrq/museummaster/commit/7721e8040870c4724d7d7702a0f534129499ce4a))
+* **website:** 完善新闻站 news.css 布局与正文样式 ([5f33ee4](https://github.com/ottozrq/museummaster/commit/5f33ee444f73c6bfd3091c13960cbc59efa3e4b2))
+
+
+### Features
+
+* add website ([e315641](https://github.com/ottozrq/museummaster/commit/e31564106ff0b76503d0905713717d7ec61425e9))
+* opt website seo/geo ([7c64ab0](https://github.com/ottozrq/museummaster/commit/7c64ab099d2753c2ef7568d538c6e4bd3cf15904))
+
 ## [1.2.6](https://github.com/ottozrq/museummaster/compare/v1.2.5...v1.2.6) (2026-04-05)
 
 
