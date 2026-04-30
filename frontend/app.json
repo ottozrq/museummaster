@@ -42,6 +42,12 @@
       "expo-audio",
       "expo-apple-authentication",
       [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.577788424612-d3gutf0ru81i1tdrfdm5m21c27rvp27k"
+        }
+      ],
+      [
         "react-native-iap",
         {
           "paymentProvider": "Play Store"

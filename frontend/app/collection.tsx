@@ -157,6 +157,10 @@ export default function CollectionScreen() {
     }
 
     try {
+      // 在点击时再次配置，避免冷启动后用户快速点击导致的未初始化状态。
+      googleSignin.configure?.({
+        iosClientId: GOOGLE_IOS_CLIENT_ID,
+      });
       const signInResult = await googleSignin.signIn();
       const idToken = (signInResult as any)?.data?.idToken ?? (signInResult as any)?.idToken;
       if (!idToken) {
@@ -192,7 +196,12 @@ export default function CollectionScreen() {
       if (e?.code === "SIGN_IN_CANCELLED") {
         return;
       }
-      Alert.alert(t("collection.loginFailedTitle"), e instanceof Error ? e.message : t("camera.unknownError"));
+      const fallbackMessage =
+        "Google 登录初始化失败，请稍后重试。若问题持续，请更新到最新版本。";
+      Alert.alert(
+        t("collection.loginFailedTitle"),
+        e instanceof Error ? e.message || fallbackMessage : fallbackMessage,
+      );
     }
   };
 
