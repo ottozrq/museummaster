@@ -1,3 +1,16 @@
+## [1.3.2](https://github.com/ottozrq/museummaster/compare/v1.3.1...v1.3.2) (2026-05-01)
+
+
+### Bug Fixes
+
+* **frontend:** avoid Apple auth prompt on sign-out actions ([c5ff9dd](https://github.com/ottozrq/museummaster/commit/c5ff9dd23128154d8282170c021de83ce13b0b84))
+* **frontend:** prevent iOS Google sign-in crash on tap ([69fc6fd](https://github.com/ottozrq/museummaster/commit/69fc6fdbbd5eb678be59cf7c303292f88eb5c9e9))
+* **website:** hardcode root asset links in news templates ([1b451b2](https://github.com/ottozrq/museummaster/commit/1b451b26c6117fbc60602377b19de0e80c0d7b62))
+* **website:** harden news css asset path for deployment ([3257ae3](https://github.com/ottozrq/museummaster/commit/3257ae3c86d604e229c3f3bc1e7f26e3655a1819))
+* **website:** localize news category labels and fix news branding ([0dcfbea](https://github.com/ottozrq/museummaster/commit/0dcfbea7488b61fe57fb408115636f3ed7845610))
+* **website:** restore root asset paths for news pages ([5c713f1](https://github.com/ottozrq/museummaster/commit/5c713f19fb12fee6d58af9f423fec4b084898f6f))
+* **website:** sync regenerated news indexes and sitemap ([064a77a](https://github.com/ottozrq/museummaster/commit/064a77ab1820ad3c8eb02931736dc4e41ea6efcf))
+
 ## [1.3.1](https://github.com/ottozrq/museummaster/compare/v1.3.0...v1.3.1) (2026-04-30)
 
 
