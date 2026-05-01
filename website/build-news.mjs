@@ -258,28 +258,18 @@ function renderTemplate(template, replacements) {
   );
 }
 
-/** Per-locale URL & asset paths */
+/** Per-locale URL & asset paths（中文与 en/fr 相同，使用 /zh/news/，避免线上 /news/ 与站点根配置冲突出现 403） */
 function getLocalePaths(locale) {
   // 新闻站静态资源按站点根路径提供（/styles.css, /news.css）。
   // 与当前线上 nginx 映射保持一致，避免 /artiou/*.css 回退到 HTML。
   const assetRoot = "/";
-  if (locale === "zh") {
-    return {
-      newsRootDir: path.join(WEBSITE_DIR, "news"),
-      newsIndexUrl: "/news/",
-      articlePath: (slug) => `/news/${slug}/`,
-      siteNewsIndexUrl: `${SITE_URL}/news/`,
-      siteArticleUrl: (slug) => `${SITE_URL}/news/${slug}/`,
-      assetIndex: assetRoot,
-      assetArticle: assetRoot,
-    };
-  }
+  const segment = locale; // zh | en | fr → /zh/news/、/en/news/、/fr/news/
   return {
-    newsRootDir: path.join(WEBSITE_DIR, locale, "news"),
-    newsIndexUrl: `/${locale}/news/`,
-    articlePath: (slug) => `/${locale}/news/${slug}/`,
-    siteNewsIndexUrl: `${SITE_URL}/${locale}/news/`,
-    siteArticleUrl: (slug) => `${SITE_URL}/${locale}/news/${slug}/`,
+    newsRootDir: path.join(WEBSITE_DIR, segment, "news"),
+    newsIndexUrl: `/${segment}/news/`,
+    articlePath: (slug) => `/${segment}/news/${slug}/`,
+    siteNewsIndexUrl: `${SITE_URL}/${segment}/news/`,
+    siteArticleUrl: (slug) => `${SITE_URL}/${segment}/news/${slug}/`,
     assetIndex: assetRoot,
     assetArticle: assetRoot,
   };

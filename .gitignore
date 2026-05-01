@@ -99,7 +99,7 @@ backend/static/
 
 # === Website generated outputs ===
 # News static pages generated from website/build-news.mjs
-website/news/
+website/zh/news/
 website/en/news/
 website/fr/news/
 website/sitemap.xml
