@@ -636,10 +636,20 @@ function main() {
   }
 
   writeSitemap(byLocale);
+  copyNewsCssIntoArtiou();
 
   console.log(
     `News build completed. Locales: ${LOCALES.join(", ")}. Total article files: ${totalArticles}.`,
   );
+}
+
+/** 本地用 `serve website/artiou` 时，对 CSS 的符号链接会 404，需保留一份实体文件。 */
+function copyNewsCssIntoArtiou() {
+  const src = path.join(WEBSITE_DIR, "news.css");
+  const dest = path.join(WEBSITE_DIR, "artiou", "news.css");
+  if (!fs.existsSync(src)) return;
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.copyFileSync(src, dest);
 }
 
 main();
