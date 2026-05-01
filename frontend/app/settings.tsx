@@ -1,7 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
-import * as AppleAuthentication from "expo-apple-authentication";
 import { useState } from "react";
 
 import { useI18n } from "../src/i18n";
@@ -25,16 +24,26 @@ export default function SettingsScreen() {
       const googleSignin = getGoogleSignin();
       await googleSignin?.signOut?.();
     } catch {}
-    try {
-      await AppleAuthentication.signOutAsync();
-    } catch {}
     await AsyncStorage.removeItem("museum_auth_token");
     router.replace("/collection");
   };
 
   const handleSignOut = async () => {
     if (submitting) return;
-    await clearAuthAndBack();
+    Alert.alert(
+      t("settings.signOutConfirmTitle"),
+      t("settings.signOutConfirmText"),
+      [
+        { text: t("settings.cancel"), style: "cancel" },
+        {
+          text: t("settings.signOut"),
+          style: "destructive",
+          onPress: () => {
+            void clearAuthAndBack();
+          },
+        },
+      ],
+    );
   };
 
   const handleDeleteAccount = async () => {

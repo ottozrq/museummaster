@@ -52,6 +52,8 @@ export const translations = {
     settings: {
       title: "Settings",
       signOut: "Sign out",
+      signOutConfirmTitle: "Sign out?",
+      signOutConfirmText: "You can sign in again at any time.",
       deleteAccount: "Delete account",
       deleteConfirmTitle: "Delete account?",
       deleteConfirmText: "This action is permanent and cannot be undone.",
@@ -302,6 +304,8 @@ Email: legal@example.com
     settings: {
       title: "设置",
       signOut: "退出登录",
+      signOutConfirmTitle: "确认退出登录？",
+      signOutConfirmText: "你可以随时重新登录。",
       deleteAccount: "删除账号",
       deleteConfirmTitle: "确认删除账号？",
       deleteConfirmText: "删除后不可恢复，账号数据将被永久删除。",
@@ -551,6 +555,8 @@ Artiou 提供：
     settings: {
       title: "Parametres",
       signOut: "Se deconnecter",
+      signOutConfirmTitle: "Se deconnecter ?",
+      signOutConfirmText: "Vous pourrez vous reconnecter a tout moment.",
       deleteAccount: "Supprimer le compte",
       deleteConfirmTitle: "Supprimer le compte ?",
       deleteConfirmText: "Cette action est definitive et irreversible.",
