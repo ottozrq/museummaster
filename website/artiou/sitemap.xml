@@ -63,7 +63,7 @@
   </url>
   <url>
     <loc>https://www.artiou.com/zh/news/</loc>
-    <lastmod>2026-05-03</lastmod>
+    <lastmod>2026-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/"/>
@@ -73,7 +73,7 @@
   </url>
   <url>
     <loc>https://www.artiou.com/en/news/</loc>
-    <lastmod>2026-05-03</lastmod>
+    <lastmod>2026-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/"/>
@@ -83,7 +83,7 @@
   </url>
   <url>
     <loc>https://www.artiou.com/fr/news/</loc>
-    <lastmod>2026-05-03</lastmod>
+    <lastmod>2026-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/"/>
@@ -150,5 +150,35 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/how-artiou-fits-into-a-museum-visit/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/how-artiou-fits-into-a-museum-visit/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/how-artiou-fits-into-a-museum-visit/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/zh/news/debordement-le-sample-nuit-blanche-2026/</loc>
+    <lastmod>2026-05-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/debordement-le-sample-nuit-blanche-2026/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/debordement-le-sample-nuit-blanche-2026/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/debordement-le-sample-nuit-blanche-2026/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/debordement-le-sample-nuit-blanche-2026/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/en/news/debordement-le-sample-nuit-blanche-2026/</loc>
+    <lastmod>2026-05-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/debordement-le-sample-nuit-blanche-2026/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/debordement-le-sample-nuit-blanche-2026/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/debordement-le-sample-nuit-blanche-2026/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/debordement-le-sample-nuit-blanche-2026/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/fr/news/debordement-le-sample-nuit-blanche-2026/</loc>
+    <lastmod>2026-05-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/debordement-le-sample-nuit-blanche-2026/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/debordement-le-sample-nuit-blanche-2026/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/debordement-le-sample-nuit-blanche-2026/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/debordement-le-sample-nuit-blanche-2026/"/>
   </url>
 </urlset>

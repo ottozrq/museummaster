@@ -234,3 +234,26 @@
     width: min(100%, calc(100% - 1.5rem));
   }
 }
+
+
+.article-cover {
+  margin: 28px 0 34px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #f3e6d8;
+  border: 1px solid rgba(53, 40, 31, 0.1);
+}
+
+.article-cover img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+@media (max-width: 720px) {
+  .article-cover {
+    margin: 22px 0 28px;
+    border-radius: 12px;
+  }
+}

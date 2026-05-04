@@ -96,3 +96,14 @@ yarn-error.log*
 # === Project specific ===
 # Uploaded/static files generated at runtime
 backend/static/
+
+# === Artiou news generated artifacts ===
+# Source scripts/templates/CSS stay tracked; generated articles/pages/state stay local on server.
+.review-backups/
+website/artiou/logs/
+website/artiou/scripts/processed_activity_news.json
+website/artiou/content/news/*/[0-9][0-9][0-9][0-9]-*.md
+website/artiou/zh/news/
+website/artiou/en/news/
+website/artiou/fr/news/
+website/artiou/sitemap.xml
