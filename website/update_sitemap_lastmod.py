@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Update all <lastmod> values in website/sitemap.xml to today's date."""
+"""Update all <lastmod> values in website/artiou/sitemap.xml to today's date."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ import sys
 
 
 def main() -> int:
-    sitemap_path = Path(__file__).resolve().parents[1] / "sitemap.xml"
+    sitemap_path = Path(__file__).resolve().parents[1] / "artiou" / "sitemap.xml"
     if not sitemap_path.exists():
         print(f"Error: sitemap not found at {sitemap_path}")
         return 1

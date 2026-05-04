@@ -149,6 +149,28 @@ a:hover {
   font-weight: 700;
 }
 
+.nav-site {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-left: auto;
+  margin-right: 0.85rem;
+}
+
+.nav-site a {
+  font-size: 0.9rem;
+  color: var(--muted);
+  padding: 0.35rem 0.6rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav-site a:hover {
+  color: var(--text);
+  background: var(--accent-soft);
+}
+
 .entity-profile {
   padding: clamp(1.25rem, 3vw, 2rem) 0;
   border-bottom: 1px solid var(--line);
@@ -870,4 +892,18 @@ a.brand-link:hover .brand-mark {
 
 [hidden] {
   display: none !important;
+}
+
+@media (max-width: 860px) {
+  .site-header .inner {
+    flex-wrap: wrap;
+  }
+
+  .nav-site {
+    order: 3;
+    width: 100%;
+    margin: 0;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
 }

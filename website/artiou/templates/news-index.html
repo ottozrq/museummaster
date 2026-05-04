@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="{{HTML_LANG}}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta name="description" content="{{PAGE_DESCRIPTION}}" />
+    <meta name="theme-color" content="#F6E7D7" />
+    <title>{{PAGE_TITLE}}</title>
+    <link rel="canonical" href="{{CANONICAL_URL}}" />
+{{HREFLANG_LINKS}}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Artiou" />
+    <meta property="og:title" content="{{PAGE_TITLE}}" />
+    <meta property="og:description" content="{{PAGE_DESCRIPTION}}" />
+    <meta property="og:url" content="{{CANONICAL_URL}}" />
+    <meta property="og:locale" content="{{OG_LOCALE}}" />
+    <meta property="og:image" content="https://www.artiou.com/artiou-og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{PAGE_TITLE}}" />
+    <meta name="twitter:description" content="{{PAGE_DESCRIPTION}}" />
+    <meta name="twitter:image" content="https://www.artiou.com/artiou-og.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ASSET_PREFIX}}styles.css" />
+    <link rel="stylesheet" href="{{ASSET_PREFIX}}news.css" />
+    <link rel="icon" href="{{ASSET_PREFIX}}icon.png" type="image/jpeg" />
+    <link rel="apple-touch-icon" href="{{ASSET_PREFIX}}icon.png" />
+  </head>
+  <body>
+    <header class="site-header news-header">
+      <div class="wrap inner">
+        <div class="brand">
+          <a class="brand-mark" href="{{HOME_URL}}">Artiou</a>
+          <span class="brand-sub">{{BRAND_SUB}}</span>
+        </div>
+        <nav class="nav-site" aria-label="{{PRIMARY_NAV_ARIA}}">
+{{PRIMARY_NAV}}
+        </nav>
+        <nav class="nav-lang" aria-label="{{LANG_NAV_ARIA}}">
+{{LANG_SWITCHER}}
+        </nav>
+      </div>
+    </header>
+
+    <main class="news-page">
+      <section class="news-hero">
+        <div class="wrap">
+          <p class="news-kicker">{{KICKER}}</p>
+          <h1>{{HERO_TITLE}}</h1>
+          <p>{{HERO_DESCRIPTION}}</p>
+        </div>
+      </section>
+
+      <section class="news-list-section">
+        <div class="wrap">
+          <div class="news-grid">
+{{ARTICLES}}
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="cols">
+          <p>{{FOOTER_DESCRIPTION}}</p>
+          <div class="footer-links">
+            <a href="{{HOME_URL}}">{{FOOTER_HOME}}</a>
+            <a href="{{PRIVACY_URL}}">{{FOOTER_PRIVACY}}</a>
+            <a href="{{LLMS_URL}}">llms.txt</a>
+          </div>
+        </div>
+        <p class="copyright">© {{CURRENT_YEAR}} Artiou. {{FOOTER_RIGHTS}}</p>
+      </div>
+    </footer>
+  </body>
+</html>

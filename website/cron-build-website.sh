@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 供服务器 crontab 定时调用：拉取最新代码，可选 rsync 同步 website/ 到站点目录。
+# 供服务器 crontab 定时调用：拉取最新代码，重建 Artiou 新闻站，可选 rsync 同步 website/ 到站点目录。
 #
 # 用法（在仓库根目录）：
 #   ./website/cron-build-website.sh
@@ -18,6 +18,8 @@ cd "${REPO_ROOT}"
 if [[ "${GIT_PULL:-0}" == "1" ]]; then
   git pull --ff-only
 fi
+
+node "${REPO_ROOT}/website/artiou/scripts/build-news.mjs"
 
 if [[ -n "${WEBSITE_DEPLOY_RSYNC_TARGET:-}" ]]; then
   rsync -av --delete "${REPO_ROOT}/website/" "${WEBSITE_DEPLOY_RSYNC_TARGET}"
