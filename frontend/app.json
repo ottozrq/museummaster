@@ -3,7 +3,7 @@
     "name": "Artiou",
     "slug": "museum-guide",
     "scheme": "museumguide",
-    "version": "1.3.2",
+    "version": "1.3.3",
     "newArchEnabled": false,
     "orientation": "portrait",
     "userInterfaceStyle": "light",

@@ -1,3 +1,12 @@
+## [1.3.3](https://github.com/ottozrq/museummaster/compare/v1.3.2...v1.3.3) (2026-05-06)
+
+
+### Bug Fixes
+
+* **frontend:** improve camera hint guidance across locales ([68e0162](https://github.com/ottozrq/museummaster/commit/68e0162466e071edfd5aef8ff08313c9ab5ca259))
+* **website:** news CSS copy for local serve and site asset paths ([a14886d](https://github.com/ottozrq/museummaster/commit/a14886d51c44ca461f1a2f3aba0b7d44faeac7c9))
+* **website:** use /zh/news/ for Chinese news (matches server routing) ([4f7c618](https://github.com/ottozrq/museummaster/commit/4f7c618643e4f0c71d210092245c739635f27eb1))
+
 ## [1.3.2](https://github.com/ottozrq/museummaster/compare/v1.3.1...v1.3.2) (2026-05-01)
 
 
