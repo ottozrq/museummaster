@@ -12,11 +12,11 @@
 		406804BC52B86562439302E7 /* libPods-Artiou.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B15654D9A8E2855D40765805 /* libPods-Artiou.a */; };
 		6C8431C90B0CBE7A4AFC2742 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62E9AEEAE196ABD51FBB265 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		F098CE8151ACD30410BE32ED /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D7AD746BF9F4BE0F8AB0639B /* PrivacyInfo.xcprivacy */; };
-		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 		E4D62A142F00000200A75B9A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4D62A142F00000100A75B9A /* InfoPlist.strings */; };
 		E4D62A142F00000400A75B9A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4D62A142F00000300A75B9A /* InfoPlist.strings */; };
 		E4D62A142F00000600A75B9A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4D62A142F00000500A75B9A /* InfoPlist.strings */; };
+		F098CE8151ACD30410BE32ED /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D7AD746BF9F4BE0F8AB0639B /* PrivacyInfo.xcprivacy */; };
+		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,12 +30,12 @@
 		B62E9AEEAE196ABD51FBB265 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Artiou/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		D7AD746BF9F4BE0F8AB0639B /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Artiou/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		E4D62A142F00000100A75B9A /* InfoPlist.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = Artiou/en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		E4D62A142F00000300A75B9A /* InfoPlist.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = "Artiou/zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		E4D62A142F00000500A75B9A /* InfoPlist.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = Artiou/fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Artiou/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* Artiou-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Artiou-Bridging-Header.h"; path = "Artiou/Artiou-Bridging-Header.h"; sourceTree = "<group>"; };
-		E4D62A142F00000100A75B9A /* InfoPlist.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = "Artiou/en.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
-		E4D62A142F00000300A75B9A /* InfoPlist.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = "Artiou/zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
-		E4D62A142F00000500A75B9A /* InfoPlist.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = "Artiou/fr.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

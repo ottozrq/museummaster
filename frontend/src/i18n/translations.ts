@@ -14,7 +14,8 @@ export const translations = {
       permissionTitle: "Camera access needed",
       permissionText: "Point at an exhibit so AI can recognize it.",
       enableCamera: "Enable camera",
-      topHint: "Point at an exhibit for AI recognition",
+      topHint:
+        "Point at an exhibit for AI recognition\nCapture the exhibit name to improve recognition accuracy",
       gallery: "Gallery",
       artiou: "Artiou",
       recognizing: "Recognizing...",
@@ -267,7 +268,7 @@ Email: legal@example.com
       permissionTitle: "需要相机权限",
       permissionText: "请对准展品，让 AI 识别并讲解。",
       enableCamera: "开启相机",
-      topHint: "对准展品，AI 将为你识别讲解",
+      topHint: "对准展品，AI 将为你识别讲解\n拍摄展品名字以提高识别率",
       gallery: "相册",
       artiou: "ARTIOU",
       recognizing: "识别中…",
@@ -516,7 +517,8 @@ Artiou 提供：
       permissionTitle: "Accès à la caméra requis",
       permissionText: "Visez une œuvre pour que l’IA puisse la reconnaître.",
       enableCamera: "Activer la caméra",
-      topHint: "Visez une œuvre pour la reconnaissance IA",
+      topHint:
+        "Visez une œuvre pour la reconnaissance IA\nPhotographiez le nom de l’œuvre pour améliorer la précision",
       gallery: "Galerie",
       artiou: "Artiou",
       recognizing: "Reconnaissance…",
