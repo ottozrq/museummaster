@@ -557,7 +557,10 @@ function main() {
     }
   }
 
-  const sitemapCore = fs.readFileSync(SITEMAP_CORE_PATH, "utf8").trimEnd();
+  const sitemapCore = fs
+    .readFileSync(SITEMAP_CORE_PATH, "utf8")
+    .replace(/\s*<\/urlset>\s*$/u, "")
+    .trimEnd();
   writeFile(SITEMAP_PATH, `${sitemapCore}\n${buildSitemapEntries(articlesBySlug)}\n</urlset>\n`);
 }
 
