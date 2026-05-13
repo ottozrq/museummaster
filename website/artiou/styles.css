@@ -14,7 +14,8 @@
   --radius: 12px;
   --radius-pill: 999px;
   --shadow-card: 0 16px 40px rgba(75, 54, 33, 0.08);
-  --font-sans: "DM Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui,
+  --font-sans:
+    "DM Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui,
     sans-serif;
 }
 
@@ -42,7 +43,9 @@ a {
   color: var(--accent);
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
-  transition: color 0.15s ease, opacity 0.15s ease;
+  transition:
+    color 0.15s ease,
+    opacity 0.15s ease;
 }
 
 a:hover {
@@ -113,7 +116,9 @@ a:hover {
   cursor: pointer;
   padding: 0.35rem 0.6rem;
   border-radius: 8px;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
 
 .nav-lang button:hover {
@@ -134,7 +139,9 @@ a:hover {
   padding: 0.35rem 0.6rem;
   border-radius: 8px;
   text-decoration: none;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
 
 .nav-lang a:hover {
@@ -163,7 +170,9 @@ a:hover {
   padding: 0.35rem 0.6rem;
   border-radius: 8px;
   text-decoration: none;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
 
 .nav-site a:hover {
@@ -273,7 +282,11 @@ a:hover {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 90% 65% at 50% -15%, rgba(226, 70, 27, 0.16), transparent 58%);
+  background: radial-gradient(
+    ellipse 90% 65% at 50% -15%,
+    rgba(226, 70, 27, 0.16),
+    transparent 58%
+  );
   pointer-events: none;
   z-index: 0;
 }
@@ -293,6 +306,11 @@ a:hover {
   .hero-grid {
     grid-template-columns: 1.1fr 0.9fr;
     gap: 3rem;
+  }
+
+  .city-guide-grid {
+    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+    align-items: stretch;
   }
 }
 
@@ -343,7 +361,10 @@ a:hover {
   cursor: pointer;
   text-decoration: none;
   color: inherit;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.12s ease;
 }
 
 .btn:active {
@@ -419,6 +440,99 @@ a:hover {
   background: var(--accent);
 }
 
+.city-guide-spotlight {
+  position: relative;
+  padding-top: 0;
+}
+
+.city-guide-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.city-guide-copy,
+.city-guide-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+
+.city-guide-copy {
+  padding: 1.45rem 1.25rem;
+  border: 1.5px solid var(--line);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 245, 236, 0.95),
+    rgba(255, 255, 255, 0.98)
+  );
+}
+
+.city-guide-copy .section-title {
+  max-width: 16ch;
+  margin-bottom: 0.75rem;
+}
+
+.city-guide-copy .section-intro {
+  margin-bottom: 1.25rem;
+}
+
+.city-guide-card {
+  position: relative;
+  padding: 1.25rem 1.15rem;
+  border: 1.5px solid var(--accent-border);
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(226, 70, 27, 0.18),
+      transparent 36%
+    ),
+    linear-gradient(180deg, rgba(255, 245, 236, 0.95), rgba(255, 255, 255, 1));
+}
+
+.city-guide-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 0.85rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.city-guide-list {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.city-guide-list li {
+  position: relative;
+  margin-bottom: 0.75rem;
+  padding-left: 1.35rem;
+  font-size: 0.96rem;
+  line-height: 1.55;
+}
+
+.city-guide-list li:last-child {
+  margin-bottom: 0;
+}
+
+.city-guide-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 5px rgba(226, 70, 27, 0.12);
+}
+
 /* Visual gallery */
 .visuals {
   background: rgba(255, 245, 236, 0.35);
@@ -467,7 +581,12 @@ section {
 }
 
 .features-section {
-  background: linear-gradient(180deg, transparent 0%, rgba(255, 245, 236, 0.5) 40%, transparent 100%);
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(255, 245, 236, 0.5) 40%,
+    transparent 100%
+  );
 }
 
 .features {
@@ -493,7 +612,9 @@ section {
   border-radius: var(--radius);
   padding: 1.35rem 1.25rem;
   box-shadow: 0 4px 20px rgba(75, 54, 33, 0.05);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .feature:hover {
@@ -669,7 +790,12 @@ section {
 
 /* Download */
 .download {
-  background: linear-gradient(165deg, var(--accent-soft) 0%, rgba(246, 231, 215, 0.4) 45%, var(--bg) 100%);
+  background: linear-gradient(
+    165deg,
+    var(--accent-soft) 0%,
+    rgba(246, 231, 215, 0.4) 45%,
+    var(--bg) 100%
+  );
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
@@ -709,7 +835,10 @@ section {
   font-size: 0.9rem;
   font-weight: 700;
   border: 1.5px solid var(--accent);
-  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    opacity 0.15s ease;
 }
 
 .store-badges a:hover:not([aria-disabled="true"]) {
@@ -890,8 +1019,299 @@ a.brand-link:hover .brand-mark {
   text-align: center;
 }
 
+/* Guide page */
+.guide-page section {
+  padding: clamp(2.75rem, 6vw, 4.5rem) 0;
+}
+
+.guide-hero {
+  position: relative;
+  overflow: hidden;
+  padding-top: clamp(3rem, 8vw, 5rem);
+  padding-bottom: clamp(2.5rem, 6vw, 4rem);
+}
+
+.guide-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at 18% 20%,
+      rgba(226, 70, 27, 0.18),
+      transparent 24%
+    ),
+    radial-gradient(circle at 82% 0%, rgba(176, 117, 87, 0.14), transparent 30%);
+  pointer-events: none;
+}
+
+.guide-hero-grid,
+.guide-band-grid,
+.guide-grid-two,
+.route-grid,
+.mistake-grid,
+.guide-visual-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.guide-hero-grid,
+.guide-visual-grid {
+  align-items: center;
+}
+
+.guide-copy,
+.guide-sidecard {
+  position: relative;
+  z-index: 1;
+}
+
+.guide-copy h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2.3rem, 5vw, 3.4rem);
+  line-height: 1.05;
+  color: var(--accent);
+}
+
+.guide-copy .hero-lead {
+  max-width: 42rem;
+}
+
+.guide-sidecard,
+.guide-panel,
+.route-card,
+.museum-card {
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+
+.guide-sidecard {
+  padding: 1.25rem 1.2rem;
+  border-color: var(--accent-border);
+}
+
+.guide-note-label,
+.guide-band-kicker,
+.route-label {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.guide-note-label {
+  margin-bottom: 0.65rem;
+}
+
+.guide-bullets,
+.guide-checklist {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.guide-bullets li,
+.guide-checklist li {
+  margin-bottom: 0.55rem;
+}
+
+.guide-band {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 245, 236, 0.5);
+}
+
+.guide-band-grid article {
+  padding: 1.25rem 1.15rem;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.guide-band-grid h2 {
+  margin: 0.4rem 0 0.45rem;
+  font-size: 1.2rem;
+  color: var(--accent);
+}
+
+.guide-band-grid p,
+.guide-panel p,
+.museum-card p,
+.route-card p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.guide-grid-two,
+.mistake-grid {
+  margin-top: 1.25rem;
+}
+
+.guide-panel {
+  padding: 1.2rem 1.15rem;
+}
+
+.guide-panel h3,
+.route-card h3,
+.museum-card h3 {
+  margin: 0 0 0.55rem;
+  color: var(--accent);
+  font-size: 1.08rem;
+}
+
+.guide-panel p + p,
+.route-card p + p {
+  margin-top: 0.75rem;
+}
+
+.guide-section-tinted {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 245, 236, 0.45),
+    rgba(226, 70, 27, 0.05)
+  );
+}
+
+.museum-card-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.museum-card {
+  padding: 1.15rem 1.1rem;
+}
+
+.museum-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.45rem;
+}
+
+.museum-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 0.7rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.museum-meta {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  gap: 0.45rem 0.75rem;
+  margin: 0.95rem 0 0.9rem;
+  font-size: 0.92rem;
+}
+
+.museum-meta dt {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.museum-meta dd {
+  margin: 0;
+}
+
+.museum-card a {
+  font-weight: 700;
+}
+
+.museum-card-alert {
+  border-color: var(--accent-border);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 245, 236, 0.9),
+    rgba(255, 255, 255, 1)
+  );
+}
+
+.route-card {
+  padding: 1.2rem 1.15rem;
+}
+
+.route-steps {
+  margin: 0.8rem 0;
+  padding-left: 1.1rem;
+}
+
+.route-steps li {
+  margin-bottom: 0.45rem;
+}
+
+.guide-section-image {
+  background: rgba(255, 245, 236, 0.4);
+}
+
+.guide-figure {
+  margin: 0;
+}
+
+.guide-figure img {
+  width: 100%;
+  border-radius: 10px;
+  border: 1.5px solid var(--line);
+  box-shadow: var(--shadow-card);
+}
+
+.mistake-grid .guide-panel {
+  min-height: 100%;
+}
+
 [hidden] {
   display: none !important;
+}
+
+@media (min-width: 760px) {
+  .guide-band-grid,
+  .guide-grid-two,
+  .mistake-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .route-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 920px) {
+  .guide-hero-grid,
+  .guide-visual-grid {
+    grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+    gap: 1.5rem;
+  }
+
+  .guide-band-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .museum-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mistake-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .museum-meta {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+
+  .museum-meta dd {
+    margin-bottom: 0.45rem;
+  }
 }
 
 @media (max-width: 860px) {

@@ -1,0 +1,258 @@
+<!doctype html>
+<!--
+  Copy this file to /{lang}/{slug}/index.html and replace the {{placeholders}}.
+  Keep the three-language hreflang cluster aligned across zh / en / fr versions.
+  After publishing a new city guide, also update:
+  1. /{lang}/index.html homepage CTA / nav
+  2. scripts/sitemap-core.xml
+  3. sitemap.xml
+-->
+<html lang="{{html_lang}}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta name="description" content="{{meta_description}}" />
+    <meta name="theme-color" content="#F6E7D7" />
+    <title>{{page_title}} | Artiou</title>
+    <link rel="canonical" href="https://www.artiou.com/{{lang_path}}/" />
+    <link
+      rel="alternate"
+      hreflang="zh-Hans"
+      href="https://www.artiou.com/zh/{{slug}}/"
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://www.artiou.com/en/{{slug}}/"
+    />
+    <link
+      rel="alternate"
+      hreflang="fr"
+      href="https://www.artiou.com/fr/{{slug}}/"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://www.artiou.com/zh/{{slug}}/"
+    />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Artiou" />
+    <meta property="og:title" content="{{page_title}} | Artiou" />
+    <meta property="og:description" content="{{og_description}}" />
+    <meta property="og:url" content="https://www.artiou.com/{{lang_path}}/" />
+    <meta property="og:locale" content="{{og_locale}}" />
+    <meta property="og:image" content="https://www.artiou.com/artiou-og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{page_title}} | Artiou" />
+    <meta name="twitter:description" content="{{og_description}}" />
+    <meta name="twitter:image" content="https://www.artiou.com/artiou-og.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../styles.css" />
+    <link rel="icon" href="../../icon.png" type="image/jpeg" />
+    <link rel="apple-touch-icon" href="../../icon.png" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap inner">
+        <div class="brand">
+          <a class="brand-link brand" href="../">
+            <span class="brand-mark">Artiou</span>
+            <span class="brand-sub">{{brand_subtitle}}</span>
+          </a>
+        </div>
+        <nav class="nav-site" aria-label="{{nav_aria_label}}">
+          <a href="../">{{nav_home}}</a>
+          <a href="../news/">{{nav_news}}</a>
+          <a href="#museum-list">{{nav_shortlist}}</a>
+          <a href="#download">{{nav_download}}</a>
+        </nav>
+        <nav class="nav-lang" aria-label="{{lang_switcher_label}}">
+          <a href="../../zh/{{slug}}/" hreflang="zh-Hans">中文</a>
+          <a href="../../en/{{slug}}/" hreflang="en">EN</a>
+          <a href="../../fr/{{slug}}/" hreflang="fr">FR</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="guide-page">
+      <section class="guide-hero">
+        <div class="wrap guide-hero-grid">
+          <div class="guide-copy">
+            <p class="hero-kicker">{{hero_kicker}}</p>
+            <h1>{{hero_title}}</h1>
+            <p class="hero-lead">{{hero_lead}}</p>
+            <div class="cta-row">
+              <a class="btn btn-primary" href="#museum-list"
+                >{{hero_primary_cta}}</a
+              >
+              <a class="btn btn-ghost" href="#download"
+                >{{hero_secondary_cta}}</a
+              >
+            </div>
+          </div>
+          <aside class="guide-sidecard" aria-label="{{sidecard_aria_label}}">
+            <p class="guide-note-label">{{sidecard_label}}</p>
+            <ul class="guide-bullets">
+              <li>{{sidecard_bullet_1}}</li>
+              <li>{{sidecard_bullet_2}}</li>
+              <li>{{sidecard_bullet_3}}</li>
+              <li>{{sidecard_bullet_4}}</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section class="guide-band">
+        <div class="wrap guide-band-grid">
+          <article>
+            <span class="guide-band-kicker">{{cluster_1_kicker}}</span>
+            <h2>{{cluster_1_title}}</h2>
+            <p>{{cluster_1_text}}</p>
+          </article>
+          <article>
+            <span class="guide-band-kicker">{{cluster_2_kicker}}</span>
+            <h2>{{cluster_2_title}}</h2>
+            <p>{{cluster_2_text}}</p>
+          </article>
+          <article>
+            <span class="guide-band-kicker">{{cluster_3_kicker}}</span>
+            <h2>{{cluster_3_title}}</h2>
+            <p>{{cluster_3_text}}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="guide-section">
+        <div class="wrap">
+          <h2 class="section-title">{{pick_day_title}}</h2>
+          <div class="guide-grid-two">
+            <article class="guide-panel">
+              <h3>{{panel_1_title}}</h3>
+              <p>{{panel_1_paragraph_1}}</p>
+              <p>{{panel_1_paragraph_2}}</p>
+            </article>
+            <article class="guide-panel">
+              <h3>{{panel_2_title}}</h3>
+              <p>{{panel_2_paragraph_1}}</p>
+              <p>{{panel_2_paragraph_2}}</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="guide-section guide-section-tinted" id="museum-list">
+        <div class="wrap">
+          <h2 class="section-title">{{shortlist_title}}</h2>
+          <p class="section-intro">{{shortlist_intro}}</p>
+          <div class="museum-card-grid">
+            <article class="museum-card">
+              <div class="museum-card-head">
+                <h3>{{museum_1_name}}</h3>
+                <span class="museum-tag">{{museum_1_tag}}</span>
+              </div>
+              <p>{{museum_1_summary}}</p>
+              <dl class="museum-meta">
+                <dt>{{meta_hours_label}}</dt>
+                <dd>{{museum_1_hours}}</dd>
+                <dt>{{meta_closed_label}}</dt>
+                <dd>{{museum_1_closed}}</dd>
+                <dt>{{meta_best_for_label}}</dt>
+                <dd>{{museum_1_best_for}}</dd>
+              </dl>
+              <a href="{{museum_1_url}}" rel="noopener"
+                >{{museum_link_label}}</a
+              >
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="guide-section">
+        <div class="wrap">
+          <h2 class="section-title">{{routes_title}}</h2>
+          <div class="route-grid">
+            <article class="route-card">
+              <span class="route-label">{{route_1_label}}</span>
+              <h3>{{route_1_title}}</h3>
+              <ol class="route-steps">
+                <li>{{route_1_step_1}}</li>
+                <li>{{route_1_step_2}}</li>
+                <li>{{route_1_step_3}}</li>
+              </ol>
+              <p>{{route_1_summary}}</p>
+            </article>
+            <article class="route-card">
+              <span class="route-label">{{route_2_label}}</span>
+              <h3>{{route_2_title}}</h3>
+              <ol class="route-steps">
+                <li>{{route_2_step_1}}</li>
+                <li>{{route_2_step_2}}</li>
+                <li>{{route_2_step_3}}</li>
+              </ol>
+              <p>{{route_2_summary}}</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="guide-section guide-section-image">
+        <div class="wrap guide-visual-grid">
+          <div>
+            <h2 class="section-title">{{app_fit_title}}</h2>
+            <p class="section-intro">{{app_fit_intro}}</p>
+            <ul class="guide-checklist">
+              <li>{{app_fit_bullet_1}}</li>
+              <li>{{app_fit_bullet_2}}</li>
+              <li>{{app_fit_bullet_3}}</li>
+            </ul>
+            <p>{{app_fit_summary}}</p>
+          </div>
+          <figure class="guide-figure">
+            <img
+              src="../../assets/{{poster_asset}}"
+              alt="{{poster_alt}}"
+              loading="lazy"
+            />
+          </figure>
+        </div>
+      </section>
+
+      <section id="download" class="download">
+        <div class="wrap">
+          <div class="box">
+            <h2 class="section-title">{{download_title}}</h2>
+            <p class="section-intro">{{download_intro}}</p>
+            <div class="store-badges">
+              <a id="link-app-store" href="#" rel="noopener">App Store</a>
+              <a id="link-play-store" href="#" rel="noopener">Google Play</a>
+            </div>
+            <p class="store-hint">{{download_hint}}</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="cols">
+          <p>{{footer_tagline}}</p>
+          <div class="footer-links">
+            <a href="../">{{footer_home}}</a>
+            <a href="../news/">{{footer_news}}</a>
+            <a href="../privacy/">{{footer_privacy}}</a>
+            <a href="../llms.txt">llms.txt</a>
+          </div>
+        </div>
+        <p class="copyright">
+          © <span id="year"></span> Artiou. All rights reserved.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
