@@ -1,0 +1,124 @@
+{
+  "dateRange": {
+    "start": "2026-05-11",
+    "end": "2026-05-18",
+    "dates": [
+      "2026-05-11",
+      "2026-05-12",
+      "2026-05-13",
+      "2026-05-14",
+      "2026-05-15",
+      "2026-05-16",
+      "2026-05-17",
+      "2026-05-18"
+    ]
+  },
+  "fetchedByDate": {
+    "2026-05-11": 794,
+    "2026-05-12": 798,
+    "2026-05-13": 805,
+    "2026-05-14": 800,
+    "2026-05-15": 795,
+    "2026-05-16": 818,
+    "2026-05-17": 792,
+    "2026-05-18": 786
+  },
+  "candidateCount": 117,
+  "selectedCount": 2,
+  "generatedMarkdownCount": 6,
+  "selected": [
+    {
+      "activityId": "6cc8d40e-d126-4e80-a7b4-dcc3d3648a5b",
+      "slug": "exhibition-cecilia-edefalk-august-said",
+      "title": "Exposition : Cecilia Edefalk. August a dit !",
+      "score": 47,
+      "sourceUrl": "https://www.paris.fr/evenements/exposition-cecilia-edefalk-august-a-dit-109178",
+      "qfap_tags": [
+        "Art contemporain",
+        "Expo"
+      ],
+      "address_name": "Institut suédois"
+    },
+    {
+      "activityId": "1af4f3a3-c5c6-473f-8e83-03dddbe3d48f",
+      "slug": "hilma-af-klint",
+      "title": "Hilma af Klint",
+      "score": 45,
+      "sourceUrl": "https://www.paris.fr/evenements/hilma-af-klint-107893",
+      "qfap_tags": [
+        "Art contemporain",
+        "Expo",
+        "Peinture"
+      ],
+      "address_name": "Grand Palais"
+    }
+  ],
+  "generated": [
+    {
+      "locale": "zh",
+      "title": "展览：塞西莉亚·埃德法克。八月说！：巴黎展览推荐",
+      "path": "/Users/otto/Projects/museummaster/website/artiou/content/news/zh/2026-05-11-exhibition-cecilia-edefalk-august-said.md",
+      "activityId": "6cc8d40e-d126-4e80-a7b4-dcc3d3648a5b"
+    },
+    {
+      "locale": "en",
+      "title": "Exhibition: Cecilia Edefalk. August said!: an Artiou exhibition pick in Paris",
+      "path": "/Users/otto/Projects/museummaster/website/artiou/content/news/en/2026-05-11-exhibition-cecilia-edefalk-august-said.md",
+      "activityId": "6cc8d40e-d126-4e80-a7b4-dcc3d3648a5b"
+    },
+    {
+      "locale": "fr",
+      "title": "Exposition : Cecilia Edefalk. August a dit ! : une exposition recommandée par Artiou à Paris",
+      "path": "/Users/otto/Projects/museummaster/website/artiou/content/news/fr/2026-05-11-exhibition-cecilia-edefalk-august-said.md",
+      "activityId": "6cc8d40e-d126-4e80-a7b4-dcc3d3648a5b"
+    },
+    {
+      "locale": "zh",
+      "title": "希尔玛·阿芙·克林特：巴黎展览推荐",
+      "path": "/Users/otto/Projects/museummaster/website/artiou/content/news/zh/2026-05-11-hilma-af-klint.md",
+      "activityId": "1af4f3a3-c5c6-473f-8e83-03dddbe3d48f"
+    },
+    {
+      "locale": "en",
+      "title": "Hilma af Klint: an Artiou exhibition pick in Paris",
+      "path": "/Users/otto/Projects/museummaster/website/artiou/content/news/en/2026-05-11-hilma-af-klint.md",
+      "activityId": "1af4f3a3-c5c6-473f-8e83-03dddbe3d48f"
+    },
+    {
+      "locale": "fr",
+      "title": "Hilma af Klint : une exposition recommandée par Artiou à Paris",
+      "path": "/Users/otto/Projects/museummaster/website/artiou/content/news/fr/2026-05-11-hilma-af-klint.md",
+      "activityId": "1af4f3a3-c5c6-473f-8e83-03dddbe3d48f"
+    }
+  ],
+  "translationUsage": {
+    "6cc8d40e-d126-4e80-a7b4-dcc3d3648a5b": {
+      "zh": {
+        "usedTranslatedDescription": true,
+        "descriptionChars": 805
+      },
+      "en": {
+        "usedTranslatedDescription": true,
+        "descriptionChars": 2221
+      },
+      "fr": {
+        "usedTranslatedDescription": false,
+        "descriptionChars": 2320
+      }
+    },
+    "1af4f3a3-c5c6-473f-8e83-03dddbe3d48f": {
+      "zh": {
+        "usedTranslatedDescription": true,
+        "descriptionChars": 445
+      },
+      "en": {
+        "usedTranslatedDescription": true,
+        "descriptionChars": 1465
+      },
+      "fr": {
+        "usedTranslatedDescription": false,
+        "descriptionChars": 1555
+      }
+    }
+  }
+}
