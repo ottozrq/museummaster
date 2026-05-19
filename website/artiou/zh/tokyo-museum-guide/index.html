@@ -73,7 +73,8 @@
         playStore: "",
       };
     </script>
-  </head>
+    <script defer src="https://ottozhang.com/umami/tracker" data-website-id="6f206180-48a8-454d-a1af-a8f45fdee150" data-domains="www.artiou.com"></script>
+</head>
   <body>
     <header class="site-header">
       <div class="wrap inner">
@@ -297,5 +298,18 @@
       }
     </script>
     <script src="../../static-site.js" defer></script>
-  </body>
+  <script>
+  window.addEventListener('click', function (event) {
+    var link = event.target && event.target.closest ? event.target.closest('a') : null;
+    if (!link || !window.umami) return;
+    var href = link.href || '';
+    var text = (link.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 80);
+    var eventName = '';
+    if (/apps\.apple\.com/.test(href)) eventName = 'app_store_click';
+    else if (/play\.google\.com/.test(href)) eventName = 'google_play_click';
+    else if (/download|app store|google play|télécharger|下载/i.test(text + ' ' + href)) eventName = 'download_click';
+    if (eventName) window.umami.track(eventName, { href: href, text: text });
+  });
+</script>
+</body>
 </html>

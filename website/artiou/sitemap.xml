@@ -1607,7 +1607,7 @@
   </url>
   <url>
     <loc>https://www.artiou.com/zh/news/</loc>
-    <lastmod>2026-05-17</lastmod>
+    <lastmod>2026-05-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/"/>
@@ -1617,7 +1617,7 @@
   </url>
   <url>
     <loc>https://www.artiou.com/en/news/</loc>
-    <lastmod>2026-05-17</lastmod>
+    <lastmod>2026-05-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/"/>
@@ -1627,7 +1627,7 @@
   </url>
   <url>
     <loc>https://www.artiou.com/fr/news/</loc>
-    <lastmod>2026-05-17</lastmod>
+    <lastmod>2026-05-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/"/>
@@ -3644,5 +3644,155 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/the-girls-of-the-ordeal-30-years-and-more/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/the-girls-of-the-ordeal-30-years-and-more/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/the-girls-of-the-ordeal-30-years-and-more/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/zh/news/exposition-no-flowers-dakosua-viktoria-adu-sanyah/</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/exposition-no-flowers-dakosua-viktoria-adu-sanyah/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/exposition-no-flowers-dakosua-viktoria-adu-sanyah/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/exposition-no-flowers-dakosua-viktoria-adu-sanyah/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/exposition-no-flowers-dakosua-viktoria-adu-sanyah/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/en/news/exposition-no-flowers-dakosua-viktoria-adu-sanyah/</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/exposition-no-flowers-dakosua-viktoria-adu-sanyah/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/exposition-no-flowers-dakosua-viktoria-adu-sanyah/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/exposition-no-flowers-dakosua-viktoria-adu-sanyah/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/exposition-no-flowers-dakosua-viktoria-adu-sanyah/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/fr/news/exposition-no-flowers-dakosua-viktoria-adu-sanyah/</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/exposition-no-flowers-dakosua-viktoria-adu-sanyah/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/exposition-no-flowers-dakosua-viktoria-adu-sanyah/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/exposition-no-flowers-dakosua-viktoria-adu-sanyah/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/exposition-no-flowers-dakosua-viktoria-adu-sanyah/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/zh/news/exposition-reliques-futures/</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/exposition-reliques-futures/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/exposition-reliques-futures/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/exposition-reliques-futures/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/exposition-reliques-futures/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/en/news/exposition-reliques-futures/</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/exposition-reliques-futures/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/exposition-reliques-futures/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/exposition-reliques-futures/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/exposition-reliques-futures/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/fr/news/exposition-reliques-futures/</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/exposition-reliques-futures/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/exposition-reliques-futures/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/exposition-reliques-futures/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/exposition-reliques-futures/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/zh/news/exhibition-of-axelle-rose-at-sor/</loc>
+    <lastmod>2026-05-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/exhibition-of-axelle-rose-at-sor/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/exhibition-of-axelle-rose-at-sor/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/exhibition-of-axelle-rose-at-sor/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/exhibition-of-axelle-rose-at-sor/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/en/news/exhibition-of-axelle-rose-at-sor/</loc>
+    <lastmod>2026-05-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/exhibition-of-axelle-rose-at-sor/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/exhibition-of-axelle-rose-at-sor/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/exhibition-of-axelle-rose-at-sor/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/exhibition-of-axelle-rose-at-sor/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/fr/news/exhibition-of-axelle-rose-at-sor/</loc>
+    <lastmod>2026-05-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/exhibition-of-axelle-rose-at-sor/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/exhibition-of-axelle-rose-at-sor/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/exhibition-of-axelle-rose-at-sor/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/exhibition-of-axelle-rose-at-sor/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/zh/news/glaciers-photo-exhibition-nathanael-de-lachaise/</loc>
+    <lastmod>2026-05-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/glaciers-photo-exhibition-nathanael-de-lachaise/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/glaciers-photo-exhibition-nathanael-de-lachaise/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/glaciers-photo-exhibition-nathanael-de-lachaise/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/glaciers-photo-exhibition-nathanael-de-lachaise/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/en/news/glaciers-photo-exhibition-nathanael-de-lachaise/</loc>
+    <lastmod>2026-05-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/glaciers-photo-exhibition-nathanael-de-lachaise/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/glaciers-photo-exhibition-nathanael-de-lachaise/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/glaciers-photo-exhibition-nathanael-de-lachaise/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/glaciers-photo-exhibition-nathanael-de-lachaise/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/fr/news/glaciers-photo-exhibition-nathanael-de-lachaise/</loc>
+    <lastmod>2026-05-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/glaciers-photo-exhibition-nathanael-de-lachaise/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/glaciers-photo-exhibition-nathanael-de-lachaise/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/glaciers-photo-exhibition-nathanael-de-lachaise/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/glaciers-photo-exhibition-nathanael-de-lachaise/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/zh/news/virages-virginie-the-solo-exhibition-by-pauline-curnier-jardin/</loc>
+    <lastmod>2026-05-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/virages-virginie-the-solo-exhibition-by-pauline-curnier-jardin/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/virages-virginie-the-solo-exhibition-by-pauline-curnier-jardin/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/virages-virginie-the-solo-exhibition-by-pauline-curnier-jardin/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/virages-virginie-the-solo-exhibition-by-pauline-curnier-jardin/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/en/news/virages-virginie-the-solo-exhibition-by-pauline-curnier-jardin/</loc>
+    <lastmod>2026-05-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/virages-virginie-the-solo-exhibition-by-pauline-curnier-jardin/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/virages-virginie-the-solo-exhibition-by-pauline-curnier-jardin/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/virages-virginie-the-solo-exhibition-by-pauline-curnier-jardin/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/virages-virginie-the-solo-exhibition-by-pauline-curnier-jardin/"/>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/fr/news/virages-virginie-the-solo-exhibition-by-pauline-curnier-jardin/</loc>
+    <lastmod>2026-05-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/news/virages-virginie-the-solo-exhibition-by-pauline-curnier-jardin/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/news/virages-virginie-the-solo-exhibition-by-pauline-curnier-jardin/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/news/virages-virginie-the-solo-exhibition-by-pauline-curnier-jardin/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/news/virages-virginie-the-solo-exhibition-by-pauline-curnier-jardin/"/>
   </url>
 </urlset>

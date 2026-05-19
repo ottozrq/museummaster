@@ -33,7 +33,8 @@
     <link rel="stylesheet" href="../../news.css" />
     <link rel="icon" href="../../icon.png" type="image/jpeg" />
     <link rel="apple-touch-icon" href="../../icon.png" />
-  </head>
+    <script defer src="https://ottozhang.com/umami/tracker" data-website-id="6f206180-48a8-454d-a1af-a8f45fdee150" data-domains="www.artiou.com"></script>
+</head>
   <body>
     <header class="site-header news-header">
       <div class="wrap inner">
@@ -66,6 +67,71 @@
       <section class="news-list-section">
         <div class="wrap">
           <div class="news-grid">
+            <article class="news-card">
+              <div class="news-card-meta">
+                <span>Exhibition</span>
+                <span>·</span>
+                <time datetime="2026-05-19">May 19, 2026</time>
+              </div>
+              <h2><a href="/en/news/virages-virginie-the-solo-exhibition-by-pauline-curnier-jardin/">“Virages Virginie”, the solo exhibition by Pauline Curnier Jardin: an Artiou exhibition pick in Paris</a></h2>
+              <p>Artiou recommends “Virages Virginie”, the solo exhibition by Pauline Curnier Jardin, an exhibition at Palais de Tokyo for visitors planning an art-focused stop in Paris.</p>
+              <div class="news-card-footer">
+                <div class="news-tag-list"><span class="news-tag">exhibition</span><span class="news-tag">art</span><span class="news-tag">Paris</span></div>
+                <a class="news-read-more" href="/en/news/virages-virginie-the-solo-exhibition-by-pauline-curnier-jardin/">Read article</a>
+              </div>
+            </article>
+            <article class="news-card">
+              <div class="news-card-meta">
+                <span>Exhibition</span>
+                <span>·</span>
+                <time datetime="2026-05-19">May 19, 2026</time>
+              </div>
+              <h2><a href="/en/news/glaciers-photo-exhibition-nathanael-de-lachaise/">Glaciers, photo exhibition, Nathanael de Lachaise: an Artiou exhibition pick in Paris</a></h2>
+              <p>Artiou recommends Glaciers, photo exhibition, Nathanael de Lachaise, an exhibition at Galerie M for visitors planning an art-focused stop in Paris.</p>
+              <div class="news-card-footer">
+                <div class="news-tag-list"><span class="news-tag">exhibition</span><span class="news-tag">art</span><span class="news-tag">Paris</span></div>
+                <a class="news-read-more" href="/en/news/glaciers-photo-exhibition-nathanael-de-lachaise/">Read article</a>
+              </div>
+            </article>
+            <article class="news-card">
+              <div class="news-card-meta">
+                <span>Exhibition</span>
+                <span>·</span>
+                <time datetime="2026-05-19">May 19, 2026</time>
+              </div>
+              <h2><a href="/en/news/exhibition-of-axelle-rose-at-sor/">Exhibition of Axelle Rose at SOR: an Artiou exhibition pick in Paris</a></h2>
+              <p>Artiou recommends Exhibition of Axelle Rose at SOR, an exhibition at SOR for visitors planning an art-focused stop in Paris.</p>
+              <div class="news-card-footer">
+                <div class="news-tag-list"><span class="news-tag">exhibition</span><span class="news-tag">art</span><span class="news-tag">Paris</span></div>
+                <a class="news-read-more" href="/en/news/exhibition-of-axelle-rose-at-sor/">Read article</a>
+              </div>
+            </article>
+            <article class="news-card">
+              <div class="news-card-meta">
+                <span>Exhibition</span>
+                <span>·</span>
+                <time datetime="2026-05-18">May 18, 2026</time>
+              </div>
+              <h2><a href="/en/news/exposition-reliques-futures/">Exposition : Reliques Futures: an Artiou exhibition pick in Paris</a></h2>
+              <p>Artiou recommends Exposition : Reliques Futures, an exhibition at Folie N5, Parc de la Villette for visitors planning an art-focused stop in Paris.</p>
+              <div class="news-card-footer">
+                <div class="news-tag-list"><span class="news-tag">exhibition</span><span class="news-tag">art</span><span class="news-tag">Paris</span></div>
+                <a class="news-read-more" href="/en/news/exposition-reliques-futures/">Read article</a>
+              </div>
+            </article>
+            <article class="news-card">
+              <div class="news-card-meta">
+                <span>Exhibition</span>
+                <span>·</span>
+                <time datetime="2026-05-18">May 18, 2026</time>
+              </div>
+              <h2><a href="/en/news/exposition-no-flowers-dakosua-viktoria-adu-sanyah/">Exposition : no flowers d&#39;Akosua Viktoria Adu-Sanyah: an Artiou exhibition pick in Paris</a></h2>
+              <p>Artiou recommends Exposition : no flowers d&#39;Akosua Viktoria Adu-Sanyah, an exhibition at Centre culturel suisse Paris for visitors planning an art-focused stop in Paris.</p>
+              <div class="news-card-footer">
+                <div class="news-tag-list"><span class="news-tag">exhibition</span><span class="news-tag">art</span><span class="news-tag">Paris</span></div>
+                <a class="news-read-more" href="/en/news/exposition-no-flowers-dakosua-viktoria-adu-sanyah/">Read article</a>
+              </div>
+            </article>
             <article class="news-card">
               <div class="news-card-meta">
                 <span>Exhibition</span>
@@ -955,5 +1021,18 @@
         <p class="copyright">© 2026 Artiou. All rights reserved.</p>
       </div>
     </footer>
-  </body>
+  <script>
+  window.addEventListener('click', function (event) {
+    var link = event.target && event.target.closest ? event.target.closest('a') : null;
+    if (!link || !window.umami) return;
+    var href = link.href || '';
+    var text = (link.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 80);
+    var eventName = '';
+    if (/apps\.apple\.com/.test(href)) eventName = 'app_store_click';
+    else if (/play\.google\.com/.test(href)) eventName = 'google_play_click';
+    else if (/download|app store|google play|télécharger|下载/i.test(text + ' ' + href)) eventName = 'download_click';
+    if (eventName) window.umami.track(eventName, { href: href, text: text });
+  });
+</script>
+</body>
 </html>

@@ -305,6 +305,11 @@ def exhibition_score(activity: dict) -> int:
         "forum",
         "nuit des musées",
         "nuit des musees",
+        "nuit européenne des musées",
+        "nuit europeenne des musees",
+        "night of museums",
+        "programme de la nuit",
+        "program of the night",
     )
     if tags & negative_tags:
         return -100
