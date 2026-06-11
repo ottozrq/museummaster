@@ -11,7 +11,7 @@ Artiou (Chinese brand name: 艺游, pronounced Yìyóu) is a mobile application 
 - English: https://www.artiou.com/en/
 - Chinese: https://www.artiou.com/zh/
 - French: https://www.artiou.com/fr/
-- The site root https://www.artiou.com/ redirects to the Chinese homepage (/zh/).
+- The site root https://www.artiou.com/ redirects to the English homepage (/en/).
 
 A shorter bilingual index file also exists at https://www.artiou.com/llms.txt (mixed Chinese notes + English facts).
 

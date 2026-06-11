@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hans">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,32 +7,19 @@
     <link rel="apple-touch-icon" href="icon.png" />
     <meta name="robots" content="noindex,follow" />
     <title>Artiou 艺游</title>
-    <link rel="canonical" href="https://www.artiou.com/zh/" />
+    <link rel="canonical" href="https://www.artiou.com/en/" />
     <script>
-      location.replace("zh/");
+      location.replace("en/");
     </script>
     <script defer src="https://ottozhang.com/umami/tracker" data-website-id="6f206180-48a8-454d-a1af-a8f45fdee150" data-domains="www.artiou.com"></script>
 </head>
   <body>
     <noscript>
       <p>
-        <a href="zh/">进入艺游 Artiou 中文官网</a>（English: <a href="en/">EN</a>，Français: <a href="fr/">FR</a>） ·
+        <a href="en/">Enter the Artiou website</a>（中文: <a href="zh/">中文</a>，Français: <a href="fr/">FR</a>） ·
         <a href="llms.txt">llms.txt</a>
       </p>
     </noscript>
-    <p><a href="zh/">若未自动跳转，请点击进入艺游官网</a> · <a href="llms.txt">llms.txt</a></p>
-  <script>
-  window.addEventListener('click', function (event) {
-    var link = event.target && event.target.closest ? event.target.closest('a') : null;
-    if (!link || !window.umami) return;
-    var href = link.href || '';
-    var text = (link.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 80);
-    var eventName = '';
-    if (/apps\.apple\.com/.test(href)) eventName = 'app_store_click';
-    else if (/play\.google\.com/.test(href)) eventName = 'google_play_click';
-    else if (/download|app store|google play|télécharger|下载/i.test(text + ' ' + href)) eventName = 'download_click';
-    if (eventName) window.umami.track(eventName, { href: href, text: text });
-  });
-</script>
+    <p><a href="en/">If you are not redirected automatically, enter Artiou in English</a> · <a href="llms.txt">llms.txt</a></p>
 </body>
 </html>

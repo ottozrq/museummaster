@@ -9,10 +9,12 @@ const CONTENT_ROOT = path.join(SITE_ROOT, "content", "news");
 const TEMPLATES_DIR = path.join(SITE_ROOT, "templates");
 const SITEMAP_PATH = path.join(SITE_ROOT, "sitemap.xml");
 const SITEMAP_CORE_PATH = path.join(SCRIPT_DIR, "sitemap-core.xml");
+const SITEMAP_AUDIT_PATH = path.join(SCRIPT_DIR, "sitemap-audit.json");
 const SITE_URL = "https://www.artiou.com";
 const LOCALES = ["zh", "en", "fr"];
 const HREFLANG = { zh: "zh-Hans", en: "en", fr: "fr" };
 const GENERATED_MARKER = ".artiou-generated";
+const SITEMAP_INCLUDE_SOURCES = new Set(["Artiou Editorial", "Artiou Team"]);
 
 const LOCALE_UI = {
   zh: {
@@ -259,7 +261,7 @@ function buildHreflangLinks(slug = null) {
   })
     .concat([
       `    <link rel="alternate" hreflang="x-default" href="${
-        slug ? `${SITE_URL}/zh/news/${slug}/` : `${SITE_URL}/zh/news/`
+        slug ? `${SITE_URL}/en/news/${slug}/` : `${SITE_URL}/en/news/`
       }" />`,
     ])
     .join("\n");
@@ -438,26 +440,61 @@ function renderNewsCard(article, locale) {
             </article>`;
 }
 
+function getPlainArticleBody(article) {
+  return article.body
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/[#*_>`[\]()!-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getSitemapArticleEligibility(article) {
+  const reasons = [];
+  const source = (article.meta.source || "").trim();
+  const plainBody = getPlainArticleBody(article);
+  const explicitInclude = article.meta.sitemap === "true" || article.meta.sitemapInclude === "true";
+
+  if (source && !SITEMAP_INCLUDE_SOURCES.has(source)) {
+    reasons.push(`source '${source}' is not an approved sitemap source`);
+  }
+  if (article.meta.robots && /noindex/i.test(article.meta.robots)) {
+    reasons.push("robots contains noindex");
+  }
+  if (article.meta.sitemap === "false" || article.meta.sitemapInclude === "false") {
+    reasons.push("frontmatter opts out of sitemap");
+  }
+  if (!article.meta.title || article.meta.title.trim().length < 20) {
+    reasons.push("missing or thin title");
+  }
+  if (!article.meta.description || article.meta.description.trim().length < 80) {
+    reasons.push("missing or thin description");
+  }
+  if (!article.meta.slug || !article.meta.updated) {
+    reasons.push("missing slug or updated date");
+  }
+  if (!explicitInclude && plainBody.length < 1200) {
+    reasons.push(`body is too thin (${plainBody.length} chars, needs 1200+)`);
+  }
+
+  return {
+    included: reasons.length === 0,
+    reasons: reasons.length ? reasons : [explicitInclude ? "included by explicit editorial sitemap flag" : "eligible evergreen/editorial article"],
+    bodyChars: plainBody.length,
+  };
+}
+
+function isSitemapIndexableArticle(article) {
+  return getSitemapArticleEligibility(article).included;
+}
+
 function buildSitemapEntries(articlesBySlug) {
   const today = new Date().toISOString().slice(0, 10);
   const entries = [];
 
-  for (const locale of LOCALES) {
-    entries.push(`  <url>
-    <loc>${SITE_URL}/${locale}/news/</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-Hans" href="${SITE_URL}/zh/news/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="${SITE_URL}/en/news/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="${SITE_URL}/fr/news/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE_URL}/zh/news/"/>
-  </url>`);
-  }
-
   for (const [slug, localized] of articlesBySlug.entries()) {
+    if (!LOCALES.every((locale) => localized[locale] && isSitemapIndexableArticle(localized[locale]))) continue;
+
     for (const locale of LOCALES) {
-      if (!localized[locale]) continue;
       entries.push(`  <url>
     <loc>${SITE_URL}/${locale}/news/${slug}/</loc>
     <lastmod>${localized[locale].meta.updated}</lastmod>
@@ -466,12 +503,63 @@ function buildSitemapEntries(articlesBySlug) {
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="${SITE_URL}/zh/news/${slug}/"/>
     <xhtml:link rel="alternate" hreflang="en" href="${SITE_URL}/en/news/${slug}/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="${SITE_URL}/fr/news/${slug}/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE_URL}/zh/news/${slug}/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE_URL}/en/news/${slug}/"/>
   </url>`);
     }
   }
 
   return entries.join("\n");
+}
+
+function buildSitemapAudit(perLocale, articlesBySlug) {
+  const audit = {
+    generatedAt: new Date().toISOString(),
+    policy: {
+      approvedSources: Array.from(SITEMAP_INCLUDE_SOURCES),
+      defaultBodyCharsMinimum: 1200,
+      notes: [
+        "news articles are excluded unless every locale passes eligibility",
+        "news index hubs, privacy/legal pages, noindex, explicit opt-out, unapproved source, missing metadata, and thin body are exclusion reasons",
+        "manual/core museum-guide URLs remain in scripts/sitemap-core.xml and should be audited before adding",
+      ],
+    },
+    urls: [],
+    slugs: [],
+  };
+
+  for (const [slug, localized] of articlesBySlug.entries()) {
+    const localeResults = {};
+    for (const locale of LOCALES) {
+      if (!localized[locale]) {
+        localeResults[locale] = { included: false, reasons: ["missing localized article"] };
+        continue;
+      }
+      localeResults[locale] = getSitemapArticleEligibility(localized[locale]);
+      audit.urls.push({
+        url: `${SITE_URL}/${locale}/news/${slug}/`,
+        type: "news-article",
+        locale,
+        included: localeResults[locale].included,
+        reasons: localeResults[locale].reasons,
+        bodyChars: localeResults[locale].bodyChars,
+      });
+    }
+    audit.slugs.push({
+      slug,
+      includedInSitemap: LOCALES.every((locale) => localeResults[locale].included),
+      locales: localeResults,
+    });
+  }
+
+  audit.summary = {
+    urlsAudited: audit.urls.length,
+    urlsIncluded: audit.urls.filter((item) => item.included).length,
+    urlsExcluded: audit.urls.filter((item) => !item.included).length,
+    slugsAudited: audit.slugs.length,
+    slugsIncluded: audit.slugs.filter((item) => item.includedInSitemap).length,
+    slugsExcluded: audit.slugs.filter((item) => !item.includedInSitemap).length,
+  };
+  return audit;
 }
 
 function main() {
@@ -562,6 +650,7 @@ function main() {
     .replace(/\s*<\/urlset>\s*$/u, "")
     .trimEnd();
   writeFile(SITEMAP_PATH, `${sitemapCore}\n${buildSitemapEntries(articlesBySlug)}\n</urlset>\n`);
+  writeFile(SITEMAP_AUDIT_PATH, `${JSON.stringify(buildSitemapAudit(perLocale, articlesBySlug), null, 2)}\n`);
 }
 
 main();

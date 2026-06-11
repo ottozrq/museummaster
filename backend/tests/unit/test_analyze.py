@@ -12,8 +12,8 @@ from utils.subscription import consume_quota_after_success, get_active_plan
 
 
 def test_normalize_analyze_locale():
-    assert _normalize_analyze_locale(None) == "zh"
-    assert _normalize_analyze_locale("") == "zh"
+    assert _normalize_analyze_locale(None) == "en"
+    assert _normalize_analyze_locale("") == "en"
     assert _normalize_analyze_locale("en-US") == "en"
     assert _normalize_analyze_locale("zh-Hans-CN") == "zh"
     assert _normalize_analyze_locale("fr-CA") == "fr"

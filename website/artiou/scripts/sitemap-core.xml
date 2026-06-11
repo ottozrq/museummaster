@@ -7,32 +7,6 @@
     <loc>https://www.artiou.com/zh/</loc>
     <lastmod>2026-05-03</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
-    <xhtml:link
-      rel="alternate"
-      hreflang="zh-Hans"
-      href="https://www.artiou.com/zh/"
-    />
-    <xhtml:link
-      rel="alternate"
-      hreflang="en"
-      href="https://www.artiou.com/en/"
-    />
-    <xhtml:link
-      rel="alternate"
-      hreflang="fr"
-      href="https://www.artiou.com/fr/"
-    />
-    <xhtml:link
-      rel="alternate"
-      hreflang="x-default"
-      href="https://www.artiou.com/zh/"
-    />
-  </url>
-  <url>
-    <loc>https://www.artiou.com/en/</loc>
-    <lastmod>2026-05-03</lastmod>
-    <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link
       rel="alternate"
@@ -52,7 +26,33 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
+      href="https://www.artiou.com/en/"
+    />
+  </url>
+  <url>
+    <loc>https://www.artiou.com/en/</loc>
+    <lastmod>2026-05-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link
+      rel="alternate"
+      hreflang="zh-Hans"
       href="https://www.artiou.com/zh/"
+    />
+    <xhtml:link
+      rel="alternate"
+      hreflang="en"
+      href="https://www.artiou.com/en/"
+    />
+    <xhtml:link
+      rel="alternate"
+      hreflang="fr"
+      href="https://www.artiou.com/fr/"
+    />
+    <xhtml:link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://www.artiou.com/en/"
     />
   </url>
   <url>
@@ -78,85 +78,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/"
-    />
-  </url>
-  <url>
-    <loc>https://www.artiou.com/zh/privacy/</loc>
-    <lastmod>2026-05-03</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
-    <xhtml:link
-      rel="alternate"
-      hreflang="zh-Hans"
-      href="https://www.artiou.com/zh/privacy/"
-    />
-    <xhtml:link
-      rel="alternate"
-      hreflang="en"
-      href="https://www.artiou.com/en/privacy/"
-    />
-    <xhtml:link
-      rel="alternate"
-      hreflang="fr"
-      href="https://www.artiou.com/fr/privacy/"
-    />
-    <xhtml:link
-      rel="alternate"
-      hreflang="x-default"
-      href="https://www.artiou.com/zh/privacy/"
-    />
-  </url>
-  <url>
-    <loc>https://www.artiou.com/en/privacy/</loc>
-    <lastmod>2026-05-03</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
-    <xhtml:link
-      rel="alternate"
-      hreflang="zh-Hans"
-      href="https://www.artiou.com/zh/privacy/"
-    />
-    <xhtml:link
-      rel="alternate"
-      hreflang="en"
-      href="https://www.artiou.com/en/privacy/"
-    />
-    <xhtml:link
-      rel="alternate"
-      hreflang="fr"
-      href="https://www.artiou.com/fr/privacy/"
-    />
-    <xhtml:link
-      rel="alternate"
-      hreflang="x-default"
-      href="https://www.artiou.com/zh/privacy/"
-    />
-  </url>
-  <url>
-    <loc>https://www.artiou.com/fr/privacy/</loc>
-    <lastmod>2026-05-03</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
-    <xhtml:link
-      rel="alternate"
-      hreflang="zh-Hans"
-      href="https://www.artiou.com/zh/privacy/"
-    />
-    <xhtml:link
-      rel="alternate"
-      hreflang="en"
-      href="https://www.artiou.com/en/privacy/"
-    />
-    <xhtml:link
-      rel="alternate"
-      hreflang="fr"
-      href="https://www.artiou.com/fr/privacy/"
-    />
-    <xhtml:link
-      rel="alternate"
-      hreflang="x-default"
-      href="https://www.artiou.com/zh/privacy/"
+      href="https://www.artiou.com/en/"
     />
   </url>
   <url>
@@ -182,7 +104,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/paris-museum-guide/"
+      href="https://www.artiou.com/en/paris-museum-guide/"
     />
   </url>
   <url>
@@ -208,7 +130,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/paris-museum-guide/"
+      href="https://www.artiou.com/en/paris-museum-guide/"
     />
   </url>
   <url>
@@ -234,7 +156,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/paris-museum-guide/"
+      href="https://www.artiou.com/en/paris-museum-guide/"
     />
   </url>
   <url>
@@ -260,7 +182,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/prague-museum-guide/"
+      href="https://www.artiou.com/en/prague-museum-guide/"
     />
   </url>
   <url>
@@ -286,7 +208,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/prague-museum-guide/"
+      href="https://www.artiou.com/en/prague-museum-guide/"
     />
   </url>
   <url>
@@ -312,7 +234,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/prague-museum-guide/"
+      href="https://www.artiou.com/en/prague-museum-guide/"
     />
   </url>
   <url>
@@ -338,7 +260,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/brussels-museum-guide/"
+      href="https://www.artiou.com/en/brussels-museum-guide/"
     />
   </url>
   <url>
@@ -364,7 +286,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/brussels-museum-guide/"
+      href="https://www.artiou.com/en/brussels-museum-guide/"
     />
   </url>
   <url>
@@ -390,7 +312,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/brussels-museum-guide/"
+      href="https://www.artiou.com/en/brussels-museum-guide/"
     />
   </url>
   <url>
@@ -416,7 +338,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/basel-museum-guide/"
+      href="https://www.artiou.com/en/basel-museum-guide/"
     />
   </url>
   <url>
@@ -442,7 +364,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/basel-museum-guide/"
+      href="https://www.artiou.com/en/basel-museum-guide/"
     />
   </url>
   <url>
@@ -468,7 +390,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/basel-museum-guide/"
+      href="https://www.artiou.com/en/basel-museum-guide/"
     />
   </url>
   <url>
@@ -494,7 +416,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/washington-dc-museum-guide/"
+      href="https://www.artiou.com/en/washington-dc-museum-guide/"
     />
   </url>
   <url>
@@ -520,7 +442,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/washington-dc-museum-guide/"
+      href="https://www.artiou.com/en/washington-dc-museum-guide/"
     />
   </url>
   <url>
@@ -546,7 +468,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/washington-dc-museum-guide/"
+      href="https://www.artiou.com/en/washington-dc-museum-guide/"
     />
   </url>
   <url>
@@ -572,7 +494,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/london-museum-guide/"
+      href="https://www.artiou.com/en/london-museum-guide/"
     />
   </url>
   <url>
@@ -598,7 +520,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/london-museum-guide/"
+      href="https://www.artiou.com/en/london-museum-guide/"
     />
   </url>
   <url>
@@ -624,7 +546,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/london-museum-guide/"
+      href="https://www.artiou.com/en/london-museum-guide/"
     />
   </url>
   <url>
@@ -650,7 +572,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/lyon-museum-guide/"
+      href="https://www.artiou.com/en/lyon-museum-guide/"
     />
   </url>
   <url>
@@ -676,7 +598,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/lyon-museum-guide/"
+      href="https://www.artiou.com/en/lyon-museum-guide/"
     />
   </url>
   <url>
@@ -702,7 +624,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/lyon-museum-guide/"
+      href="https://www.artiou.com/en/lyon-museum-guide/"
     />
   </url>
   <url>
@@ -728,7 +650,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/amsterdam-museum-guide/"
+      href="https://www.artiou.com/en/amsterdam-museum-guide/"
     />
   </url>
   <url>
@@ -754,7 +676,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/amsterdam-museum-guide/"
+      href="https://www.artiou.com/en/amsterdam-museum-guide/"
     />
   </url>
   <url>
@@ -780,7 +702,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/amsterdam-museum-guide/"
+      href="https://www.artiou.com/en/amsterdam-museum-guide/"
     />
   </url>
   <url>
@@ -806,7 +728,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/rome-museum-guide/"
+      href="https://www.artiou.com/en/rome-museum-guide/"
     />
   </url>
   <url>
@@ -832,7 +754,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/rome-museum-guide/"
+      href="https://www.artiou.com/en/rome-museum-guide/"
     />
   </url>
   <url>
@@ -858,7 +780,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/rome-museum-guide/"
+      href="https://www.artiou.com/en/rome-museum-guide/"
     />
   </url>
   <url>
@@ -884,7 +806,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/madrid-museum-guide/"
+      href="https://www.artiou.com/en/madrid-museum-guide/"
     />
   </url>
   <url>
@@ -910,7 +832,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/madrid-museum-guide/"
+      href="https://www.artiou.com/en/madrid-museum-guide/"
     />
   </url>
   <url>
@@ -936,7 +858,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/madrid-museum-guide/"
+      href="https://www.artiou.com/en/madrid-museum-guide/"
     />
   </url>
   <url>
@@ -962,7 +884,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/vienna-museum-guide/"
+      href="https://www.artiou.com/en/vienna-museum-guide/"
     />
   </url>
   <url>
@@ -988,7 +910,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/vienna-museum-guide/"
+      href="https://www.artiou.com/en/vienna-museum-guide/"
     />
   </url>
   <url>
@@ -1014,7 +936,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/vienna-museum-guide/"
+      href="https://www.artiou.com/en/vienna-museum-guide/"
     />
   </url>
   <url>
@@ -1040,7 +962,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/florence-museum-guide/"
+      href="https://www.artiou.com/en/florence-museum-guide/"
     />
   </url>
   <url>
@@ -1066,7 +988,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/florence-museum-guide/"
+      href="https://www.artiou.com/en/florence-museum-guide/"
     />
   </url>
   <url>
@@ -1092,7 +1014,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/florence-museum-guide/"
+      href="https://www.artiou.com/en/florence-museum-guide/"
     />
   </url>
   <url>
@@ -1118,7 +1040,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/berlin-museum-guide/"
+      href="https://www.artiou.com/en/berlin-museum-guide/"
     />
   </url>
   <url>
@@ -1144,7 +1066,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/berlin-museum-guide/"
+      href="https://www.artiou.com/en/berlin-museum-guide/"
     />
   </url>
   <url>
@@ -1170,7 +1092,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/berlin-museum-guide/"
+      href="https://www.artiou.com/en/berlin-museum-guide/"
     />
   </url>
   <url>
@@ -1196,7 +1118,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/new-york-museum-guide/"
+      href="https://www.artiou.com/en/new-york-museum-guide/"
     />
   </url>
   <url>
@@ -1222,7 +1144,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/new-york-museum-guide/"
+      href="https://www.artiou.com/en/new-york-museum-guide/"
     />
   </url>
   <url>
@@ -1248,7 +1170,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/new-york-museum-guide/"
+      href="https://www.artiou.com/en/new-york-museum-guide/"
     />
   </url>
   <url>
@@ -1274,7 +1196,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/tokyo-museum-guide/"
+      href="https://www.artiou.com/en/tokyo-museum-guide/"
     />
   </url>
   <url>
@@ -1300,7 +1222,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/tokyo-museum-guide/"
+      href="https://www.artiou.com/en/tokyo-museum-guide/"
     />
   </url>
   <url>
@@ -1326,7 +1248,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/tokyo-museum-guide/"
+      href="https://www.artiou.com/en/tokyo-museum-guide/"
     />
   </url>
   <url>
@@ -1352,7 +1274,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/barcelona-museum-guide/"
+      href="https://www.artiou.com/en/barcelona-museum-guide/"
     />
   </url>
   <url>
@@ -1378,7 +1300,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/barcelona-museum-guide/"
+      href="https://www.artiou.com/en/barcelona-museum-guide/"
     />
   </url>
   <url>
@@ -1404,7 +1326,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/barcelona-museum-guide/"
+      href="https://www.artiou.com/en/barcelona-museum-guide/"
     />
   </url>
   <url>
@@ -1430,7 +1352,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/seoul-museum-guide/"
+      href="https://www.artiou.com/en/seoul-museum-guide/"
     />
   </url>
   <url>
@@ -1456,7 +1378,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/seoul-museum-guide/"
+      href="https://www.artiou.com/en/seoul-museum-guide/"
     />
   </url>
   <url>
@@ -1482,7 +1404,7 @@
     <xhtml:link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/seoul-museum-guide/"
+      href="https://www.artiou.com/en/seoul-museum-guide/"
     />
   </url>
   <url>
@@ -1493,7 +1415,7 @@
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/lisbon-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/lisbon-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/lisbon-museum-guide/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/lisbon-museum-guide/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/en/lisbon-museum-guide/" />
   </url>
   <url>
     <loc>https://www.artiou.com/zh/lisbon-museum-guide/</loc>
@@ -1503,7 +1425,7 @@
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/lisbon-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/lisbon-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/lisbon-museum-guide/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/lisbon-museum-guide/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/en/lisbon-museum-guide/" />
   </url>
   <url>
     <loc>https://www.artiou.com/fr/lisbon-museum-guide/</loc>
@@ -1513,7 +1435,7 @@
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/lisbon-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/lisbon-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/lisbon-museum-guide/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/lisbon-museum-guide/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/en/lisbon-museum-guide/" />
   </url>
   <url>
     <loc>https://www.artiou.com/en/copenhagen-museum-guide/</loc>
@@ -1523,7 +1445,7 @@
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/copenhagen-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/copenhagen-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/copenhagen-museum-guide/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/copenhagen-museum-guide/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/en/copenhagen-museum-guide/" />
   </url>
   <url>
     <loc>https://www.artiou.com/zh/copenhagen-museum-guide/</loc>
@@ -1533,7 +1455,7 @@
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/copenhagen-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/copenhagen-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/copenhagen-museum-guide/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/copenhagen-museum-guide/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/en/copenhagen-museum-guide/" />
   </url>
   <url>
     <loc>https://www.artiou.com/fr/copenhagen-museum-guide/</loc>
@@ -1543,7 +1465,7 @@
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/copenhagen-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/copenhagen-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/copenhagen-museum-guide/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/copenhagen-museum-guide/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/en/copenhagen-museum-guide/" />
   </url>
   <url>
     <loc>https://www.artiou.com/en/athens-museum-guide/</loc>
@@ -1553,7 +1475,7 @@
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/athens-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/athens-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/athens-museum-guide/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/athens-museum-guide/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/en/athens-museum-guide/" />
   </url>
   <url>
     <loc>https://www.artiou.com/zh/athens-museum-guide/</loc>
@@ -1563,7 +1485,7 @@
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/athens-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/athens-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/athens-museum-guide/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/athens-museum-guide/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/en/athens-museum-guide/" />
   </url>
   <url>
     <loc>https://www.artiou.com/fr/athens-museum-guide/</loc>
@@ -1573,7 +1495,7 @@
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/athens-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/athens-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/athens-museum-guide/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/athens-museum-guide/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/en/athens-museum-guide/" />
   </url>
   <url>
     <loc>https://www.artiou.com/en/stockholm-museum-guide/</loc>
@@ -1583,7 +1505,7 @@
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/stockholm-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/stockholm-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/stockholm-museum-guide/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/stockholm-museum-guide/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/en/stockholm-museum-guide/" />
   </url>
   <url>
     <loc>https://www.artiou.com/zh/stockholm-museum-guide/</loc>
@@ -1593,7 +1515,7 @@
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/stockholm-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/stockholm-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/stockholm-museum-guide/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/stockholm-museum-guide/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/en/stockholm-museum-guide/" />
   </url>
   <url>
     <loc>https://www.artiou.com/fr/stockholm-museum-guide/</loc>
@@ -1603,6 +1525,30 @@
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/stockholm-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.artiou.com/en/stockholm-museum-guide/" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/stockholm-museum-guide/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/stockholm-museum-guide/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.artiou.com/en/stockholm-museum-guide/" />
+  </url>
+  <url>
+    <loc>https://www.artiou.com/en/louvre-first-time-visitor-guide/</loc>
+    <lastmod>2026-05-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/en/musee-orsay-guide/</loc>
+    <lastmod>2026-05-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/en/mona-lisa-guide/</loc>
+    <lastmod>2026-05-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.artiou.com/en/monet-water-lilies-guide/</loc>
+    <lastmod>2026-05-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

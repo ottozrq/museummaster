@@ -88,6 +88,22 @@ Required env vars in `frontend/.env`:
 
 - `EXPO_PUBLIC_API_BASE_URL` (e.g. `http://127.0.0.1:8000`)
 
+## Artiou website deploy/review checklist
+
+Before marking a website deploy as REVIEW/PASS, run the live SEO smoke test from the repo root:
+
+```bash
+python3 website/artiou/scripts/live-seo-smoke.py
+```
+
+For a faster preflight that still checks canonical host redirects, UTF-8 headers, robots sitemap declaration, core English growth URLs, and missing-path 404/410 behavior:
+
+```bash
+python3 website/artiou/scripts/live-seo-smoke.py --core-only
+```
+
+The full smoke test parses `https://www.artiou.com/sitemap.xml` and requires every sitemap URL to return `200`, be indexable, be self-canonical, avoid fallback-shell canonical mismatches, and contain no internal planning/placeholder language. Missing probes such as `/en/nonexistent-growth-audit-test/` and `/en/news/nonexistent-growth-audit-test/` must return `404` or `410`; if they return a `200` fallback, the command exits non-zero and the deploy must not be marked REVIEW/PASS.
+
 ## API Endpoints
 
 - `GET /` health check

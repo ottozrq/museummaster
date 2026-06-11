@@ -1167,6 +1167,48 @@ a.brand-link:hover .brand-mark {
   margin-top: 0.75rem;
 }
 
+.guide-table-wrap {
+  margin-top: 1.25rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.guide-decision-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.guide-decision-table caption {
+  padding: 0.9rem 1rem 0.35rem;
+  text-align: left;
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.guide-decision-table th,
+.guide-decision-table td {
+  padding: 0.85rem 1rem;
+  border-top: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.guide-decision-table thead th {
+  background: rgba(255, 245, 236, 0.72);
+  color: var(--accent);
+}
+
+.guide-decision-table tbody th {
+  color: var(--accent);
+  font-weight: 800;
+}
+
 .guide-section-tinted {
   background: linear-gradient(
     180deg,

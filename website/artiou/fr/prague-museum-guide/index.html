@@ -32,7 +32,7 @@
     <link
       rel="alternate"
       hreflang="x-default"
-      href="https://www.artiou.com/zh/prague-museum-guide/"
+      href="https://www.artiou.com/en/prague-museum-guide/"
     />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Artiou" />
@@ -307,19 +307,6 @@
         </p>
       </div>
     </footer>
-    <script src="../../app.js"></script>
-  <script>
-  window.addEventListener('click', function (event) {
-    var link = event.target && event.target.closest ? event.target.closest('a') : null;
-    if (!link || !window.umami) return;
-    var href = link.href || '';
-    var text = (link.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 80);
-    var eventName = '';
-    if (/apps\.apple\.com/.test(href)) eventName = 'app_store_click';
-    else if (/play\.google\.com/.test(href)) eventName = 'google_play_click';
-    else if (/download|app store|google play|télécharger|下载/i.test(text + ' ' + href)) eventName = 'download_click';
-    if (eventName) window.umami.track(eventName, { href: href, text: text });
-  });
-</script>
+    <script src="../../static-site.js" defer></script>
 </body>
 </html>

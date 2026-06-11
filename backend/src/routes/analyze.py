@@ -77,9 +77,9 @@ def _save_image_bytes(image_bytes: bytes, mime_type: str) -> str:
 
 
 def _normalize_analyze_locale(tag: Optional[str]) -> str:
-    """与前端 AppLanguage 对齐：zh / en / fr；未知或未提供时默认中文（兼容旧客户端）。"""
+    """与前端 AppLanguage 对齐：zh / en / fr；未知或未提供时默认英文。"""
     if not tag or not str(tag).strip():
-        return "zh"
+        return "en"
     lower = str(tag).strip().lower().replace("_", "-")
     if lower.startswith("zh"):
         return "zh"

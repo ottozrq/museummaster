@@ -1,0 +1,1197 @@
+{
+  "generatedAt": "2026-06-11T11:00:48Z",
+  "sitemap": "/Users/otto/Projects/museummaster/website/artiou/sitemap.xml",
+  "summary": {
+    "urlsAudited": 70,
+    "urlsPassing": 70,
+    "urlsFailing": 0,
+    "urlsWithWarnings": 65
+  },
+  "urls": [
+    {
+      "url": "https://www.artiou.com/zh/",
+      "type": "home",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [],
+      "path": "zh/index.html",
+      "title": "艺游 - Artiou",
+      "h1": "把展厅装进你的口袋",
+      "canonical": "https://www.artiou.com/zh/",
+      "bodyChars": 2013
+    },
+    {
+      "url": "https://www.artiou.com/en/",
+      "type": "home",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [],
+      "path": "en/index.html",
+      "title": "Artiou — Museum AI Audio Guide",
+      "h1": "Your pocket curator",
+      "canonical": "https://www.artiou.com/en/",
+      "bodyChars": 4990
+    },
+    {
+      "url": "https://www.artiou.com/fr/",
+      "type": "home",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [],
+      "path": "fr/index.html",
+      "title": "Artiou — Guide audio IA pour musées",
+      "h1": "Votre guide de poche au musée",
+      "canonical": "https://www.artiou.com/fr/",
+      "bodyChars": 5466
+    },
+    {
+      "url": "https://www.artiou.com/en/paris-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/paris-museum-guide/index.html",
+      "title": "Best Museums in Paris: First-Time Visitor Guide, Routes & Tips | Artiou",
+      "h1": "Choose better museum days in Paris",
+      "canonical": "https://www.artiou.com/en/paris-museum-guide/",
+      "bodyChars": 15318
+    },
+    {
+      "url": "https://www.artiou.com/zh/paris-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/paris-museum-guide/index.html",
+      "title": "巴黎最佳博物馆：第一次参观路线、选馆和实用建议 | Artiou",
+      "h1": "把巴黎的观展日选对",
+      "canonical": "https://www.artiou.com/zh/paris-museum-guide/",
+      "bodyChars": 3717
+    },
+    {
+      "url": "https://www.artiou.com/fr/paris-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/paris-museum-guide/index.html",
+      "title": "Meilleurs musées de Paris : première visite, itinéraires et conseils | Artiou",
+      "h1": "Choisir de meilleures journées de musée à Paris",
+      "canonical": "https://www.artiou.com/fr/paris-museum-guide/",
+      "bodyChars": 11062
+    },
+    {
+      "url": "https://www.artiou.com/en/prague-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (3464 chars, target 3500+)",
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/prague-museum-guide/index.html",
+      "title": "Prague Museum Guide | Artiou",
+      "h1": "Prague works better when the old center and Holesovice get\n              different museum days",
+      "canonical": "https://www.artiou.com/en/prague-museum-guide/",
+      "bodyChars": 3464
+    },
+    {
+      "url": "https://www.artiou.com/zh/prague-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (1515 chars, target 3500+)",
+        "museum guide missing practical-info signal",
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/prague-museum-guide/index.html",
+      "title": "布拉格博物馆指南 | Artiou",
+      "h1": "布拉格最好把老城中心和 Holesovice 分成不同的博物馆日",
+      "canonical": "https://www.artiou.com/zh/prague-museum-guide/",
+      "bodyChars": 1515
+    },
+    {
+      "url": "https://www.artiou.com/fr/prague-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/prague-museum-guide/index.html",
+      "title": "Guide des musees de Prague | Artiou",
+      "h1": "Prague se visite mieux si le centre ancien et Holesovice ont\n              chacun leur journee musee",
+      "canonical": "https://www.artiou.com/fr/prague-museum-guide/",
+      "bodyChars": 3596
+    },
+    {
+      "url": "https://www.artiou.com/en/brussels-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/brussels-museum-guide/index.html",
+      "title": "Brussels Museum Guide | Artiou",
+      "h1": "Brussels works better when the Royal Quarter and Cinquantenaire\n              get different museum half days",
+      "canonical": "https://www.artiou.com/en/brussels-museum-guide/",
+      "bodyChars": 4077
+    },
+    {
+      "url": "https://www.artiou.com/zh/brussels-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (2008 chars, target 3500+)",
+        "museum guide missing practical-info signal",
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/brussels-museum-guide/index.html",
+      "title": "布鲁塞尔博物馆指南 | Artiou",
+      "h1": "布鲁塞尔最好把皇家区和五十周年公园拆成不同的博物馆半天",
+      "canonical": "https://www.artiou.com/zh/brussels-museum-guide/",
+      "bodyChars": 2008
+    },
+    {
+      "url": "https://www.artiou.com/fr/brussels-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/brussels-museum-guide/index.html",
+      "title": "Guide des musees de Bruxelles | Artiou",
+      "h1": "Bruxelles se visite mieux si le quartier Royal et le\n              Cinquantenaire ont chacun leur demi-journee musee",
+      "canonical": "https://www.artiou.com/fr/brussels-museum-guide/",
+      "bodyChars": 3976
+    },
+    {
+      "url": "https://www.artiou.com/en/basel-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (3484 chars, target 3500+)",
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/basel-museum-guide/index.html",
+      "title": "Basel Museum Guide | Artiou",
+      "h1": "Basel works better when the center, Riehen, and the Rhine get\n              different museum half days",
+      "canonical": "https://www.artiou.com/en/basel-museum-guide/",
+      "bodyChars": 3484
+    },
+    {
+      "url": "https://www.artiou.com/zh/basel-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (1600 chars, target 3500+)",
+        "museum guide missing practical-info signal",
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/basel-museum-guide/index.html",
+      "title": "巴塞尔博物馆指南 | Artiou",
+      "h1": "巴塞尔最好把市中心、Riehen 和莱茵河岸拆成不同的博物馆半天",
+      "canonical": "https://www.artiou.com/zh/basel-museum-guide/",
+      "bodyChars": 1600
+    },
+    {
+      "url": "https://www.artiou.com/fr/basel-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/basel-museum-guide/index.html",
+      "title": "Guide des musees de Bale | Artiou",
+      "h1": "Bale se visite mieux si le centre, Riehen et le Rhin ont chacun\n              leur demi-journee musee",
+      "canonical": "https://www.artiou.com/fr/basel-museum-guide/",
+      "bodyChars": 3613
+    },
+    {
+      "url": "https://www.artiou.com/en/washington-dc-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/washington-dc-museum-guide/index.html",
+      "title": "Washington, DC Museum Guide | Artiou",
+      "h1": "Washington works better when the Mall and Dupont Circle get\n              different museum days",
+      "canonical": "https://www.artiou.com/en/washington-dc-museum-guide/",
+      "bodyChars": 3647
+    },
+    {
+      "url": "https://www.artiou.com/zh/washington-dc-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (1883 chars, target 3500+)",
+        "museum guide missing practical-info signal",
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/washington-dc-museum-guide/index.html",
+      "title": "华盛顿博物馆指南 | Artiou",
+      "h1": "华盛顿最好把 National Mall 和 Dupont Circle 拆成不同的博物馆日",
+      "canonical": "https://www.artiou.com/zh/washington-dc-museum-guide/",
+      "bodyChars": 1883
+    },
+    {
+      "url": "https://www.artiou.com/fr/washington-dc-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/washington-dc-museum-guide/index.html",
+      "title": "Guide des musees de Washington | Artiou",
+      "h1": "Washington se visite mieux si le Mall et Dupont Circle ont chacun\n              leur journee musee",
+      "canonical": "https://www.artiou.com/fr/washington-dc-museum-guide/",
+      "bodyChars": 3759
+    },
+    {
+      "url": "https://www.artiou.com/en/london-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/london-museum-guide/index.html",
+      "title": "London Museum Guide | Artiou",
+      "h1": "Build calmer museum days in London",
+      "canonical": "https://www.artiou.com/en/london-museum-guide/",
+      "bodyChars": 6308
+    },
+    {
+      "url": "https://www.artiou.com/zh/london-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (2440 chars, target 3500+)",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/london-museum-guide/index.html",
+      "title": "伦敦博物馆指南 | Artiou",
+      "h1": "把伦敦的观展日排得更松弛一点",
+      "canonical": "https://www.artiou.com/zh/london-museum-guide/",
+      "bodyChars": 2440
+    },
+    {
+      "url": "https://www.artiou.com/fr/london-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/london-museum-guide/index.html",
+      "title": "Guide des musées de Londres | Artiou",
+      "h1": "Construire des journées musée plus calmes à Londres",
+      "canonical": "https://www.artiou.com/fr/london-museum-guide/",
+      "bodyChars": 6742
+    },
+    {
+      "url": "https://www.artiou.com/en/lyon-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/lyon-museum-guide/index.html",
+      "title": "Lyon Museum Guide | Artiou",
+      "h1": "Choose slower museum days in Lyon",
+      "canonical": "https://www.artiou.com/en/lyon-museum-guide/",
+      "bodyChars": 6468
+    },
+    {
+      "url": "https://www.artiou.com/zh/lyon-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (2490 chars, target 3500+)",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/lyon-museum-guide/index.html",
+      "title": "里昂博物馆指南 | Artiou",
+      "h1": "把里昂的观展日排得更慢、更准",
+      "canonical": "https://www.artiou.com/zh/lyon-museum-guide/",
+      "bodyChars": 2490
+    },
+    {
+      "url": "https://www.artiou.com/fr/lyon-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/lyon-museum-guide/index.html",
+      "title": "Guide des musées de Lyon | Artiou",
+      "h1": "Construire des journées musée plus lentes à Lyon",
+      "canonical": "https://www.artiou.com/fr/lyon-museum-guide/",
+      "bodyChars": 6699
+    },
+    {
+      "url": "https://www.artiou.com/en/amsterdam-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/amsterdam-museum-guide/index.html",
+      "title": "Amsterdam Museum Guide | Artiou",
+      "h1": "Plan a smarter museum day in Amsterdam",
+      "canonical": "https://www.artiou.com/en/amsterdam-museum-guide/",
+      "bodyChars": 5484
+    },
+    {
+      "url": "https://www.artiou.com/zh/amsterdam-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (2304 chars, target 3500+)",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/amsterdam-museum-guide/index.html",
+      "title": "阿姆斯特丹博物馆指南 | Artiou",
+      "h1": "把阿姆斯特丹的看展日排得聪明一点",
+      "canonical": "https://www.artiou.com/zh/amsterdam-museum-guide/",
+      "bodyChars": 2304
+    },
+    {
+      "url": "https://www.artiou.com/fr/amsterdam-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/amsterdam-museum-guide/index.html",
+      "title": "Guide des musées d’Amsterdam | Artiou",
+      "h1": "Construire une journée musée plus intelligente à Amsterdam",
+      "canonical": "https://www.artiou.com/fr/amsterdam-museum-guide/",
+      "bodyChars": 6529
+    },
+    {
+      "url": "https://www.artiou.com/en/rome-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/rome-museum-guide/index.html",
+      "title": "Rome Museum Guide | Artiou",
+      "h1": "Choose the right museum day in Rome",
+      "canonical": "https://www.artiou.com/en/rome-museum-guide/",
+      "bodyChars": 5666
+    },
+    {
+      "url": "https://www.artiou.com/zh/rome-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (2227 chars, target 3500+)",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/rome-museum-guide/index.html",
+      "title": "罗马博物馆指南 | Artiou",
+      "h1": "先选对罗马的看展日，再谈多看几个馆",
+      "canonical": "https://www.artiou.com/zh/rome-museum-guide/",
+      "bodyChars": 2227
+    },
+    {
+      "url": "https://www.artiou.com/fr/rome-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/rome-museum-guide/index.html",
+      "title": "Guide des musées de Rome | Artiou",
+      "h1": "Choisir la bonne journée musée à Rome",
+      "canonical": "https://www.artiou.com/fr/rome-museum-guide/",
+      "bodyChars": 6468
+    },
+    {
+      "url": "https://www.artiou.com/en/madrid-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/madrid-museum-guide/index.html",
+      "title": "Madrid Museum Guide | Artiou",
+      "h1": "Use Madrid well, not fast",
+      "canonical": "https://www.artiou.com/en/madrid-museum-guide/",
+      "bodyChars": 6184
+    },
+    {
+      "url": "https://www.artiou.com/zh/madrid-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (2679 chars, target 3500+)",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/madrid-museum-guide/index.html",
+      "title": "马德里博物馆指南 | Artiou",
+      "h1": "马德里适合好好用，不适合乱冲",
+      "canonical": "https://www.artiou.com/zh/madrid-museum-guide/",
+      "bodyChars": 2679
+    },
+    {
+      "url": "https://www.artiou.com/fr/madrid-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing practical-info signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/madrid-museum-guide/index.html",
+      "title": "Guide des musées de Madrid | Artiou",
+      "h1": "Madrid se visite bien, pas vite",
+      "canonical": "https://www.artiou.com/fr/madrid-museum-guide/",
+      "bodyChars": 6674
+    },
+    {
+      "url": "https://www.artiou.com/en/vienna-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/vienna-museum-guide/index.html",
+      "title": "Vienna Museum Guide | Artiou",
+      "h1": "Give Vienna one major collection at a time",
+      "canonical": "https://www.artiou.com/en/vienna-museum-guide/",
+      "bodyChars": 6579
+    },
+    {
+      "url": "https://www.artiou.com/zh/vienna-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (2483 chars, target 3500+)",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/vienna-museum-guide/index.html",
+      "title": "维也纳博物馆指南 | Artiou",
+      "h1": "维也纳适合一段一段看，不适合一口气全吞",
+      "canonical": "https://www.artiou.com/zh/vienna-museum-guide/",
+      "bodyChars": 2483
+    },
+    {
+      "url": "https://www.artiou.com/fr/vienna-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing practical-info signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/vienna-museum-guide/index.html",
+      "title": "Guide des musées de Vienne | Artiou",
+      "h1": "À Vienne, un grand musée à la fois suffit",
+      "canonical": "https://www.artiou.com/fr/vienna-museum-guide/",
+      "bodyChars": 6481
+    },
+    {
+      "url": "https://www.artiou.com/en/florence-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/florence-museum-guide/index.html",
+      "title": "Florence Museum Guide | Artiou",
+      "h1": "In Florence, queues are part of the route",
+      "canonical": "https://www.artiou.com/en/florence-museum-guide/",
+      "bodyChars": 6361
+    },
+    {
+      "url": "https://www.artiou.com/zh/florence-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (2559 chars, target 3500+)",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/florence-museum-guide/index.html",
+      "title": "佛罗伦萨博物馆指南 | Artiou",
+      "h1": "在佛罗伦萨，排队本身就是路线的一部分",
+      "canonical": "https://www.artiou.com/zh/florence-museum-guide/",
+      "bodyChars": 2559
+    },
+    {
+      "url": "https://www.artiou.com/fr/florence-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing practical-info signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/florence-museum-guide/index.html",
+      "title": "Guide des musées de Florence | Artiou",
+      "h1": "À Florence, la file d’attente fait partie du parcours",
+      "canonical": "https://www.artiou.com/fr/florence-museum-guide/",
+      "bodyChars": 6621
+    },
+    {
+      "url": "https://www.artiou.com/en/berlin-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/berlin-museum-guide/index.html",
+      "title": "Berlin Museum Guide | Artiou",
+      "h1": "Berlin works better when each district gets a reason",
+      "canonical": "https://www.artiou.com/en/berlin-museum-guide/",
+      "bodyChars": 6343
+    },
+    {
+      "url": "https://www.artiou.com/zh/berlin-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (2824 chars, target 3500+)",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/berlin-museum-guide/index.html",
+      "title": "柏林博物馆指南 | Artiou",
+      "h1": "柏林最好按片区看，不适合把全城揉成一天",
+      "canonical": "https://www.artiou.com/zh/berlin-museum-guide/",
+      "bodyChars": 2824
+    },
+    {
+      "url": "https://www.artiou.com/fr/berlin-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing practical-info signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/berlin-museum-guide/index.html",
+      "title": "Guide des musées de Berlin | Artiou",
+      "h1": "Berlin se visite mieux par zones que par accumulation",
+      "canonical": "https://www.artiou.com/fr/berlin-museum-guide/",
+      "bodyChars": 6682
+    },
+    {
+      "url": "https://www.artiou.com/en/new-york-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/new-york-museum-guide/index.html",
+      "title": "New York Museum Guide | Artiou",
+      "h1": "New York needs anchors, not museum hopping bravado",
+      "canonical": "https://www.artiou.com/en/new-york-museum-guide/",
+      "bodyChars": 4092
+    },
+    {
+      "url": "https://www.artiou.com/zh/new-york-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (1853 chars, target 3500+)",
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/new-york-museum-guide/index.html",
+      "title": "纽约博物馆指南 | Artiou",
+      "h1": "纽约需要主轴，不需要硬凑赶馆战绩",
+      "canonical": "https://www.artiou.com/zh/new-york-museum-guide/",
+      "bodyChars": 1853
+    },
+    {
+      "url": "https://www.artiou.com/fr/new-york-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/new-york-museum-guide/index.html",
+      "title": "Guide des musees de New York | Artiou",
+      "h1": "New York demande des ancrages, pas une course aux musees",
+      "canonical": "https://www.artiou.com/fr/new-york-museum-guide/",
+      "bodyChars": 4084
+    },
+    {
+      "url": "https://www.artiou.com/en/tokyo-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/tokyo-museum-guide/index.html",
+      "title": "Tokyo Museum Guide | Artiou",
+      "h1": "Tokyo works best when Ueno and Roppongi stay separate",
+      "canonical": "https://www.artiou.com/en/tokyo-museum-guide/",
+      "bodyChars": 3663
+    },
+    {
+      "url": "https://www.artiou.com/zh/tokyo-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (1404 chars, target 3500+)",
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/tokyo-museum-guide/index.html",
+      "title": "东京博物馆指南 | Artiou",
+      "h1": "东京最好把上野和六本木分开看",
+      "canonical": "https://www.artiou.com/zh/tokyo-museum-guide/",
+      "bodyChars": 1404
+    },
+    {
+      "url": "https://www.artiou.com/fr/tokyo-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/tokyo-museum-guide/index.html",
+      "title": "Guide des musees de Tokyo | Artiou",
+      "h1": "Tokyo se comprend mieux en separant Ueno et Roppongi",
+      "canonical": "https://www.artiou.com/fr/tokyo-museum-guide/",
+      "bodyChars": 3612
+    },
+    {
+      "url": "https://www.artiou.com/en/barcelona-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/barcelona-museum-guide/index.html",
+      "title": "Barcelona Museum Guide | Artiou",
+      "h1": "Barcelona works best when Montjuic is not an afterthought",
+      "canonical": "https://www.artiou.com/en/barcelona-museum-guide/",
+      "bodyChars": 3770
+    },
+    {
+      "url": "https://www.artiou.com/zh/barcelona-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (1541 chars, target 3500+)",
+        "museum guide missing practical-info signal",
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/barcelona-museum-guide/index.html",
+      "title": "巴塞罗那博物馆指南 | Artiou",
+      "h1": "巴塞罗那不要只看老城，Montjuic 要单独成日",
+      "canonical": "https://www.artiou.com/zh/barcelona-museum-guide/",
+      "bodyChars": 1541
+    },
+    {
+      "url": "https://www.artiou.com/fr/barcelona-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (2552 chars, target 3500+)",
+        "museum guide missing route/itinerary signal",
+        "museum guide missing practical-info signal",
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/barcelona-museum-guide/index.html",
+      "title": "Guide des musees de Barcelone | Artiou",
+      "h1": "Barcelone se visite mieux si Montjuic devient une vraie journee",
+      "canonical": "https://www.artiou.com/fr/barcelona-museum-guide/",
+      "bodyChars": 2552
+    },
+    {
+      "url": "https://www.artiou.com/en/seoul-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (3172 chars, target 3500+)",
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/seoul-museum-guide/index.html",
+      "title": "Seoul Museum Guide | Artiou",
+      "h1": "Seoul works when heritage and contemporary art get separate days",
+      "canonical": "https://www.artiou.com/en/seoul-museum-guide/",
+      "bodyChars": 3172
+    },
+    {
+      "url": "https://www.artiou.com/zh/seoul-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (1148 chars, target 3500+)",
+        "museum guide missing practical-info signal",
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/seoul-museum-guide/index.html",
+      "title": "首尔博物馆指南 | Artiou",
+      "h1": "首尔最好把历史主线和当代艺术分开看",
+      "canonical": "https://www.artiou.com/zh/seoul-museum-guide/",
+      "bodyChars": 1148
+    },
+    {
+      "url": "https://www.artiou.com/fr/seoul-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (2464 chars, target 3500+)",
+        "museum guide missing route/itinerary signal",
+        "museum guide missing practical-info signal",
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/seoul-museum-guide/index.html",
+      "title": "Guide des musees de Seoul | Artiou",
+      "h1": "Seoul se lit mieux en separant patrimoine et contemporain",
+      "canonical": "https://www.artiou.com/fr/seoul-museum-guide/",
+      "bodyChars": 2464
+    },
+    {
+      "url": "https://www.artiou.com/en/lisbon-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/lisbon-museum-guide/index.html",
+      "title": "Lisbon Museum Guide | Artiou",
+      "h1": "Lisbon works better when Gulbenkian, Belém, and Alcântara get\n              different museum half days",
+      "canonical": "https://www.artiou.com/en/lisbon-museum-guide/",
+      "bodyChars": 3746
+    },
+    {
+      "url": "https://www.artiou.com/zh/lisbon-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (1783 chars, target 3500+)",
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/lisbon-museum-guide/index.html",
+      "title": "里斯本博物馆指南 | Artiou",
+      "h1": "里斯本现在更适合把 Gulbenkian、Belém 和 Alcântara 拆成不同半天",
+      "canonical": "https://www.artiou.com/zh/lisbon-museum-guide/",
+      "bodyChars": 1783
+    },
+    {
+      "url": "https://www.artiou.com/fr/lisbon-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/lisbon-museum-guide/index.html",
+      "title": "Guide des musées de Lisbonne | Artiou",
+      "h1": "Lisbonne se visite mieux quand Gulbenkian, Belém et Alcântara ont\n              chacun leur demi-journée",
+      "canonical": "https://www.artiou.com/fr/lisbon-museum-guide/",
+      "bodyChars": 3927
+    },
+    {
+      "url": "https://www.artiou.com/en/copenhagen-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/copenhagen-museum-guide/index.html",
+      "title": "Copenhagen Museum Guide | Artiou",
+      "h1": "Copenhagen works best when SMK, Glyptoteket, and Louisiana each\n              get their own rhythm",
+      "canonical": "https://www.artiou.com/en/copenhagen-museum-guide/",
+      "bodyChars": 3898
+    },
+    {
+      "url": "https://www.artiou.com/zh/copenhagen-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (1654 chars, target 3500+)",
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/copenhagen-museum-guide/index.html",
+      "title": "哥本哈根博物馆指南 | Artiou",
+      "h1": "哥本哈根更适合把 SMK、Glyptoteket 和 Louisiana 拆成不同节奏",
+      "canonical": "https://www.artiou.com/zh/copenhagen-museum-guide/",
+      "bodyChars": 1654
+    },
+    {
+      "url": "https://www.artiou.com/fr/copenhagen-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/copenhagen-museum-guide/index.html",
+      "title": "Guide des musées de Copenhague | Artiou",
+      "h1": "Copenhague fonctionne mieux quand SMK, Glyptoteket et Louisiana\n              ont chacun leur rythme",
+      "canonical": "https://www.artiou.com/fr/copenhagen-museum-guide/",
+      "bodyChars": 4095
+    },
+    {
+      "url": "https://www.artiou.com/en/athens-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/athens-museum-guide/index.html",
+      "title": "Athens Museum Guide | Artiou",
+      "h1": "Athens needs one ancient anchor day, one deep museum day, and one\n              modern-art reset",
+      "canonical": "https://www.artiou.com/en/athens-museum-guide/",
+      "bodyChars": 4185
+    },
+    {
+      "url": "https://www.artiou.com/zh/athens-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (1940 chars, target 3500+)",
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/athens-museum-guide/index.html",
+      "title": "雅典博物馆指南 | Artiou",
+      "h1": "雅典最好拆成一个卫城日、一个考古深潜日和一个现代艺术 reset",
+      "canonical": "https://www.artiou.com/zh/athens-museum-guide/",
+      "bodyChars": 1940
+    },
+    {
+      "url": "https://www.artiou.com/fr/athens-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/athens-museum-guide/index.html",
+      "title": "Guide des musées d’Athènes | Artiou",
+      "h1": "Athènes demande un jour Acropole, un jour archéologie profonde et\n              une respiration moderne",
+      "canonical": "https://www.artiou.com/fr/athens-museum-guide/",
+      "bodyChars": 4306
+    },
+    {
+      "url": "https://www.artiou.com/en/stockholm-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/stockholm-museum-guide/index.html",
+      "title": "Stockholm Museum Guide | Artiou",
+      "h1": "Stockholm works best when Djurgården, Skeppsholmen, and\n              Blasieholmen each get room to breathe",
+      "canonical": "https://www.artiou.com/en/stockholm-museum-guide/",
+      "bodyChars": 3805
+    },
+    {
+      "url": "https://www.artiou.com/zh/stockholm-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide body is thin (1741 chars, target 3500+)",
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "zh/stockholm-museum-guide/index.html",
+      "title": "斯德哥尔摩博物馆指南 | Artiou",
+      "h1": "斯德哥尔摩更适合让 Djurgården、Skeppsholmen 和 Blasieholmen\n              各自呼吸",
+      "canonical": "https://www.artiou.com/zh/stockholm-museum-guide/",
+      "bodyChars": 1741
+    },
+    {
+      "url": "https://www.artiou.com/fr/stockholm-museum-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide missing FAQ/questions signal",
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "fr/stockholm-museum-guide/index.html",
+      "title": "Guide des musées de Stockholm | Artiou",
+      "h1": "Stockholm se visite mieux quand Djurgården, Skeppsholmen et\n              Blasieholmen respirent séparément",
+      "canonical": "https://www.artiou.com/fr/stockholm-museum-guide/",
+      "bodyChars": 4015
+    },
+    {
+      "url": "https://www.artiou.com/en/louvre-first-time-visitor-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/louvre-first-time-visitor-guide/index.html",
+      "title": "Louvre First-Time Visitor Guide: Routes, Must-Sees & Practical Tips | Artiou",
+      "h1": "Louvre first-time visitor guide",
+      "canonical": "https://www.artiou.com/en/louvre-first-time-visitor-guide/",
+      "bodyChars": 8104
+    },
+    {
+      "url": "https://www.artiou.com/en/musee-orsay-guide/",
+      "type": "museum-guide",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [
+        "museum guide has few internal links (0, target 3+)"
+      ],
+      "path": "en/musee-orsay-guide/index.html",
+      "title": "Musée d’Orsay Guide: First-Time Routes, Must-Sees & Tips | Artiou",
+      "h1": "Musée d’Orsay first-time guide",
+      "canonical": "https://www.artiou.com/en/musee-orsay-guide/",
+      "bodyChars": 9784
+    },
+    {
+      "url": "https://www.artiou.com/en/mona-lisa-guide/",
+      "type": "entity-or-static",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [],
+      "path": "en/mona-lisa-guide/index.html",
+      "title": "Mona Lisa Guide: How to See Leonardo’s Louvre Icon | Artiou",
+      "h1": "Mona Lisa guide for first-time Louvre visitors",
+      "canonical": "https://www.artiou.com/en/mona-lisa-guide/",
+      "bodyChars": 4542
+    },
+    {
+      "url": "https://www.artiou.com/en/monet-water-lilies-guide/",
+      "type": "entity-or-static",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [],
+      "path": "en/monet-water-lilies-guide/index.html",
+      "title": "Monet Water Lilies Guide: Orangerie Rooms & How to See Them | Artiou",
+      "h1": "Monet Water Lilies guide for Paris visitors",
+      "canonical": "https://www.artiou.com/en/monet-water-lilies-guide/",
+      "bodyChars": 5216
+    }
+  ]
+}

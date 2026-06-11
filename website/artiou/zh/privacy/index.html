@@ -9,7 +9,7 @@
     <link rel="alternate" hreflang="zh-Hans" href="https://www.artiou.com/zh/privacy/" />
     <link rel="alternate" hreflang="en" href="https://www.artiou.com/en/privacy/" />
     <link rel="alternate" hreflang="fr" href="https://www.artiou.com/fr/privacy/" />
-    <link rel="alternate" hreflang="x-default" href="https://www.artiou.com/zh/privacy/" />
+    <link rel="alternate" hreflang="x-default" href="https://www.artiou.com/en/privacy/" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap" rel="stylesheet" />
@@ -250,18 +250,5 @@
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
-  <script>
-  window.addEventListener('click', function (event) {
-    var link = event.target && event.target.closest ? event.target.closest('a') : null;
-    if (!link || !window.umami) return;
-    var href = link.href || '';
-    var text = (link.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 80);
-    var eventName = '';
-    if (/apps\.apple\.com/.test(href)) eventName = 'app_store_click';
-    else if (/play\.google\.com/.test(href)) eventName = 'google_play_click';
-    else if (/download|app store|google play|télécharger|下载/i.test(text + ' ' + href)) eventName = 'download_click';
-    if (eventName) window.umami.track(eventName, { href: href, text: text });
-  });
-</script>
 </body>
 </html>

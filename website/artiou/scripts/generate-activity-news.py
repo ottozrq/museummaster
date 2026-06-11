@@ -55,11 +55,35 @@ NEGATIVE_KEYWORDS = [
     "market",
     "atelier",
     "workshop",
+    "stage",
+    "course",
+    "cours",
     "conference",
     "conférence",
+    "conferences",
+    "conférences",
     "cinema",
     "cinéma",
+    "ciné-club",
+    "cine-club",
+    "festival",
+    "salon",
+    "innovation",
+    "tech",
+    "vivatech",
+    "vernissage",
+    "opening",
 ]
+
+
+def contains_phrase(text: str, phrase: str) -> bool:
+    """Match keywords as phrases, avoiding false hits like cours in parcours."""
+    pattern = r"(?<!\w)" + re.escape(phrase.lower()) + r"(?!\w)"
+    return re.search(pattern, text.lower(), flags=re.IGNORECASE) is not None
+
+
+def contains_any_phrase(text: str, phrases: list[str] | tuple[str, ...]) -> bool:
+    return any(contains_phrase(text, phrase) for phrase in phrases)
 
 
 class TextExtractor(HTMLParser):
@@ -88,6 +112,7 @@ def markdown_paragraphs_from_html(value: str | None) -> str:
     text = re.sub(r"(?i)</?(em|strong|b|i)[^>]*>", "", text)
     text = re.sub(r"<[^>]+>", "", text)
     text = unescape(text).replace("\xa0", " ")
+    text = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f]", "", text)
     paragraphs = []
     for part in re.split(r"\n\s*\n", text):
         clean = re.sub(r"[ \t]+", " ", part).strip()
@@ -286,23 +311,88 @@ def searchable_text(activity: dict) -> str:
     return " ".join(parts).lower()
 
 
+def primary_classification_text(activity: dict) -> str:
+    parts: list[str] = []
+    for key in ["title", "lead_text", "category", "type"]:
+        value = activity.get(key)
+        if isinstance(value, str):
+            parts.append(html_text(value))
+    for key in ["qfap_tags", "universe_tags"]:
+        value = activity.get(key)
+        if isinstance(value, list):
+            parts.extend(str(item) for item in value)
+    return " ".join(parts).lower()
+
+
 def exhibition_score(activity: dict) -> int:
     text = searchable_text(activity)
+    primary_text = primary_classification_text(activity)
     title = (activity.get("title") or "").lower()
     venue = (activity.get("address_name") or "").lower()
     tags = {str(item).lower() for item in (activity.get("qfap_tags") or [])}
     strong_tags = {"expo", "art contemporain", "peinture", "photo"}
-    negative_tags = {"concert", "musique", "théâtre", "theatre", "sport", "loisirs", "atelier", "conférence", "conference"}
-    negative_title = (
+    negative_tags = {
+        "concert",
+        "musique",
+        "théâtre",
+        "theatre",
+        "sport",
+        "loisirs",
+        "atelier",
         "conférence",
         "conference",
+        "conférences",
+        "conferences",
+        "festival",
+        "salon",
+        "innovation",
+        "tech",
+        "vivatech",
+        "vernissage",
+        "opening",
+        "ecrans",
+        "écrans",
+        "balade urbaine",
+        "nature",
+        "littérature",
+        "literature",
+    }
+    negative_title = (
+        "rencontre",
+        "meeting",
+        "bal",
+        "vernissage",
+        "opening",
+        "vivatech",
+        "conférence",
+        "conference",
+        "conférences",
+        "conferences",
+        "présentation",
+        "presentation",
         "représentation",
         "representation",
         "journée",
         "journee",
         "sortie",
+        "visite",
+        "guided tour",
+        "lecture",
+        "lectures",
+        "écoute",
+        "ecoute",
+        "écoutes",
+        "ecoutes",
+        "performance",
+        "projection",
         "atelier",
+        "stage",
+        "course",
+        "cours",
         "forum",
+        "nuit blanche",
+        "nuits des forêts",
+        "nuits des forets",
         "nuit des musées",
         "nuit des musees",
         "nuit européenne des musées",
@@ -310,20 +400,24 @@ def exhibition_score(activity: dict) -> int:
         "night of museums",
         "programme de la nuit",
         "program of the night",
+        "ciné-club",
+        "cine-club",
+        "cinéma des cinéastes",
+        "cinema des cineastes",
     )
     if tags & negative_tags:
         return -100
-    if any(word in title for word in negative_title):
+    exhibition_title = contains_any_phrase(title, ["exposition", "exhibition", "expo"])
+    exhibition_venue = contains_any_phrase(venue, ["musée", "musee", "museum", "galerie", "gallery"])
+    if contains_any_phrase(title, negative_title):
         return -100
-    if any(word in text for word in NEGATIVE_KEYWORDS) and not (strong_tags & tags):
+    if contains_any_phrase(primary_text, NEGATIVE_KEYWORDS) and not exhibition_title:
         return -100
-    exhibition_title = any(word in title for word in ["exposition", "exhibition", "expo"])
-    exhibition_venue = any(word in venue for word in ["musée", "musee", "museum", "galerie", "gallery"])
     if not (exhibition_title or exhibition_venue or "expo" in tags):
         return -100
     score = 0
     for keyword in EXHIBITION_KEYWORDS:
-        if keyword in text:
+        if contains_phrase(text, keyword):
             score += 3
     if "expo" in tags:
         score += 12
@@ -502,17 +596,24 @@ def main() -> int:
     parser.add_argument("--days", type=int, default=8)
     parser.add_argument("--per-day", type=int, default=2)
     parser.add_argument("--date", default=datetime.now(timezone.utc).date().isoformat())
+    parser.add_argument("--activity-ids", nargs="*", default=None)
     args = parser.parse_args()
 
     token = get_token()
     processed = load_processed()
     existing_slugs = scan_existing_slugs()
     selected_dates = date_range(args.date, args.days)
-    candidates = fetch_candidates(token, selected_dates, args.max_pages)
-    picked_items = pick_activities(candidates, processed, existing_slugs, args.per_day)
+    if args.activity_ids:
+        candidates = []
+        picked_items = [{"activity_id": activity_id} for activity_id in args.activity_ids]
+    else:
+        candidates = fetch_candidates(token, selected_dates, args.max_pages)
+        picked_items = pick_activities(candidates, processed, existing_slugs, args.per_day)
 
     details: list[tuple[dict, str]] = []
     for picked in picked_items:
+        if picked["activity_id"] in processed:
+            continue
         activity = fetch_activity(token, picked["activity_id"])
         if exhibition_score(activity) < 12:
             continue
