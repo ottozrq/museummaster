@@ -73,6 +73,8 @@ NEGATIVE_KEYWORDS = [
     "vivatech",
     "vernissage",
     "opening",
+    "table ronde",
+    "round table",
 ]
 
 
@@ -360,6 +362,8 @@ def exhibition_score(activity: dict) -> int:
     negative_title = (
         "rencontre",
         "meeting",
+        "table ronde",
+        "round table",
         "bal",
         "vernissage",
         "opening",

@@ -90,7 +90,7 @@ Required env vars in `frontend/.env`:
 
 ## Artiou website deploy/review checklist
 
-Before marking a website deploy as REVIEW/PASS, run the live SEO smoke test from the repo root:
+Before marking a website deploy as REVIEW/PASS or moving a related Todoist card to DONE, run the live SEO smoke test from the repo root:
 
 ```bash
 python3 website/artiou/scripts/live-seo-smoke.py
@@ -102,7 +102,7 @@ For a faster preflight that still checks canonical host redirects, UTF-8 headers
 python3 website/artiou/scripts/live-seo-smoke.py --core-only
 ```
 
-The full smoke test parses `https://www.artiou.com/sitemap.xml` and requires every sitemap URL to return `200`, be indexable, be self-canonical, avoid fallback-shell canonical mismatches, and contain no internal planning/placeholder language. Missing probes such as `/en/nonexistent-growth-audit-test/` and `/en/news/nonexistent-growth-audit-test/` must return `404` or `410`; if they return a `200` fallback, the command exits non-zero and the deploy must not be marked REVIEW/PASS.
+The full smoke test parses `https://www.artiou.com/sitemap.xml` and requires every sitemap URL to return `200`, be indexable, be self-canonical, avoid fallback-shell canonical mismatches, and contain no internal planning/placeholder language. Missing probes such as `/en/nonexistent-growth-audit-test/` and `/en/news/nonexistent-growth-audit-test/` must return `404` or `410`; if they return a `200` fallback, the command exits non-zero and the deploy must not be marked REVIEW/PASS/DONE. The current live deployment is expected to pass all sitemap URLs (70/70 as of 2026-06-13) plus the two missing-path probes.
 
 ## API Endpoints
 

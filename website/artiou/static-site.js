@@ -107,11 +107,11 @@
     var targetGuideUrl = getInternalGuideUrl(absoluteHref);
 
     if (isDownloadLink(link, text, absoluteHref)) {
-      track("app_store_click", {
+      track(guide ? "guide_download_click" : "download_click", {
         href: absoluteHref,
         target_path: targetGuideUrl ? targetGuideUrl.pathname : "",
         text: text,
-        source: guide ? "guide_page" : "sitewide",
+        source_page_type: guide ? "guide" : "sitewide",
         cta_location: ctaLocation,
       });
       return;
