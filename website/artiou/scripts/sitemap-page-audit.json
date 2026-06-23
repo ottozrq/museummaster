@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-06-11T11:00:48Z",
+  "generatedAt": "2026-06-22T23:58:55Z",
   "sitemap": "/Users/otto/Projects/museummaster/website/artiou/sitemap.xml",
   "summary": {
-    "urlsAudited": 70,
-    "urlsPassing": 70,
+    "urlsAudited": 72,
+    "urlsPassing": 72,
     "urlsFailing": 0,
     "urlsWithWarnings": 65
   },
@@ -31,10 +31,10 @@
       ],
       "warnings": [],
       "path": "en/index.html",
-      "title": "Artiou — Museum AI Audio Guide",
-      "h1": "Your pocket curator",
+      "title": "Artiou — Museum AI Audio Guide & Pocket Curator",
+      "h1": "Artiou museum AI audio guide",
       "canonical": "https://www.artiou.com/en/",
-      "bodyChars": 4990
+      "bodyChars": 5830
     },
     {
       "url": "https://www.artiou.com/fr/",
@@ -64,7 +64,7 @@
       "title": "Best Museums in Paris: First-Time Visitor Guide, Routes & Tips | Artiou",
       "h1": "Choose better museum days in Paris",
       "canonical": "https://www.artiou.com/en/paris-museum-guide/",
-      "bodyChars": 15318
+      "bodyChars": 21063
     },
     {
       "url": "https://www.artiou.com/zh/paris-museum-guide/",
@@ -213,15 +213,13 @@
         "passes sitemap indexability/content gate"
       ],
       "warnings": [
-        "museum guide body is thin (3484 chars, target 3500+)",
-        "museum guide missing FAQ/questions signal",
         "museum guide has few internal links (0, target 3+)"
       ],
       "path": "en/basel-museum-guide/index.html",
       "title": "Basel Museum Guide | Artiou",
       "h1": "Basel works better when the center, Riehen, and the Rhine get\n              different museum half days",
       "canonical": "https://www.artiou.com/en/basel-museum-guide/",
-      "bodyChars": 3484
+      "bodyChars": 5192
     },
     {
       "url": "https://www.artiou.com/zh/basel-museum-guide/",
@@ -372,10 +370,10 @@
         "museum guide has few internal links (0, target 3+)"
       ],
       "path": "en/lyon-museum-guide/index.html",
-      "title": "Lyon Museum Guide | Artiou",
-      "h1": "Choose slower museum days in Lyon",
+      "title": "Best Museums in Lyon: One-Day Museum Guide | Artiou",
+      "h1": "Best museums in Lyon: start with three clear anchors",
       "canonical": "https://www.artiou.com/en/lyon-museum-guide/",
-      "bodyChars": 6468
+      "bodyChars": 9770
     },
     {
       "url": "https://www.artiou.com/zh/lyon-museum-guide/",
@@ -385,14 +383,14 @@
         "passes sitemap indexability/content gate"
       ],
       "warnings": [
-        "museum guide body is thin (2490 chars, target 3500+)",
+        "museum guide body is thin (2560 chars, target 3500+)",
         "museum guide has few internal links (0, target 3+)"
       ],
       "path": "zh/lyon-museum-guide/index.html",
       "title": "里昂博物馆指南 | Artiou",
-      "h1": "把里昂的观展日排得更慢、更准",
+      "h1": "里昂最值得先看的博物馆：从三个主轴开始",
       "canonical": "https://www.artiou.com/zh/lyon-museum-guide/",
-      "bodyChars": 2490
+      "bodyChars": 2560
     },
     {
       "url": "https://www.artiou.com/fr/lyon-museum-guide/",
@@ -406,9 +404,9 @@
       ],
       "path": "fr/lyon-museum-guide/index.html",
       "title": "Guide des musées de Lyon | Artiou",
-      "h1": "Construire des journées musée plus lentes à Lyon",
+      "h1": "Les meilleurs musées de Lyon : commencez par trois ancrages",
       "canonical": "https://www.artiou.com/fr/lyon-museum-guide/",
-      "bodyChars": 6699
+      "bodyChars": 6807
     },
     {
       "url": "https://www.artiou.com/en/amsterdam-museum-guide/",
@@ -424,7 +422,7 @@
       "title": "Amsterdam Museum Guide | Artiou",
       "h1": "Plan a smarter museum day in Amsterdam",
       "canonical": "https://www.artiou.com/en/amsterdam-museum-guide/",
-      "bodyChars": 5484
+      "bodyChars": 6879
     },
     {
       "url": "https://www.artiou.com/zh/amsterdam-museum-guide/",
@@ -473,7 +471,7 @@
       "title": "Rome Museum Guide | Artiou",
       "h1": "Choose the right museum day in Rome",
       "canonical": "https://www.artiou.com/en/rome-museum-guide/",
-      "bodyChars": 5666
+      "bodyChars": 7140
     },
     {
       "url": "https://www.artiou.com/zh/rome-museum-guide/",
@@ -483,14 +481,14 @@
         "passes sitemap indexability/content gate"
       ],
       "warnings": [
-        "museum guide body is thin (2227 chars, target 3500+)",
+        "museum guide body is thin (2758 chars, target 3500+)",
         "museum guide has few internal links (0, target 3+)"
       ],
       "path": "zh/rome-museum-guide/index.html",
       "title": "罗马博物馆指南 | Artiou",
       "h1": "先选对罗马的看展日，再谈多看几个馆",
       "canonical": "https://www.artiou.com/zh/rome-museum-guide/",
-      "bodyChars": 2227
+      "bodyChars": 2758
     },
     {
       "url": "https://www.artiou.com/fr/rome-museum-guide/",
@@ -820,14 +818,13 @@
         "passes sitemap indexability/content gate"
       ],
       "warnings": [
-        "museum guide missing FAQ/questions signal",
         "museum guide has few internal links (0, target 3+)"
       ],
       "path": "en/barcelona-museum-guide/index.html",
       "title": "Barcelona Museum Guide | Artiou",
       "h1": "Barcelona works best when Montjuic is not an afterthought",
       "canonical": "https://www.artiou.com/en/barcelona-museum-guide/",
-      "bodyChars": 3770
+      "bodyChars": 5417
     },
     {
       "url": "https://www.artiou.com/zh/barcelona-museum-guide/",
@@ -1147,7 +1144,7 @@
       "title": "Louvre First-Time Visitor Guide: Routes, Must-Sees & Practical Tips | Artiou",
       "h1": "Louvre first-time visitor guide",
       "canonical": "https://www.artiou.com/en/louvre-first-time-visitor-guide/",
-      "bodyChars": 8104
+      "bodyChars": 8076
     },
     {
       "url": "https://www.artiou.com/en/musee-orsay-guide/",
@@ -1174,10 +1171,38 @@
       ],
       "warnings": [],
       "path": "en/mona-lisa-guide/index.html",
-      "title": "Mona Lisa Guide: How to See Leonardo’s Louvre Icon | Artiou",
-      "h1": "Mona Lisa guide for first-time Louvre visitors",
+      "title": "Where to See the Mona Lisa in the Louvre | Artiou Guide",
+      "h1": "Where to see the Mona Lisa in the Louvre",
       "canonical": "https://www.artiou.com/en/mona-lisa-guide/",
-      "bodyChars": 4542
+      "bodyChars": 5682
+    },
+    {
+      "url": "https://www.artiou.com/en/winged-victory-samothrace-guide/",
+      "type": "entity-or-static",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [],
+      "path": "en/winged-victory-samothrace-guide/index.html",
+      "title": "Winged Victory of Samothrace Guide: Louvre Location & Meaning | Artiou",
+      "h1": "Winged Victory of Samothrace Louvre guide",
+      "canonical": "https://www.artiou.com/en/winged-victory-samothrace-guide/",
+      "bodyChars": 4125
+    },
+    {
+      "url": "https://www.artiou.com/en/venus-de-milo-guide/",
+      "type": "entity-or-static",
+      "included": true,
+      "reasons": [
+        "passes sitemap indexability/content gate"
+      ],
+      "warnings": [],
+      "path": "en/venus-de-milo-guide/index.html",
+      "title": "Venus de Milo Louvre Guide: Location, Meaning & What to Notice | Artiou",
+      "h1": "Venus de Milo Louvre guide",
+      "canonical": "https://www.artiou.com/en/venus-de-milo-guide/",
+      "bodyChars": 4061
     },
     {
       "url": "https://www.artiou.com/en/monet-water-lilies-guide/",

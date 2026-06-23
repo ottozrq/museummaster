@@ -22,14 +22,18 @@ Deprecated/legacy names from earlier reports: `app_download_click`, `app_store_c
 
 - `page`, `path`, `page_path`: current `window.location.pathname`
 - `language`: page language inferred from `<html lang>` or URL prefix
+- `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`: copied from the current URL when present, otherwise empty strings
 
 Download events also include:
 
 - `href`: destination URL or anchor
+- `source_path`: current `window.location.pathname` for source-page filtering
 - `target_path`: internal guide target when relevant, otherwise empty
 - `text`: clicked link text, trimmed
 - `source_page_type`: `guide` or `sitewide`
 - `cta_location`: `hero`, `footer`, `guide-card`, `nav`, or `body`
+- `download_target`: `app_store`, `play_store`, `download_section`, or `unknown`
+- `store_platform`: `ios`, `android`, `none`, or `unknown`
 
 ## Weekly report interpretation
 

@@ -1,14 +1,64 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, FlatList, Image, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import * as AppleAuthentication from "expo-apple-authentication";
 
 import { API_BASE_URL, ScanRecord, fetchMyFavorites } from "../src/services/api";
 import { useI18n } from "../src/i18n";
 
 const GOOGLE_IOS_CLIENT_ID =
+  process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID?.trim() ||
   "577788424612-d3gutf0ru81i1tdrfdm5m21c27rvp27k.apps.googleusercontent.com";
+const DEFAULT_GOOGLE_WEB_CLIENT_ID =
+  "577788424612-mtu5sal27kunufruqrduv4jnpivc5ipq.apps.googleusercontent.com";
+const NON_WEB_GOOGLE_CLIENT_IDS = new Set([
+  "577788424612-d3gutf0ru81i1tdrfdm5m21c27rvp27k.apps.googleusercontent.com",
+  "577788424612-qm2j",
+  "577788424612-nnrkq5l2v3t429turqbkmat81penef85.apps.googleusercontent.com",
+  "577788424612-0o79",
+  "577788424612-1qkv",
+]);
+const configuredGoogleWebClientId =
+  process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID?.trim();
+const GOOGLE_WEB_CLIENT_ID =
+  configuredGoogleWebClientId &&
+  !NON_WEB_GOOGLE_CLIENT_IDS.has(configuredGoogleWebClientId) &&
+  ![...NON_WEB_GOOGLE_CLIENT_IDS].some((clientId) =>
+    configuredGoogleWebClientId.startsWith(clientId),
+  )
+    ? configuredGoogleWebClientId
+    : DEFAULT_GOOGLE_WEB_CLIENT_ID;
+const AUTH_PROVIDER_KEY = "museum_auth_provider";
+const ANDROID_GOOGLE_PACKAGE = "com.ottozhang.artiou";
+const PLAY_SIGNING_SHA1 = "F6:81:0C:0B:AF:C0:8E:4D:F9:24:A3:27:20:3C:B0:7E:20:09:59:0D";
+
+type AuthProvider = "apple" | "google" | null;
+
+function googleConfigureOptions() {
+  return {
+    iosClientId: GOOGLE_IOS_CLIENT_ID,
+    ...(GOOGLE_WEB_CLIENT_ID ? { webClientId: GOOGLE_WEB_CLIENT_ID } : {}),
+  };
+}
+
+function getGoogleSignInErrorMessage(error: unknown, t: (key: any, params?: any) => string) {
+  const rawMessage = error instanceof Error ? error.message : "";
+  const code = (error as any)?.code ? String((error as any).code) : "";
+
+  if (!GOOGLE_WEB_CLIENT_ID) {
+    return t("collection.googleMissingWebClientId");
+  }
+
+  if (code === "DEVELOPER_ERROR" || rawMessage.includes("DEVELOPER_ERROR")) {
+    return t("collection.googleDeveloperError", {
+      packageName: ANDROID_GOOGLE_PACKAGE,
+      sha1: PLAY_SIGNING_SHA1,
+    });
+  }
+
+  return rawMessage || t("collection.googleInitFailed");
+}
 
 function getGoogleSignin() {
   try {
@@ -23,26 +73,29 @@ export default function CollectionScreen() {
   const { t } = useI18n();
   const [items, setItems] = useState<ScanRecord[]>([]);
   const [authToken, setAuthToken] = useState<string | null>(null);
+  const [authProvider, setAuthProvider] = useState<AuthProvider>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [appleAvailable, setAppleAvailable] = useState(false);
+  const [googleAvailable, setGoogleAvailable] = useState(false);
   const [scanRemaining, setScanRemaining] = useState<number | null>(null);
 
   useEffect(() => {
     const googleSignin = getGoogleSignin();
-    googleSignin?.configure?.({
-      iosClientId: GOOGLE_IOS_CLIENT_ID,
-    });
+    googleSignin?.configure?.(googleConfigureOptions());
+    setGoogleAvailable(Boolean(googleSignin));
 
     let cancelled = false;
     (async () => {
       try {
-        const [available, token] = await Promise.all([
+        const [available, token, provider] = await Promise.all([
           AppleAuthentication.isAvailableAsync(),
           AsyncStorage.getItem("museum_auth_token"),
+          AsyncStorage.getItem(AUTH_PROVIDER_KEY),
         ]);
         if (cancelled) return;
         setAppleAvailable(available);
         setAuthToken(token);
+        setAuthProvider(provider === "google" || provider === "apple" ? provider : null);
       } catch {
         if (!cancelled) {
           setAppleAvailable(false);
@@ -67,7 +120,6 @@ export default function CollectionScreen() {
       try {
         const coll = await fetchMyFavorites(token, { pageToken: "1", pageSize: 100 });
         setItems(coll.items ?? []);
-        console.log(coll);
       } catch (e) {
         console.warn("Fetch favorites failed", e);
       }
@@ -140,7 +192,9 @@ export default function CollectionScreen() {
       }
 
       await AsyncStorage.setItem("museum_auth_token", data.access_token);
+      await AsyncStorage.setItem(AUTH_PROVIDER_KEY, "apple");
       setAuthToken(data.access_token);
+      setAuthProvider("apple");
     } catch (e: any) {
       if (e?.code === "ERR_CANCELED") {
         return;
@@ -155,14 +209,30 @@ export default function CollectionScreen() {
       Alert.alert(t("collection.loginFailedTitle"), t("collection.googleUnavailable"));
       return;
     }
+    if (!GOOGLE_WEB_CLIENT_ID) {
+      Alert.alert(t("collection.loginFailedTitle"), t("collection.googleMissingWebClientId"));
+      return;
+    }
 
     try {
       // 在点击时再次配置，避免冷启动后用户快速点击导致的未初始化状态。
-      googleSignin.configure?.({
-        iosClientId: GOOGLE_IOS_CLIENT_ID,
-      });
+      googleSignin.configure?.(googleConfigureOptions());
+      await googleSignin.signOut?.();
+      if (Platform.OS === "android") {
+        await googleSignin.hasPlayServices?.({ showPlayServicesUpdateDialog: true });
+      }
       const signInResult = await googleSignin.signIn();
-      const idToken = (signInResult as any)?.data?.idToken ?? (signInResult as any)?.idToken;
+      if ((signInResult as any)?.type === "cancelled") {
+        return;
+      }
+      let idToken = (signInResult as any)?.data?.idToken ?? (signInResult as any)?.idToken;
+      if (!idToken) {
+        try {
+          idToken = (await googleSignin.getTokens?.())?.idToken;
+        } catch {
+          // The explicit no-credential alert below is clearer for users than a token fetch detail.
+        }
+      }
       if (!idToken) {
         Alert.alert(t("collection.loginFailedTitle"), t("collection.noGoogleCredential"));
         return;
@@ -191,16 +261,16 @@ export default function CollectionScreen() {
       }
 
       await AsyncStorage.setItem("museum_auth_token", tokenResp.access_token);
+      await AsyncStorage.setItem(AUTH_PROVIDER_KEY, "google");
       setAuthToken(tokenResp.access_token);
+      setAuthProvider("google");
     } catch (e: any) {
       if (e?.code === "SIGN_IN_CANCELLED") {
         return;
       }
-      const fallbackMessage =
-        "Google 登录初始化失败，请稍后重试。若问题持续，请更新到最新版本。";
       Alert.alert(
         t("collection.loginFailedTitle"),
-        e instanceof Error ? e.message || fallbackMessage : fallbackMessage,
+        getGoogleSignInErrorMessage(e, t),
       );
     }
   };
@@ -233,7 +303,7 @@ export default function CollectionScreen() {
   }, [items]);
 
   // 未登录状态：展示「My Artiou」登录引导页
-  if (!checkingAuth && appleAvailable && !authToken) {
+  if (!checkingAuth && !authToken && (appleAvailable || googleAvailable)) {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -256,29 +326,33 @@ export default function CollectionScreen() {
           </Pressable>
         </View>
 
-        {/* 中间 Apple 登录按钮与文案 */}
+        {/* 中间登录按钮与文案 */}
         <View style={styles.loginCenter}>
           <Text style={styles.loginTitle}>{t("collection.saveFavoritesTitle")}</Text>
           <Text style={styles.loginSubtitle}>
             {t("collection.saveFavoritesSubtitle")}
           </Text>
 
-          <AppleAuthentication.AppleAuthenticationButton
-            buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-            buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-            cornerRadius={10}
-            style={styles.loginAppleButton}
-            onPress={handleAppleSignIn}
-          />
+          {appleAvailable && (
+            <AppleAuthentication.AppleAuthenticationButton
+              buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+              buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+              cornerRadius={10}
+              style={styles.loginAppleButton}
+              onPress={handleAppleSignIn}
+            />
+          )}
 
-          <Pressable style={styles.loginGoogleButton} onPress={handleGoogleSignIn}>
-            <View style={styles.loginGoogleContent}>
-              <View style={styles.loginGoogleIconCircle}>
-                <Text style={styles.loginGoogleIconG}>G</Text>
+          {googleAvailable && (
+            <Pressable style={styles.loginGoogleButton} onPress={handleGoogleSignIn}>
+              <View style={styles.loginGoogleContent}>
+                <View style={styles.loginGoogleIconCircle}>
+                  <Text style={styles.loginGoogleIconG}>G</Text>
+                </View>
+                <Text style={styles.loginGoogleButtonText}>{t("collection.continueWithGoogle")}</Text>
               </View>
-              <Text style={styles.loginGoogleButtonText}>{t("collection.continueWithGoogle")}</Text>
-            </View>
-          </Pressable>
+            </Pressable>
+          )}
         </View>
 
         {/* 底部条款 */}
@@ -333,7 +407,9 @@ export default function CollectionScreen() {
             <Text style={styles.authText}>
               {scanRemaining !== null
                 ? t("collection.remainingScans", { count: scanRemaining })
-                : t("collection.signedInWithApple")}
+                : authProvider === "google"
+                  ? t("collection.signedInWithGoogle")
+                  : t("collection.signedInWithApple")}
             </Text>
             <View style={styles.authActions}>
               <Pressable

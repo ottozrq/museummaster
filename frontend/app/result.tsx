@@ -21,6 +21,7 @@ import {
 } from "expo-audio";
 import {
   AnalyzeStreamHandlers,
+  API_BASE_URL,
   analyzeImageStream,
   createSpeech,
   favoriteScanRecord,
@@ -102,7 +103,7 @@ export default function ResultScreen() {
         if (cancelled) return;
         setText(rec.text);
         if (rec.image_path) {
-          setImageUri(`${process.env.EXPO_PUBLIC_API_BASE_URL?.trim() || "https://museumapi.ottozhang.com"}${rec.image_path}`);
+          setImageUri(`${API_BASE_URL}${rec.image_path}`);
         }
       } catch (e) {
         if (!cancelled) {

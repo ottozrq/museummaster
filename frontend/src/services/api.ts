@@ -2,8 +2,23 @@
 import * as FileSystem from "expo-file-system/legacy";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const API_BASE_URL =
-  process.env.EXPO_PUBLIC_API_BASE_URL?.trim() || "https://museumapi.ottozhang.com";
+const PRODUCTION_API_BASE_URL = "https://museumapi.ottozhang.com";
+
+function resolveApiBaseUrl() {
+  const configured = process.env.EXPO_PUBLIC_API_BASE_URL?.trim();
+  if (!configured) return PRODUCTION_API_BASE_URL;
+
+  const pointsToLocalhost =
+    /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i.test(configured);
+
+  if (!__DEV__ && pointsToLocalhost) {
+    return PRODUCTION_API_BASE_URL;
+  }
+
+  return configured.replace(/\/$/, "");
+}
+
+export const API_BASE_URL = resolveApiBaseUrl();
 const USE_FAKE_ANALYZE = process.env.EXPO_PUBLIC_USE_FAKE_ANALYZE === "true";
 
 type AnalyzeResponse = {
@@ -359,6 +374,10 @@ export async function activateSubscriptionPlan(
     scan_pack_remaining?: number;
     apple_original_transaction_id?: string;
     apple_transaction_id?: string;
+    google_product_id?: string;
+    google_purchase_token?: string;
+    google_order_id?: string;
+    google_package_name?: string;
   },
 ): Promise<SubscriptionCurrent> {
   const response = await fetch(`${API_BASE_URL}/subscription/activate`, {
@@ -376,6 +395,10 @@ export async function activateSubscriptionPlan(
         ? { apple_original_transaction_id: opts.apple_original_transaction_id }
         : {}),
       ...(opts?.apple_transaction_id != null ? { apple_transaction_id: opts.apple_transaction_id } : {}),
+      ...(opts?.google_product_id != null ? { google_product_id: opts.google_product_id } : {}),
+      ...(opts?.google_purchase_token != null ? { google_purchase_token: opts.google_purchase_token } : {}),
+      ...(opts?.google_order_id != null ? { google_order_id: opts.google_order_id } : {}),
+      ...(opts?.google_package_name != null ? { google_package_name: opts.google_package_name } : {}),
     }),
   });
   if (!response.ok) {
@@ -384,4 +407,3 @@ export async function activateSubscriptionPlan(
   }
   return response.json();
 }
-

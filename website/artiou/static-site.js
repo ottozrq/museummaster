@@ -10,13 +10,31 @@
     return match ? match[1] : "unknown";
   }
 
-  function getPageContext() {
+  function getQueryParam(name) {
+    try {
+      return new URLSearchParams(window.location.search).get(name) || "";
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function getChannelContext() {
     return {
+      utm_source: getQueryParam("utm_source"),
+      utm_medium: getQueryParam("utm_medium"),
+      utm_campaign: getQueryParam("utm_campaign"),
+      utm_content: getQueryParam("utm_content"),
+      utm_term: getQueryParam("utm_term"),
+    };
+  }
+
+  function getPageContext() {
+    return Object.assign({
       page: window.location.pathname,
       path: window.location.pathname,
       page_path: window.location.pathname,
       language: getLanguage(),
-    };
+    }, getChannelContext());
   }
 
   function track(eventName, props) {
@@ -34,6 +52,25 @@
     if (/apps\.apple\.com|play\.google\.com/.test(href)) return true;
     if (/#download$/.test(href)) return true;
     return /download|get the app|app store|google play|use artiou|télécharger|下载/i.test(text + " " + href);
+  }
+
+  function getDownloadTarget(link, href) {
+    var target = {
+      download_target: "unknown",
+      store_platform: "unknown",
+    };
+    if (!link) return target;
+    if (link.id === "link-app-store" || /apps\.apple\.com/.test(href)) {
+      target.download_target = "app_store";
+      target.store_platform = "ios";
+    } else if (link.id === "link-play-store" || /play\.google\.com/.test(href)) {
+      target.download_target = "play_store";
+      target.store_platform = "android";
+    } else if (/#download$/.test(href)) {
+      target.download_target = "download_section";
+      target.store_platform = "none";
+    }
+    return target;
   }
 
   function getCtaLocation(link) {
@@ -107,13 +144,14 @@
     var targetGuideUrl = getInternalGuideUrl(absoluteHref);
 
     if (isDownloadLink(link, text, absoluteHref)) {
-      track(guide ? "guide_download_click" : "download_click", {
+      track(guide ? "guide_download_click" : "download_click", Object.assign({
         href: absoluteHref,
+        source_path: window.location.pathname,
         target_path: targetGuideUrl ? targetGuideUrl.pathname : "",
         text: text,
         source_page_type: guide ? "guide" : "sitewide",
         cta_location: ctaLocation,
-      });
+      }, getDownloadTarget(link, absoluteHref)));
       return;
     }
 

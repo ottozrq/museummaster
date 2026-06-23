@@ -451,11 +451,83 @@ def test_apply_scan_pack_preserves_pro_fields():
         "type": "pro_monthly",
         "pro_expires_at_ts": expires,
         "pro_scan_total": PRO_MONTHLY_SCAN_LIMIT,
-        "pro_scan_remaining": 88,
+        "pro_scan_remaining": 200,
     }
     out = apply_scan_pack_purchase(prev, 50, now)
     assert out["type"] == "pro_monthly"
-    assert out["pro_scan_remaining"] == 88
     assert out["pro_expires_at_ts"] == expires
+    assert out["pro_scan_remaining"] == 200
     assert out["scan_pack_remaining"] == 50
     assert out["scan_pack_total"] == 50
+
+
+def test_google_purchase_shape_requires_expected_product_and_package():
+    from fastapi import HTTPException
+    from src.routes.subscription import _validate_google_purchase_shape
+
+    _validate_google_purchase_shape(
+        "scan_pack",
+        {
+            "google_purchase_token": "token-1",
+            "google_product_id": "com.ottozhang.artiou.iap.scan",
+            "google_package_name": "com.ottozhang.artiou",
+        },
+    )
+
+    with pytest.raises(HTTPException) as product_error:
+        _validate_google_purchase_shape(
+            "pro_yearly",
+            {
+                "google_purchase_token": "token-2",
+                "google_product_id": "com.ottozhang.artiou.sub.scan.pro.monthly",
+                "google_package_name": "com.ottozhang.artiou",
+            },
+        )
+    assert product_error.value.status_code == 400
+    assert "product" in product_error.value.detail
+
+    with pytest.raises(HTTPException) as package_error:
+        _validate_google_purchase_shape(
+            "scan_pack",
+            {
+                "google_purchase_token": "token-3",
+                "google_product_id": "com.ottozhang.artiou.iap.scan",
+                "google_package_name": "com.fake.app",
+            },
+        )
+    assert package_error.value.status_code == 400
+    assert "package" in package_error.value.detail
+
+
+def test_google_purchase_token_reuse_is_blocked_across_users():
+    from src.routes.subscription import _google_purchase_token_used_by_other_user
+
+    current = sm.User(
+        user_id=uuid.UUID("00000000-0000-0000-0000-000000000201"),
+        user_email="current@example.com",
+        password="x",
+        first_name="",
+        last_name="",
+    )
+    other = sm.User(
+        user_id=uuid.UUID("00000000-0000-0000-0000-000000000202"),
+        user_email="other@example.com",
+        password="x",
+        first_name="",
+        last_name="",
+    )
+    other.extras = {
+        "subscription": {
+            "google_purchase_tokens": ["reused-token"],
+            "google_order_ids": ["order-1"],
+        }
+    }
+    db = MagicMock()
+    db.session.query.return_value.filter.return_value = [current, other]
+
+    assert _google_purchase_token_used_by_other_user(
+        db, current, {"google_purchase_token": "reused-token"}
+    )
+    assert not _google_purchase_token_used_by_other_user(
+        db, current, {"google_purchase_token": "fresh-token"}
+    )

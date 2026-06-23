@@ -42,10 +42,16 @@ export const translations = {
       noAppleCredential: "Could not get Apple credential",
       noGoogleCredential: "Could not get Google credential",
       googleUnavailable: "Google sign-in is unavailable in this build",
+      googleMissingWebClientId:
+        "Google sign-in needs EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID set to an OAuth Client ID whose application type is Web application.",
+      googleDeveloperError:
+        "Google sign-in still needs a Web application OAuth Client ID. Keep the Android OAuth Client with package {{packageName}} and SHA-1 {{sha1}}, but set EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID and backend GOOGLE_CLIENT_ID to the Web application client ID, not the Android client ID.",
+      googleInitFailed: "Google sign-in initialization failed. Please try again later.",
       serverNoToken: "Server did not return an access token",
       signOut: "Sign out",
       settings: "Settings",
       signedInWithApple: "Signed in with Apple",
+      signedInWithGoogle: "Signed in with Google",
       remainingScans: "Remaining scans: {{count}}",
       empty: "No favorites yet",
       scan: "Scan",
@@ -112,9 +118,11 @@ export const translations = {
       proSubtitle: "200 scans / month",
       iosOnlyPurchase:
         "In-app purchases are only available on the iOS app. Please use an iPhone or iPad with the App Store version.",
+      storePurchaseUnavailable:
+        "In-app purchases are only available in the App Store or Google Play app.",
       priceLoading: "Loading price…",
       storeCatalogEmpty:
-        "Could not load products from the App Store. Use a physical device, check the bundle ID and product IDs match App Store Connect, and that products are cleared for sale.",
+        "Could not load products from the store. Use a physical device, check the app package/bundle ID and product IDs match App Store Connect or Google Play Console, and that products are active.",
       headlineLine1: "unlock full",
       headlineLine2: "experience",
       scanButton: "SCAN",
@@ -124,7 +132,7 @@ export const translations = {
       autoRenewPeriodMonthly: "Billing period: 1 month (auto-renewing).",
       autoRenewPeriodYearly: "Billing period: 1 year (auto-renewing).",
       renewalDisclaimer:
-        "Payment is charged to your Apple ID. Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period. After purchase, manage or cancel in Settings > Apple ID > Subscriptions.",
+        "Payment is charged by App Store or Google Play. Subscriptions renew automatically unless cancelled before the end of the current period. After purchase, manage or cancel in your store subscription settings.",
       manageSubscriptions: "Manage or cancel subscription",
       agreeSubscribeIntro: "By subscribing, you agree to our ",
       agreeSubscribeBetween: " and ",
@@ -147,10 +155,10 @@ export const translations = {
       restorePurchases: "Restore Purchases",
       restoringPurchases: "Restoring…",
       restoreSuccessTitle: "Restored",
-      restoreSuccessBody: "Your App Store purchases have been synced to your account.",
+      restoreSuccessBody: "Your store purchases have been synced to your account.",
       restoreNothingTitle: "Nothing to restore",
       restoreNothingBody:
-        "We could not find any active purchases for this Apple ID on this device. Use the same Apple ID you used to buy, or purchase a plan below.",
+        "We could not find any active purchases for this store account on this device. Use the same store account you used to buy, or purchase a plan below.",
       restoreNeedSignInTitle: "Sign in required",
       restoreNeedSignInBody: "Sign in with your Artiou account so we can apply your restored purchases to your subscription.",
     },
@@ -294,10 +302,16 @@ Email: legal@example.com
       noAppleCredential: "未能获取 Apple 身份凭证",
       noGoogleCredential: "未能获取 Google 身份凭证",
       googleUnavailable: "当前构建不支持 Google 登录",
+      googleMissingWebClientId:
+        "Google 登录需要将 EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID 设置为应用类型为 Web application 的 OAuth Client ID。",
+      googleDeveloperError:
+        "Google 登录还需要一个 Web application 类型的 OAuth Client ID。请保留包名为 {{packageName}}、SHA-1 为 {{sha1}} 的 Android OAuth Client，但 EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID 和后端 GOOGLE_CLIENT_ID 必须填写 Web application Client ID，而不是 Android Client ID。",
+      googleInitFailed: "Google 登录初始化失败，请稍后重试。",
       serverNoToken: "服务器未返回访问令牌",
       signOut: "退出",
       settings: "设置",
       signedInWithApple: "已使用 Apple 登录",
+      signedInWithGoogle: "已使用 Google 登录",
       remainingScans: "还剩 {{count}} 次识别",
       empty: "暂无收藏",
       scan: "扫描",
@@ -362,9 +376,10 @@ Email: legal@example.com
       proYearlyPrice: "€59.99 / 年",
       proSubtitle: "每月 200 次识别",
       iosOnlyPurchase: "应用内购买仅支持 iOS 正式版。请在 iPhone 或 iPad 上使用 App Store 版本购买。",
+      storePurchaseUnavailable: "应用内购买仅支持 App Store 或 Google Play 正式版。",
       priceLoading: "正在加载价格…",
       storeCatalogEmpty:
-        "无法从 App Store 读取商品。请使用真机，确认 Bundle ID、商品 ID 与 App Store Connect 一致，且商品已可供销售。",
+        "无法从商店读取商品。请使用真机，确认应用包名/Bundle ID、商品 ID 与 App Store Connect 或 Google Play Console 一致，且商品已启用。",
       headlineLine1: "完整解锁",
       headlineLine2: "沉浸体验",
       scanButton: "扫描",
@@ -374,7 +389,7 @@ Email: legal@example.com
       autoRenewPeriodMonthly: "计费周期：1 个月（自动续订）。",
       autoRenewPeriodYearly: "计费周期：1 年（自动续订）。",
       renewalDisclaimer:
-        "费用将记入你的 Apple ID。订阅将自动续订，除非在当前计费周期结束前至少 24 小时关闭。购买后可在「设置 > Apple ID > 订阅」中管理或取消。",
+        "费用将由 App Store 或 Google Play 收取。订阅将自动续订，除非在当前计费周期结束前取消。购买后可在对应商店的订阅设置中管理或取消。",
       manageSubscriptions: "在 App Store 中管理或取消订阅",
       agreeSubscribeIntro: "订阅即表示你同意我们的",
       agreeSubscribeBetween: "与",
@@ -397,10 +412,10 @@ Email: legal@example.com
       restorePurchases: "恢复购买",
       restoringPurchases: "正在恢复…",
       restoreSuccessTitle: "已恢复",
-      restoreSuccessBody: "已将 App Store 购买同步到你的账号。",
+      restoreSuccessBody: "已将商店购买同步到你的账号。",
       restoreNothingTitle: "没有可恢复项",
       restoreNothingBody:
-        "未在本设备上找到该 Apple ID 的有效购买记录。请使用购买时所用的 Apple ID，或在下方选购套餐。",
+        "未在本设备上找到该商店账号的有效购买记录。请使用购买时所用的商店账号，或在下方选购套餐。",
       restoreNeedSignInTitle: "需要先登录",
       restoreNeedSignInBody: "请登录 Artiou 账号，以便将恢复的购买同步到订阅权益。",
     },
@@ -546,10 +561,16 @@ Artiou 提供：
       noAppleCredential: "Impossible d’obtenir l’identifiant Apple",
       noGoogleCredential: "Impossible d’obtenir l’identifiant Google",
       googleUnavailable: "La connexion Google n'est pas disponible dans cette version",
+      googleMissingWebClientId:
+        "La connexion Google nécessite EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID avec un OAuth Client ID de type Web application.",
+      googleDeveloperError:
+        "La connexion Google nécessite encore un OAuth Client ID de type Web application. Gardez le client OAuth Android avec le package {{packageName}} et le SHA-1 {{sha1}}, mais EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID et GOOGLE_CLIENT_ID côté backend doivent utiliser le client Web, pas le client Android.",
+      googleInitFailed: "Échec de l'initialisation de Google. Réessayez plus tard.",
       serverNoToken: "Le serveur n’a pas renvoyé de jeton d’accès",
       signOut: "Se déconnecter",
       settings: "Parametres",
       signedInWithApple: "Connecté avec Apple",
+      signedInWithGoogle: "Connecté avec Google",
       remainingScans: "Scans restants : {{count}}",
       empty: "Aucun favori",
       scan: "Scanner",
@@ -616,9 +637,11 @@ Artiou 提供：
       proSubtitle: "200 scans / mois",
       iosOnlyPurchase:
         "Les achats intégrés sont disponibles uniquement sur l’app iOS (App Store). Utilisez un iPhone ou un iPad.",
+      storePurchaseUnavailable:
+        "Les achats intégrés sont disponibles uniquement dans l'app App Store ou Google Play.",
       priceLoading: "Chargement du prix…",
       storeCatalogEmpty:
-        "Impossible de charger les produits App Store. Utilisez un appareil réel, vérifiez l’identifiant bundle et les IDs produits, et que les produits sont disponibles à la vente.",
+        "Impossible de charger les produits de la boutique. Utilisez un appareil réel, vérifiez l’identifiant d’app et les IDs produits dans App Store Connect ou Google Play Console, et que les produits sont actifs.",
       headlineLine1: "libérez toute",
       headlineLine2: "l’expérience",
       scanButton: "SCAN",
@@ -628,7 +651,7 @@ Artiou 提供：
       autoRenewPeriodMonthly: "Période de facturation : 1 mois (renouvellement automatique).",
       autoRenewPeriodYearly: "Période de facturation : 1 an (renouvellement automatique).",
       renewalDisclaimer:
-        "Le paiement est porté à votre identifiant Apple. L’abonnement se renouvelle automatiquement sauf résiliation au moins 24 h avant la fin de la période. Gérez ou annulez dans Réglages > Identifiant Apple > Abonnements.",
+        "Le paiement est traité par App Store ou Google Play. L’abonnement se renouvelle automatiquement sauf résiliation avant la fin de la période. Gérez ou annulez dans les réglages d’abonnement de la boutique.",
       manageSubscriptions: "Gérer ou annuler l’abonnement",
       agreeSubscribeIntro: "En vous abonnant, vous acceptez nos ",
       agreeSubscribeBetween: " et ",
@@ -651,10 +674,10 @@ Artiou 提供：
       restorePurchases: "Restaurer les achats",
       restoringPurchases: "Restauration…",
       restoreSuccessTitle: "Restauré",
-      restoreSuccessBody: "Vos achats App Store ont été synchronisés avec votre compte.",
+      restoreSuccessBody: "Vos achats de boutique ont été synchronisés avec votre compte.",
       restoreNothingTitle: "Aucun achat à restaurer",
       restoreNothingBody:
-        "Aucun achat actif trouvé pour cet identifiant Apple sur cet appareil. Utilisez le même compte Apple que lors de l’achat, ou choisissez une offre ci-dessous.",
+        "Aucun achat actif trouvé pour ce compte de boutique sur cet appareil. Utilisez le même compte que lors de l’achat, ou choisissez une offre ci-dessous.",
       restoreNeedSignInTitle: "Connexion requise",
       restoreNeedSignInBody: "Connectez-vous à Artiou pour appliquer vos achats restaurés à votre abonnement.",
     },
@@ -683,4 +706,3 @@ Contact : legal@example.com
     },
   },
 } as const;
-

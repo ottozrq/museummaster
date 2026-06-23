@@ -55,6 +55,16 @@ NEGATIVE_KEYWORDS = [
     "market",
     "atelier",
     "workshop",
+    "visite",
+    "visites",
+    "guided tour",
+    "distribution",
+    "food distribution",
+    "alimentaire",
+    "étudiant",
+    "étudiants",
+    "student",
+    "students",
     "stage",
     "course",
     "cours",
@@ -332,6 +342,8 @@ def exhibition_score(activity: dict) -> int:
     title = (activity.get("title") or "").lower()
     venue = (activity.get("address_name") or "").lower()
     tags = {str(item).lower() for item in (activity.get("qfap_tags") or [])}
+    if not venue:
+        return -100
     strong_tags = {"expo", "art contemporain", "peinture", "photo"}
     negative_tags = {
         "concert",
@@ -380,7 +392,17 @@ def exhibition_score(activity: dict) -> int:
         "journee",
         "sortie",
         "visite",
+        "visites",
+        "visites tout-petits",
+        "tout-petits",
+        "mini-visite",
+        "mini visit",
         "guided tour",
+        "distribution",
+        "food distribution",
+        "distributions alimentaires",
+        "étudiants",
+        "students",
         "lecture",
         "lectures",
         "écoute",

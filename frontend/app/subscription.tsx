@@ -24,6 +24,13 @@ import {
   type StoreCatalog,
 } from "../src/iap/appleIap";
 import {
+  GOOGLE_RESTORE_NOTHING_FOUND,
+  GOOGLE_STORE_PRODUCT_UNAVAILABLE,
+  loadAndroidStoreCatalog,
+  purchaseAndroidPlanThenActivate,
+  restoreAndroidPurchasesThenActivate,
+} from "../src/iap/androidIap";
+import {
   activateSubscriptionPlan,
   fetchSubscriptionCurrent,
   type SubscriptionCurrent,
@@ -41,6 +48,8 @@ const WHITE = "#FFFFFF";
 type CardTheme = "outline" | "filled";
 
 const APP_STORE_SUBSCRIPTIONS_URL = "https://apps.apple.com/account/subscriptions";
+const PLAY_STORE_SUBSCRIPTIONS_URL =
+  "https://play.google.com/store/account/subscriptions?package=com.ottozhang.artiou";
 
 function SubscriptionLegalLinks() {
   const { t, locale } = useI18n();
@@ -69,11 +78,15 @@ function SubscriptionLegalLinks() {
 
 function ManageSubscriptionsLink() {
   const { t } = useI18n();
-  if (Platform.OS !== "ios") return null;
+  if (Platform.OS !== "ios" && Platform.OS !== "android") return null;
   return (
     <Pressable
       style={styles.manageSubLink}
-      onPress={() => void Linking.openURL(APP_STORE_SUBSCRIPTIONS_URL)}
+      onPress={() =>
+        void Linking.openURL(
+          Platform.OS === "android" ? PLAY_STORE_SUBSCRIPTIONS_URL : APP_STORE_SUBSCRIPTIONS_URL,
+        )
+      }
       accessibilityRole="link"
     >
       <Text style={styles.manageSubLinkText}>{t("subscription.manageSubscriptions")}</Text>
@@ -197,7 +210,7 @@ export default function SubscriptionScreen() {
   const [current, setCurrent] = useState<SubscriptionCurrent | null>(null);
   const [activating, setActivating] = useState<SubscriptionPlanType | null>(null);
   const [storeCatalog, setStoreCatalog] = useState<StoreCatalog>({});
-  const [storeCatalogReady, setStoreCatalogReady] = useState(Platform.OS !== "ios");
+  const [storeCatalogReady, setStoreCatalogReady] = useState(Platform.OS !== "ios" && Platform.OS !== "android");
   const [restoringPurchases, setRestoringPurchases] = useState(false);
 
   useEffect(() => {
@@ -235,7 +248,7 @@ export default function SubscriptionScreen() {
   }, [token]);
 
   useEffect(() => {
-    if (Platform.OS !== "ios") {
+    if (Platform.OS !== "ios" && Platform.OS !== "android") {
       setStoreCatalog({});
       setStoreCatalogReady(true);
       return;
@@ -244,10 +257,13 @@ export default function SubscriptionScreen() {
     setStoreCatalogReady(false);
     void (async () => {
       try {
-        const cat = await loadIosStoreCatalog();
+        const cat =
+          Platform.OS === "android"
+            ? await loadAndroidStoreCatalog()
+            : await loadIosStoreCatalog();
         if (!cancelled) setStoreCatalog(cat);
       } catch (e) {
-        console.warn("[IAP] loadIosStoreCatalog failed (subscription screen):", e);
+        console.warn("[IAP] load store catalog failed (subscription screen):", e);
       } finally {
         if (!cancelled) setStoreCatalogReady(true);
       }
@@ -267,7 +283,9 @@ export default function SubscriptionScreen() {
   const cards = useMemo(() => {
     const isCurrent = (p: SubscriptionPlanType) => activePlan === p;
     const paidPrice = (plan: "scan_pack" | "pro_monthly" | "pro_yearly", fallback: string) => {
-      if (Platform.OS === "ios" && !storeCatalogReady) return t("subscription.priceLoading");
+      if ((Platform.OS === "ios" || Platform.OS === "android") && !storeCatalogReady) {
+        return t("subscription.priceLoading");
+      }
       return storeCatalog[plan]?.localizedPrice ?? fallback;
     };
     const paidTitle = (plan: "scan_pack" | "pro_monthly" | "pro_yearly", fallbackMain: string, fallbackSub: string) => {
@@ -370,7 +388,7 @@ export default function SubscriptionScreen() {
   }, [activePlan, storeCatalog, storeCatalogReady, t]);
 
   const showStoreCatalogHint = useMemo(() => {
-    if (Platform.OS !== "ios" || !storeCatalogReady) return false;
+    if ((Platform.OS !== "ios" && Platform.OS !== "android") || !storeCatalogReady) return false;
     return !storeCatalog.scan_pack && !storeCatalog.pro_monthly && !storeCatalog.pro_yearly;
   }, [storeCatalog, storeCatalogReady]);
 
@@ -381,30 +399,34 @@ export default function SubscriptionScreen() {
       ]);
       return;
     }
-    if (plan !== "free" && Platform.OS !== "ios") {
-      Alert.alert(t("subscription.title"), t("subscription.iosOnlyPurchase"));
-      return;
-    }
     try {
       setActivating(plan);
       if (plan === "free") {
         const data = await activateSubscriptionPlan(token, plan);
         setCurrent(data);
-      } else {
+      } else if (Platform.OS === "ios") {
         await purchaseIosPlanThenActivate(token, plan);
         const data = await fetchSubscriptionCurrent(token);
         setCurrent(data);
+      } else if (Platform.OS === "android") {
+        await purchaseAndroidPlanThenActivate(token, plan);
+        const data = await fetchSubscriptionCurrent(token);
+        setCurrent(data);
+      } else {
+        Alert.alert(t("subscription.title"), t("subscription.storePurchaseUnavailable"));
       }
     } catch (e) {
       if (e instanceof Error && e.message === "E_USER_CANCELLED") {
         return;
       }
       const isIosOnly = e instanceof Error && e.message === "SUBSCRIPTION_IOS_ONLY";
-      const storeUnavailable = e instanceof Error && e.message === STORE_PRODUCT_UNAVAILABLE;
+      const storeUnavailable =
+        e instanceof Error &&
+        (e.message === STORE_PRODUCT_UNAVAILABLE || e.message === GOOGLE_STORE_PRODUCT_UNAVAILABLE);
       Alert.alert(
         t("result.recognizeFailedTitle"),
         isIosOnly
-          ? t("subscription.iosOnlyPurchase")
+          ? t("subscription.storePurchaseUnavailable")
           : storeUnavailable
             ? t("subscription.storeCatalogEmpty")
             : e instanceof Error
@@ -417,7 +439,7 @@ export default function SubscriptionScreen() {
   };
 
   const onRestorePurchases = async () => {
-    if (Platform.OS !== "ios") return;
+    if (Platform.OS !== "ios" && Platform.OS !== "android") return;
     if (!token) {
       Alert.alert(t("subscription.restoreNeedSignInTitle"), t("subscription.restoreNeedSignInBody"), [
         { text: t("result.goSignIn"), onPress: () => router.push("/collection") },
@@ -427,12 +449,19 @@ export default function SubscriptionScreen() {
     }
     try {
       setRestoringPurchases(true);
-      await restoreIosPurchasesThenActivate(token);
+      if (Platform.OS === "android") {
+        await restoreAndroidPurchasesThenActivate(token);
+      } else {
+        await restoreIosPurchasesThenActivate(token);
+      }
       const data = await fetchSubscriptionCurrent(token);
       setCurrent(data);
       Alert.alert(t("subscription.restoreSuccessTitle"), t("subscription.restoreSuccessBody"));
     } catch (e) {
-      if (e instanceof Error && e.message === RESTORE_NOTHING_FOUND) {
+      if (
+        e instanceof Error &&
+        (e.message === RESTORE_NOTHING_FOUND || e.message === GOOGLE_RESTORE_NOTHING_FOUND)
+      ) {
         Alert.alert(t("subscription.restoreNothingTitle"), t("subscription.restoreNothingBody"));
         return;
       }
@@ -461,7 +490,7 @@ export default function SubscriptionScreen() {
         <Pressable style={styles.primaryButton} onPress={() => router.push("/collection")}>
           <Text style={styles.primaryButtonText}>{t("result.goSignIn")}</Text>
         </Pressable>
-        {Platform.OS === "ios" ? (
+        {Platform.OS === "ios" || Platform.OS === "android" ? (
           <Pressable
             style={[styles.restoreButton, styles.restoreButtonMarginGuest]}
             onPress={onRestorePurchases}
@@ -503,7 +532,7 @@ export default function SubscriptionScreen() {
         {showStoreCatalogHint ? (
           <Text style={styles.storeHint}>{t("subscription.storeCatalogEmpty")}</Text>
         ) : null}
-        {Platform.OS === "ios" ? (
+        {Platform.OS === "ios" || Platform.OS === "android" ? (
           <Text style={styles.renewalDisclaimer}>{t("subscription.renewalDisclaimer")}</Text>
         ) : null}
         <SubscriptionAgreeNotice />
@@ -523,12 +552,12 @@ export default function SubscriptionScreen() {
               disabled={
                 c.isCurrent ||
                 activating !== null ||
-                (Platform.OS === "ios" && c.plan !== "free" && !storeCatalogReady)
+                ((Platform.OS === "ios" || Platform.OS === "android") && c.plan !== "free" && !storeCatalogReady)
               }
             />
           ))}
         </View>
-        {Platform.OS === "ios" ? (
+        {Platform.OS === "ios" || Platform.OS === "android" ? (
           <Pressable
             style={styles.restoreButton}
             onPress={onRestorePurchases}
@@ -916,4 +945,3 @@ const styles = StyleSheet.create({
     fontWeight: "900",
   },
 });
-

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-11T11:00:48.439Z",
+  "generatedAt": "2026-06-22T23:58:55.386Z",
   "policy": {
     "approvedSources": [
       "Artiou Editorial",
@@ -5711,6 +5711,1323 @@
         "source 'Vision API' is not an approved sitemap source"
       ],
       "bodyChars": 3814
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/kourtney-roy-exhibition-all-inclusive/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin description",
+        "body is too thin (712 chars, needs 1200+)"
+      ],
+      "bodyChars": 712
+    },
+    {
+      "url": "https://www.artiou.com/en/news/kourtney-roy-exhibition-all-inclusive/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1652
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/kourtney-roy-exhibition-all-inclusive/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1734
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/ltre-et-le-non/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin description"
+      ],
+      "bodyChars": 4974
+    },
+    {
+      "url": "https://www.artiou.com/en/news/ltre-et-le-non/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 5051
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/ltre-et-le-non/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 5078
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/paris-exhibition-at-the-orangery-of-the-senate-harmonies-roaming-of-afri/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin description",
+        "body is too thin (982 chars, needs 1200+)"
+      ],
+      "bodyChars": 982
+    },
+    {
+      "url": "https://www.artiou.com/en/news/paris-exhibition-at-the-orangery-of-the-senate-harmonies-roaming-of-afri/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1940
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/paris-exhibition-at-the-orangery-of-the-senate-harmonies-roaming-of-afri/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1966
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/photographic-exhibition-what-remains-deep-inside-me-by-karen-assayag-at/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (446 chars, needs 1200+)"
+      ],
+      "bodyChars": 446
+    },
+    {
+      "url": "https://www.artiou.com/en/news/photographic-exhibition-what-remains-deep-inside-me-by-karen-assayag-at/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (651 chars, needs 1200+)"
+      ],
+      "bodyChars": 651
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/photographic-exhibition-what-remains-deep-inside-me-by-karen-assayag-at/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (670 chars, needs 1200+)"
+      ],
+      "bodyChars": 670
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/silla-gold-and-sacred-royal-treasures-of-korea-57-bc-935/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin description",
+        "body is too thin (1078 chars, needs 1200+)"
+      ],
+      "bodyChars": 1078
+    },
+    {
+      "url": "https://www.artiou.com/en/news/silla-gold-and-sacred-royal-treasures-of-korea-57-bc-935/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 3428
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/silla-gold-and-sacred-royal-treasures-of-korea-57-bc-935/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 3784
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/the-space-between-us/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin title",
+        "missing or thin description",
+        "body is too thin (1015 chars, needs 1200+)"
+      ],
+      "bodyChars": 1015
+    },
+    {
+      "url": "https://www.artiou.com/en/news/the-space-between-us/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2263
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/the-space-between-us/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2256
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/transparency-the-first-exhibition-of-the-childrens-palace/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin title",
+        "missing or thin description",
+        "body is too thin (889 chars, needs 1200+)"
+      ],
+      "bodyChars": 889
+    },
+    {
+      "url": "https://www.artiou.com/en/news/transparency-the-first-exhibition-of-the-childrens-palace/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2008
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/transparency-the-first-exhibition-of-the-childrens-palace/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2205
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/we-are-still-here-the-exhibition-is-back-at-the-petit-palais/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (670 chars, needs 1200+)"
+      ],
+      "bodyChars": 670
+    },
+    {
+      "url": "https://www.artiou.com/en/news/we-are-still-here-the-exhibition-is-back-at-the-petit-palais/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1461
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/we-are-still-here-the-exhibition-is-back-at-the-petit-palais/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1586
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/market-day-the-exhibition-of-the-16th-international-festival-of-culinary/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin description",
+        "body is too thin (541 chars, needs 1200+)"
+      ],
+      "bodyChars": 541
+    },
+    {
+      "url": "https://www.artiou.com/en/news/market-day-the-exhibition-of-the-16th-international-festival-of-culinary/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1241
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/market-day-the-exhibition-of-the-16th-international-festival-of-culinary/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1292
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/revealing-the-feminine-fashion-and-appearances-in-the-18th-century/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin description",
+        "body is too thin (881 chars, needs 1200+)"
+      ],
+      "bodyChars": 881
+    },
+    {
+      "url": "https://www.artiou.com/en/news/revealing-the-feminine-fashion-and-appearances-in-the-18th-century/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2048
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/revealing-the-feminine-fashion-and-appearances-in-the-18th-century/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2120
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/michelangelo-rodin-living-bodies/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin title",
+        "missing or thin description",
+        "body is too thin (582 chars, needs 1200+)"
+      ],
+      "bodyChars": 582
+    },
+    {
+      "url": "https://www.artiou.com/en/news/michelangelo-rodin-living-bodies/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1559
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/michelangelo-rodin-living-bodies/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1577
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/old-ages/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin title",
+        "missing or thin description",
+        "body is too thin (613 chars, needs 1200+)"
+      ],
+      "bodyChars": 613
+    },
+    {
+      "url": "https://www.artiou.com/en/news/old-ages/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1943
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/old-ages/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2122
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/18th-century-fashion-a-fantasy-heritage/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin title",
+        "body is too thin (1091 chars, needs 1200+)"
+      ],
+      "bodyChars": 1091
+    },
+    {
+      "url": "https://www.artiou.com/en/news/18th-century-fashion-a-fantasy-heritage/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 3110
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/18th-century-fashion-a-fantasy-heritage/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 3230
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/robert-capa-war-photographer/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (973 chars, needs 1200+)"
+      ],
+      "bodyChars": 973
+    },
+    {
+      "url": "https://www.artiou.com/en/news/robert-capa-war-photographer/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2387
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/robert-capa-war-photographer/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2522
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/exposition-corces-larboretum-de-paris/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1344
+    },
+    {
+      "url": "https://www.artiou.com/en/news/exposition-corces-larboretum-de-paris/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1421
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/exposition-corces-larboretum-de-paris/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1448
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/war-peace-anxiety-fear-hope/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin description",
+        "body is too thin (939 chars, needs 1200+)"
+      ],
+      "bodyChars": 939
+    },
+    {
+      "url": "https://www.artiou.com/en/news/war-peace-anxiety-fear-hope/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2523
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/war-peace-anxiety-fear-hope/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2707
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/exhibition-the-paper-circus-by-9th-grade-children-at-the-grand-palais/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin description"
+      ],
+      "bodyChars": 1279
+    },
+    {
+      "url": "https://www.artiou.com/en/news/exhibition-the-paper-circus-by-9th-grade-children-at-the-grand-palais/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2415
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/exhibition-the-paper-circus-by-9th-grade-children-at-the-grand-palais/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2887
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/madame-de-svign-parisian-letters/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin title",
+        "missing or thin description",
+        "body is too thin (748 chars, needs 1200+)"
+      ],
+      "bodyChars": 748
+    },
+    {
+      "url": "https://www.artiou.com/en/news/madame-de-svign-parisian-letters/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1947
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/madame-de-svign-parisian-letters/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2011
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/those-who-those-exhibition-by-thibaut-ren/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin description",
+        "body is too thin (781 chars, needs 1200+)"
+      ],
+      "bodyChars": 781
+    },
+    {
+      "url": "https://www.artiou.com/en/news/those-who-those-exhibition-by-thibaut-ren/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1381
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/those-who-those-exhibition-by-thibaut-ren/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1389
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/africa-fashion/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin title",
+        "missing or thin description",
+        "body is too thin (665 chars, needs 1200+)"
+      ],
+      "bodyChars": 665
+    },
+    {
+      "url": "https://www.artiou.com/en/news/africa-fashion/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1770
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/africa-fashion/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1888
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/exposition-photo-plein-air-rose-antique/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin description"
+      ],
+      "bodyChars": 2406
+    },
+    {
+      "url": "https://www.artiou.com/en/news/exposition-photo-plein-air-rose-antique/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2474
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/exposition-photo-plein-air-rose-antique/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2503
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/37th-apst-14-show-association-of-witness-painters-and-sculptors-of-the-14th-arrondisse/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (939 chars, needs 1200+)"
+      ],
+      "bodyChars": 939
+    },
+    {
+      "url": "https://www.artiou.com/en/news/37th-apst-14-show-association-of-witness-painters-and-sculptors-of-the-14th-arrondisse/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1556
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/37th-apst-14-show-association-of-witness-painters-and-sculptors-of-the-14th-arrondisse/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1590
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/an-exhibition-of-photographs-to-highlight-the-nourishing-trees-of-the-sahel/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin description",
+        "body is too thin (721 chars, needs 1200+)"
+      ],
+      "bodyChars": 721
+    },
+    {
+      "url": "https://www.artiou.com/en/news/an-exhibition-of-photographs-to-highlight-the-nourishing-trees-of-the-sahel/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1464
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/an-exhibition-of-photographs-to-highlight-the-nourishing-trees-of-the-sahel/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1568
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/artistic-immersion-in-the-work-of-joel-dages/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin description"
+      ],
+      "bodyChars": 1206
+    },
+    {
+      "url": "https://www.artiou.com/en/news/artistic-immersion-in-the-work-of-joel-dages/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2804
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/artistic-immersion-in-the-work-of-joel-dages/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 3684
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/carpe-diem-exhibition/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin title",
+        "missing or thin description",
+        "body is too thin (517 chars, needs 1200+)"
+      ],
+      "bodyChars": 517
+    },
+    {
+      "url": "https://www.artiou.com/en/news/carpe-diem-exhibition/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (1024 chars, needs 1200+)"
+      ],
+      "bodyChars": 1024
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/carpe-diem-exhibition/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (1068 chars, needs 1200+)"
+      ],
+      "bodyChars": 1068
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/end-of-year-exhibition-of-plastic-arts-classes-at-the-paris-anim-maurice-ravel-center/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (778 chars, needs 1200+)"
+      ],
+      "bodyChars": 778
+    },
+    {
+      "url": "https://www.artiou.com/en/news/end-of-year-exhibition-of-plastic-arts-classes-at-the-paris-anim-maurice-ravel-center/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1692
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/end-of-year-exhibition-of-plastic-arts-classes-at-the-paris-anim-maurice-ravel-center/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1859
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/erotic-drawing-fair/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin title",
+        "missing or thin description",
+        "body is too thin (545 chars, needs 1200+)"
+      ],
+      "bodyChars": 545
+    },
+    {
+      "url": "https://www.artiou.com/en/news/erotic-drawing-fair/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (795 chars, needs 1200+)"
+      ],
+      "bodyChars": 795
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/erotic-drawing-fair/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (1152 chars, needs 1200+)"
+      ],
+      "bodyChars": 1152
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/exposition-multiples-and-signatures-galerie-9e-art-paris/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (1021 chars, needs 1200+)"
+      ],
+      "bodyChars": 1021
+    },
+    {
+      "url": "https://www.artiou.com/en/news/exposition-multiples-and-signatures-galerie-9e-art-paris/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (1083 chars, needs 1200+)"
+      ],
+      "bodyChars": 1083
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/exposition-multiples-and-signatures-galerie-9e-art-paris/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (1104 chars, needs 1200+)"
+      ],
+      "bodyChars": 1104
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/guided-tour-great-lakes-exhibition/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin description",
+        "body is too thin (824 chars, needs 1200+)"
+      ],
+      "bodyChars": 824
+    },
+    {
+      "url": "https://www.artiou.com/en/news/guided-tour-great-lakes-exhibition/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1952
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/guided-tour-great-lakes-exhibition/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2097
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/masculinites-plurielles-exposition-avec-le-fonds-d-art-contemporain-paris-collections/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1415
+    },
+    {
+      "url": "https://www.artiou.com/en/news/masculinites-plurielles-exposition-avec-le-fonds-d-art-contemporain-paris-collections/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1477
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/masculinites-plurielles-exposition-avec-le-fonds-d-art-contemporain-paris-collections/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1498
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/slave-exhibitions-in-the-mediterranean-17th-18th-centuries/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin description",
+        "body is too thin (921 chars, needs 1200+)"
+      ],
+      "bodyChars": 921
+    },
+    {
+      "url": "https://www.artiou.com/en/news/slave-exhibitions-in-the-mediterranean-17th-18th-centuries/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2358
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/slave-exhibitions-in-the-mediterranean-17th-18th-centuries/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2634
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/the-big-visit-to-the-exhibitions/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin title",
+        "missing or thin description",
+        "body is too thin (436 chars, needs 1200+)"
+      ],
+      "bodyChars": 436
+    },
+    {
+      "url": "https://www.artiou.com/en/news/the-big-visit-to-the-exhibitions/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (833 chars, needs 1200+)"
+      ],
+      "bodyChars": 833
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/the-big-visit-to-the-exhibitions/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (856 chars, needs 1200+)"
+      ],
+      "bodyChars": 856
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/the-slow-galerie-presents-petrichor-the-most-refreshing-exhibition-of-the-summer/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (560 chars, needs 1200+)"
+      ],
+      "bodyChars": 560
+    },
+    {
+      "url": "https://www.artiou.com/en/news/the-slow-galerie-presents-petrichor-the-most-refreshing-exhibition-of-the-summer/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (1189 chars, needs 1200+)"
+      ],
+      "bodyChars": 1189
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/the-slow-galerie-presents-petrichor-the-most-refreshing-exhibition-of-the-summer/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1271
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/weave-embroider-enhance-fashion-know-how/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (709 chars, needs 1200+)"
+      ],
+      "bodyChars": 709
+    },
+    {
+      "url": "https://www.artiou.com/en/news/weave-embroider-enhance-fashion-know-how/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1581
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/weave-embroider-enhance-fashion-know-how/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2710
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/dance-the-exhibition-that-will-make-you-move-at-the-cit-des-sciences/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (719 chars, needs 1200+)"
+      ],
+      "bodyChars": 719
+    },
+    {
+      "url": "https://www.artiou.com/en/news/dance-the-exhibition-that-will-make-you-move-at-the-cit-des-sciences/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1341
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/dance-the-exhibition-that-will-make-you-move-at-the-cit-des-sciences/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1476
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/fujiko-nakaya-at-the-bourse-de-commerce-pinault-collection/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (673 chars, needs 1200+)"
+      ],
+      "bodyChars": 673
+    },
+    {
+      "url": "https://www.artiou.com/en/news/fujiko-nakaya-at-the-bourse-de-commerce-pinault-collection/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (1151 chars, needs 1200+)"
+      ],
+      "bodyChars": 1151
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/fujiko-nakaya-at-the-bourse-de-commerce-pinault-collection/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (1156 chars, needs 1200+)"
+      ],
+      "bodyChars": 1156
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/impulses-jean-dubuffet-the-last-years-1974-1985/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin description",
+        "body is too thin (938 chars, needs 1200+)"
+      ],
+      "bodyChars": 938
+    },
+    {
+      "url": "https://www.artiou.com/en/news/impulses-jean-dubuffet-the-last-years-1974-1985/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1687
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/impulses-jean-dubuffet-the-last-years-1974-1985/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1608
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/the-genki-nobori-of-susumu-shingu-at-the-htel-de-la-marine/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin description"
+      ],
+      "bodyChars": 1260
+    },
+    {
+      "url": "https://www.artiou.com/en/news/the-genki-nobori-of-susumu-shingu-at-the-htel-de-la-marine/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 3280
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/the-genki-nobori-of-susumu-shingu-at-the-htel-de-la-marine/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 4674
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/the-plantation-plot/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin title",
+        "missing or thin description"
+      ],
+      "bodyChars": 1297
+    },
+    {
+      "url": "https://www.artiou.com/en/news/the-plantation-plot/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 2024
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/the-plantation-plot/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 3450
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/everyone-is-looking-for-their-cat/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin title",
+        "missing or thin description",
+        "body is too thin (694 chars, needs 1200+)"
+      ],
+      "bodyChars": 694
+    },
+    {
+      "url": "https://www.artiou.com/en/news/everyone-is-looking-for-their-cat/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1662
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/everyone-is-looking-for-their-cat/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1770
+    },
+    {
+      "url": "https://www.artiou.com/zh/news/iranica-the-voice-of-the-iranian-people-in-pictures/",
+      "type": "news-article",
+      "locale": "zh",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "missing or thin description",
+        "body is too thin (531 chars, needs 1200+)"
+      ],
+      "bodyChars": 531
+    },
+    {
+      "url": "https://www.artiou.com/en/news/iranica-the-voice-of-the-iranian-people-in-pictures/",
+      "type": "news-article",
+      "locale": "en",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source",
+        "body is too thin (1186 chars, needs 1200+)"
+      ],
+      "bodyChars": 1186
+    },
+    {
+      "url": "https://www.artiou.com/fr/news/iranica-the-voice-of-the-iranian-people-in-pictures/",
+      "type": "news-article",
+      "locale": "fr",
+      "included": false,
+      "reasons": [
+        "source 'Vision API' is not an approved sitemap source"
+      ],
+      "bodyChars": 1214
     }
   ],
   "slugs": [
@@ -10875,14 +12192,1208 @@
           "bodyChars": 3814
         }
       }
+    },
+    {
+      "slug": "kourtney-roy-exhibition-all-inclusive",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin description",
+            "body is too thin (712 chars, needs 1200+)"
+          ],
+          "bodyChars": 712
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1652
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1734
+        }
+      }
+    },
+    {
+      "slug": "ltre-et-le-non",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin description"
+          ],
+          "bodyChars": 4974
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 5051
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 5078
+        }
+      }
+    },
+    {
+      "slug": "paris-exhibition-at-the-orangery-of-the-senate-harmonies-roaming-of-afri",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin description",
+            "body is too thin (982 chars, needs 1200+)"
+          ],
+          "bodyChars": 982
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1940
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1966
+        }
+      }
+    },
+    {
+      "slug": "photographic-exhibition-what-remains-deep-inside-me-by-karen-assayag-at",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (446 chars, needs 1200+)"
+          ],
+          "bodyChars": 446
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (651 chars, needs 1200+)"
+          ],
+          "bodyChars": 651
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (670 chars, needs 1200+)"
+          ],
+          "bodyChars": 670
+        }
+      }
+    },
+    {
+      "slug": "silla-gold-and-sacred-royal-treasures-of-korea-57-bc-935",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin description",
+            "body is too thin (1078 chars, needs 1200+)"
+          ],
+          "bodyChars": 1078
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 3428
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 3784
+        }
+      }
+    },
+    {
+      "slug": "the-space-between-us",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin title",
+            "missing or thin description",
+            "body is too thin (1015 chars, needs 1200+)"
+          ],
+          "bodyChars": 1015
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2263
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2256
+        }
+      }
+    },
+    {
+      "slug": "transparency-the-first-exhibition-of-the-childrens-palace",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin title",
+            "missing or thin description",
+            "body is too thin (889 chars, needs 1200+)"
+          ],
+          "bodyChars": 889
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2008
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2205
+        }
+      }
+    },
+    {
+      "slug": "we-are-still-here-the-exhibition-is-back-at-the-petit-palais",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (670 chars, needs 1200+)"
+          ],
+          "bodyChars": 670
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1461
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1586
+        }
+      }
+    },
+    {
+      "slug": "market-day-the-exhibition-of-the-16th-international-festival-of-culinary",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin description",
+            "body is too thin (541 chars, needs 1200+)"
+          ],
+          "bodyChars": 541
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1241
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1292
+        }
+      }
+    },
+    {
+      "slug": "revealing-the-feminine-fashion-and-appearances-in-the-18th-century",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin description",
+            "body is too thin (881 chars, needs 1200+)"
+          ],
+          "bodyChars": 881
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2048
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2120
+        }
+      }
+    },
+    {
+      "slug": "michelangelo-rodin-living-bodies",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin title",
+            "missing or thin description",
+            "body is too thin (582 chars, needs 1200+)"
+          ],
+          "bodyChars": 582
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1559
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1577
+        }
+      }
+    },
+    {
+      "slug": "old-ages",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin title",
+            "missing or thin description",
+            "body is too thin (613 chars, needs 1200+)"
+          ],
+          "bodyChars": 613
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1943
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2122
+        }
+      }
+    },
+    {
+      "slug": "18th-century-fashion-a-fantasy-heritage",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin title",
+            "body is too thin (1091 chars, needs 1200+)"
+          ],
+          "bodyChars": 1091
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 3110
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 3230
+        }
+      }
+    },
+    {
+      "slug": "robert-capa-war-photographer",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (973 chars, needs 1200+)"
+          ],
+          "bodyChars": 973
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2387
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2522
+        }
+      }
+    },
+    {
+      "slug": "exposition-corces-larboretum-de-paris",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1344
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1421
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1448
+        }
+      }
+    },
+    {
+      "slug": "war-peace-anxiety-fear-hope",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin description",
+            "body is too thin (939 chars, needs 1200+)"
+          ],
+          "bodyChars": 939
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2523
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2707
+        }
+      }
+    },
+    {
+      "slug": "exhibition-the-paper-circus-by-9th-grade-children-at-the-grand-palais",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin description"
+          ],
+          "bodyChars": 1279
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2415
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2887
+        }
+      }
+    },
+    {
+      "slug": "madame-de-svign-parisian-letters",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin title",
+            "missing or thin description",
+            "body is too thin (748 chars, needs 1200+)"
+          ],
+          "bodyChars": 748
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1947
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2011
+        }
+      }
+    },
+    {
+      "slug": "those-who-those-exhibition-by-thibaut-ren",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin description",
+            "body is too thin (781 chars, needs 1200+)"
+          ],
+          "bodyChars": 781
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1381
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1389
+        }
+      }
+    },
+    {
+      "slug": "africa-fashion",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin title",
+            "missing or thin description",
+            "body is too thin (665 chars, needs 1200+)"
+          ],
+          "bodyChars": 665
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1770
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1888
+        }
+      }
+    },
+    {
+      "slug": "exposition-photo-plein-air-rose-antique",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin description"
+          ],
+          "bodyChars": 2406
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2474
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2503
+        }
+      }
+    },
+    {
+      "slug": "37th-apst-14-show-association-of-witness-painters-and-sculptors-of-the-14th-arrondisse",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (939 chars, needs 1200+)"
+          ],
+          "bodyChars": 939
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1556
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1590
+        }
+      }
+    },
+    {
+      "slug": "an-exhibition-of-photographs-to-highlight-the-nourishing-trees-of-the-sahel",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin description",
+            "body is too thin (721 chars, needs 1200+)"
+          ],
+          "bodyChars": 721
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1464
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1568
+        }
+      }
+    },
+    {
+      "slug": "artistic-immersion-in-the-work-of-joel-dages",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin description"
+          ],
+          "bodyChars": 1206
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2804
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 3684
+        }
+      }
+    },
+    {
+      "slug": "carpe-diem-exhibition",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin title",
+            "missing or thin description",
+            "body is too thin (517 chars, needs 1200+)"
+          ],
+          "bodyChars": 517
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (1024 chars, needs 1200+)"
+          ],
+          "bodyChars": 1024
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (1068 chars, needs 1200+)"
+          ],
+          "bodyChars": 1068
+        }
+      }
+    },
+    {
+      "slug": "end-of-year-exhibition-of-plastic-arts-classes-at-the-paris-anim-maurice-ravel-center",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (778 chars, needs 1200+)"
+          ],
+          "bodyChars": 778
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1692
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1859
+        }
+      }
+    },
+    {
+      "slug": "erotic-drawing-fair",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin title",
+            "missing or thin description",
+            "body is too thin (545 chars, needs 1200+)"
+          ],
+          "bodyChars": 545
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (795 chars, needs 1200+)"
+          ],
+          "bodyChars": 795
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (1152 chars, needs 1200+)"
+          ],
+          "bodyChars": 1152
+        }
+      }
+    },
+    {
+      "slug": "exposition-multiples-and-signatures-galerie-9e-art-paris",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (1021 chars, needs 1200+)"
+          ],
+          "bodyChars": 1021
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (1083 chars, needs 1200+)"
+          ],
+          "bodyChars": 1083
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (1104 chars, needs 1200+)"
+          ],
+          "bodyChars": 1104
+        }
+      }
+    },
+    {
+      "slug": "guided-tour-great-lakes-exhibition",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin description",
+            "body is too thin (824 chars, needs 1200+)"
+          ],
+          "bodyChars": 824
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1952
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2097
+        }
+      }
+    },
+    {
+      "slug": "masculinites-plurielles-exposition-avec-le-fonds-d-art-contemporain-paris-collections",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1415
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1477
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1498
+        }
+      }
+    },
+    {
+      "slug": "slave-exhibitions-in-the-mediterranean-17th-18th-centuries",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin description",
+            "body is too thin (921 chars, needs 1200+)"
+          ],
+          "bodyChars": 921
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2358
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2634
+        }
+      }
+    },
+    {
+      "slug": "the-big-visit-to-the-exhibitions",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin title",
+            "missing or thin description",
+            "body is too thin (436 chars, needs 1200+)"
+          ],
+          "bodyChars": 436
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (833 chars, needs 1200+)"
+          ],
+          "bodyChars": 833
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (856 chars, needs 1200+)"
+          ],
+          "bodyChars": 856
+        }
+      }
+    },
+    {
+      "slug": "the-slow-galerie-presents-petrichor-the-most-refreshing-exhibition-of-the-summer",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (560 chars, needs 1200+)"
+          ],
+          "bodyChars": 560
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (1189 chars, needs 1200+)"
+          ],
+          "bodyChars": 1189
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1271
+        }
+      }
+    },
+    {
+      "slug": "weave-embroider-enhance-fashion-know-how",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (709 chars, needs 1200+)"
+          ],
+          "bodyChars": 709
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1581
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2710
+        }
+      }
+    },
+    {
+      "slug": "dance-the-exhibition-that-will-make-you-move-at-the-cit-des-sciences",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (719 chars, needs 1200+)"
+          ],
+          "bodyChars": 719
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1341
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1476
+        }
+      }
+    },
+    {
+      "slug": "fujiko-nakaya-at-the-bourse-de-commerce-pinault-collection",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (673 chars, needs 1200+)"
+          ],
+          "bodyChars": 673
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (1151 chars, needs 1200+)"
+          ],
+          "bodyChars": 1151
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (1156 chars, needs 1200+)"
+          ],
+          "bodyChars": 1156
+        }
+      }
+    },
+    {
+      "slug": "impulses-jean-dubuffet-the-last-years-1974-1985",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin description",
+            "body is too thin (938 chars, needs 1200+)"
+          ],
+          "bodyChars": 938
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1687
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1608
+        }
+      }
+    },
+    {
+      "slug": "the-genki-nobori-of-susumu-shingu-at-the-htel-de-la-marine",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin description"
+          ],
+          "bodyChars": 1260
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 3280
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 4674
+        }
+      }
+    },
+    {
+      "slug": "the-plantation-plot",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin title",
+            "missing or thin description"
+          ],
+          "bodyChars": 1297
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 2024
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 3450
+        }
+      }
+    },
+    {
+      "slug": "everyone-is-looking-for-their-cat",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin title",
+            "missing or thin description",
+            "body is too thin (694 chars, needs 1200+)"
+          ],
+          "bodyChars": 694
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1662
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1770
+        }
+      }
+    },
+    {
+      "slug": "iranica-the-voice-of-the-iranian-people-in-pictures",
+      "includedInSitemap": false,
+      "locales": {
+        "zh": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "missing or thin description",
+            "body is too thin (531 chars, needs 1200+)"
+          ],
+          "bodyChars": 531
+        },
+        "en": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source",
+            "body is too thin (1186 chars, needs 1200+)"
+          ],
+          "bodyChars": 1186
+        },
+        "fr": {
+          "included": false,
+          "reasons": [
+            "source 'Vision API' is not an approved sitemap source"
+          ],
+          "bodyChars": 1214
+        }
+      }
     }
   ],
   "summary": {
-    "urlsAudited": 537,
+    "urlsAudited": 660,
     "urlsIncluded": 0,
-    "urlsExcluded": 537,
-    "slugsAudited": 179,
+    "urlsExcluded": 660,
+    "slugsAudited": 220,
     "slugsIncluded": 0,
-    "slugsExcluded": 179
+    "slugsExcluded": 220
   }
 }

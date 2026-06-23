@@ -14,6 +14,8 @@ function getGoogleSignin() {
   }
 }
 
+const AUTH_PROVIDER_KEY = "museum_auth_provider";
+
 export default function SettingsScreen() {
   const router = useRouter();
   const { t } = useI18n();
@@ -25,6 +27,7 @@ export default function SettingsScreen() {
       await googleSignin?.signOut?.();
     } catch {}
     await AsyncStorage.removeItem("museum_auth_token");
+    await AsyncStorage.removeItem(AUTH_PROVIDER_KEY);
     router.replace("/collection");
   };
 

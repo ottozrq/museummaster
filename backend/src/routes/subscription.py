@@ -22,6 +22,13 @@ from utils.subscription import (
 
 PlanType = Literal["free", "scan_pack", "pro_monthly", "pro_yearly"]
 
+GOOGLE_PLAY_PACKAGE_NAME = "com.ottozhang.artiou"
+GOOGLE_PLAY_PRODUCT_IDS: dict[str, str] = {
+    "scan_pack": "com.ottozhang.artiou.iap.scan",
+    "pro_monthly": "com.ottozhang.artiou.sub.scan.pro.monthly",
+    "pro_yearly": "com.ottozhang.artiou.sub.scan.pro.yearly",
+}
+
 logger = logging.getLogger(__name__)
 
 
@@ -30,6 +37,125 @@ def _get_user_subscription(extras: Any) -> dict[str, Any]:
         return {}
     sub = extras.get("subscription")
     return sub if isinstance(sub, dict) else {}
+
+
+def _clean_str(raw: Any) -> str | None:
+    if raw is None:
+        return None
+    value = str(raw).strip()
+    return value or None
+
+
+def _current_quota_response(user: sm.User, db: MuseumDb, now: dt.datetime) -> Dict[str, Any]:
+    quota = get_quota_remaining(user, db.session, now=now)
+    sub_after = _get_user_subscription(getattr(user, "extras", None))
+    return {
+        "plan": quota["plan"],
+        "limit": quota["limit"],
+        "used": quota["used"],
+        "remaining": quota["remaining"],
+        "pro_expires_at_ts": quota["pro_expires_at_ts"],
+        "scan_pack_total": quota["scan_pack_total"],
+        "scan_pack_remaining": sub_after.get("scan_pack_remaining"),
+        "pro_next_quota_reset_ts": sub_after.get("pro_next_quota_reset_ts"),
+    }
+
+
+def _google_payload_present(payload: Dict[str, Any]) -> bool:
+    return any(
+        _clean_str(payload.get(key))
+        for key in (
+            "google_purchase_token",
+            "google_order_id",
+            "google_product_id",
+            "google_package_name",
+        )
+    )
+
+
+def _validate_google_purchase_shape(plan_type: PlanType, payload: Dict[str, Any]) -> None:
+    if not _google_payload_present(payload):
+        return
+    if plan_type == "free":
+        raise HTTPException(status_code=400, detail="Google purchase cannot activate free plan")
+
+    incoming_token = _clean_str(payload.get("google_purchase_token"))
+    product_id = _clean_str(payload.get("google_product_id"))
+    package_name = _clean_str(payload.get("google_package_name"))
+    expected_product = GOOGLE_PLAY_PRODUCT_IDS.get(plan_type)
+    if not incoming_token:
+        raise HTTPException(status_code=400, detail="google_purchase_token is required")
+    if product_id != expected_product:
+        raise HTTPException(status_code=400, detail="Google product does not match plan_type")
+    if package_name != GOOGLE_PLAY_PACKAGE_NAME:
+        raise HTTPException(status_code=400, detail="Invalid Google package name")
+
+
+def _google_purchase_token_used_by_other_user(
+    db: MuseumDb,
+    current_user: sm.User,
+    payload: Dict[str, Any],
+) -> bool:
+    incoming_token = _clean_str(payload.get("google_purchase_token"))
+    incoming_order = _clean_str(payload.get("google_order_id"))
+    if not incoming_token and not incoming_order:
+        return False
+
+    current_user_id = getattr(current_user, "user_id", None)
+    for existing_user in db.session.query(sm.User).filter(sm.User.extras.isnot(None)):
+        if getattr(existing_user, "user_id", None) == current_user_id:
+            continue
+        sub = _get_user_subscription(getattr(existing_user, "extras", None))
+        if _is_duplicate_google_purchase(sub, payload):
+            return True
+    return False
+
+
+def _is_duplicate_google_purchase(prev_sub: dict[str, Any], payload: Dict[str, Any]) -> bool:
+    incoming_token = _clean_str(payload.get("google_purchase_token"))
+    incoming_order = _clean_str(payload.get("google_order_id"))
+    if not incoming_token and not incoming_order:
+        return False
+
+    seen_tokens = prev_sub.get("google_purchase_tokens")
+    if isinstance(seen_tokens, list) and incoming_token:
+        if incoming_token in {str(x) for x in seen_tokens}:
+            return True
+
+    seen_orders = prev_sub.get("google_order_ids")
+    if isinstance(seen_orders, list) and incoming_order:
+        if incoming_order in {str(x) for x in seen_orders}:
+            return True
+
+    return (
+        (incoming_token and incoming_token == _clean_str(prev_sub.get("google_purchase_token")))
+        or (incoming_order and incoming_order == _clean_str(prev_sub.get("google_order_id")))
+    )
+
+
+def _append_google_purchase_fields(sub: dict[str, Any], payload: Dict[str, Any]) -> dict[str, Any]:
+    out = dict(sub)
+    incoming_token = _clean_str(payload.get("google_purchase_token"))
+    incoming_order = _clean_str(payload.get("google_order_id"))
+    product_id = _clean_str(payload.get("google_product_id"))
+    package_name = _clean_str(payload.get("google_package_name"))
+    if incoming_token:
+        tokens = [str(x) for x in out.get("google_purchase_tokens", []) if str(x).strip()] if isinstance(out.get("google_purchase_tokens"), list) else []
+        if incoming_token not in tokens:
+            tokens.append(incoming_token)
+        out["google_purchase_tokens"] = tokens[-20:]
+        out["google_purchase_token"] = incoming_token
+    if incoming_order:
+        orders = [str(x) for x in out.get("google_order_ids", []) if str(x).strip()] if isinstance(out.get("google_order_ids"), list) else []
+        if incoming_order not in orders:
+            orders.append(incoming_order)
+        out["google_order_ids"] = orders[-20:]
+        out["google_order_id"] = incoming_order
+    if product_id:
+        out["google_product_id"] = product_id
+    if package_name:
+        out["google_package_name"] = package_name
+    return out
 
 
 @app.get("/subscription/current", tags=[TAG.Analyze])
@@ -76,6 +202,9 @@ def activate_subscription(
     plan_type = payload.get("plan_type")
     if plan_type not in ("free", "scan_pack", "pro_monthly", "pro_yearly"):
         raise HTTPException(status_code=400, detail="Invalid plan_type")
+    _validate_google_purchase_shape(plan_type, payload)
+    if _google_purchase_token_used_by_other_user(db, user, payload):
+        raise HTTPException(status_code=409, detail="Google purchase already used")
 
     now = dt.datetime.now(dt.timezone.utc)
     extras = dict(getattr(user, "extras", None) or {})
@@ -91,14 +220,30 @@ def activate_subscription(
             extras["subscription"] = new_sub
     elif plan_type == "scan_pack":
         prev_sub = _get_user_subscription(extras)
+        if _is_duplicate_google_purchase(prev_sub, payload):
+            logger.info(
+                "subscription activate skipped duplicate google scan_pack user_id=%s",
+                getattr(user, "user_id", None),
+            )
+            return _current_quota_response(user, db, now)
         add = int(payload.get("scan_pack_remaining") or SCAN_PACK_DEFAULT_TOTAL)
         if add <= 0:
             raise HTTPException(
                 status_code=400, detail="scan_pack_remaining must be > 0"
             )
-        extras["subscription"] = apply_scan_pack_purchase(prev_sub, add, now)
+        extras["subscription"] = _append_google_purchase_fields(
+            apply_scan_pack_purchase(prev_sub, add, now),
+            payload,
+        )
     else:
         prev_sub = _get_user_subscription(extras)
+        if _is_duplicate_google_purchase(prev_sub, payload):
+            logger.info(
+                "subscription activate skipped duplicate google pro grant user_id=%s plan=%s",
+                getattr(user, "user_id", None),
+                plan_type,
+            )
+            return _current_quota_response(user, db, now)
         if should_skip_duplicate_pro_activation(
             prev_sub,
             plan_type,
@@ -110,18 +255,7 @@ def activate_subscription(
                 getattr(user, "user_id", None),
                 plan_type,
             )
-            quota = get_quota_remaining(user, db.session, now=now)
-            sub_after = _get_user_subscription(getattr(user, "extras", None))
-            return {
-                "plan": quota["plan"],
-                "limit": quota["limit"],
-                "used": quota["used"],
-                "remaining": quota["remaining"],
-                "pro_expires_at_ts": quota["pro_expires_at_ts"],
-                "scan_pack_total": quota["scan_pack_total"],
-                "scan_pack_remaining": sub_after.get("scan_pack_remaining"),
-                "pro_next_quota_reset_ts": sub_after.get("pro_next_quota_reset_ts"),
-            }
+            return _current_quota_response(user, db, now)
 
         expires_ts = compute_pro_activation_expires_at_ts(prev_sub, plan_type, now)
         scan_total = PRO_PERIOD_SCAN_LIMIT
@@ -171,7 +305,7 @@ def activate_subscription(
         tid = payload.get("apple_transaction_id")
         if tid:
             merged["apple_transaction_id"] = str(tid)
-        extras["subscription"] = merged
+        extras["subscription"] = _append_google_purchase_fields(merged, payload)
 
     user.extras = extras
     db.session.add(user)

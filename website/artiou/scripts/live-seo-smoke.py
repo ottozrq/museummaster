@@ -155,6 +155,7 @@ def ok(message: str) -> None:
 def check_infrastructure(timeout: float, errors: list[str]) -> None:
     root_probe = f"{ROOT_ORIGIN}/en/"
     www_probe = f"{CANONICAL_ORIGIN}/en/"
+    www_root_probe = f"{CANONICAL_ORIGIN}/"
     robots_url = f"{CANONICAL_ORIGIN}/robots.txt"
 
     root = fetch(root_probe, timeout)
@@ -162,6 +163,12 @@ def check_infrastructure(timeout: float, errors: list[str]) -> None:
         fail(errors, f"root domain must redirect to canonical www URL: {root_probe} -> {root.final_url}")
     else:
         ok(f"root domain redirects to {www_probe}")
+
+    www_root = fetch(www_root_probe, timeout)
+    if normalize_url(www_root.final_url) != www_probe:
+        fail(errors, f"www root must redirect to default English URL: {www_root_probe} -> {www_root.final_url}")
+    else:
+        ok(f"www root redirects to default English URL: {www_probe}")
 
     www = fetch(www_probe, timeout)
     if normalize_url(www.final_url) != www_probe:

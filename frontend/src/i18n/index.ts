@@ -8,23 +8,15 @@ export type AppLanguage = "en" | "zh" | "fr";
 const i18n = new I18n(translations);
 i18n.enableFallback = true;
 
-function normalizeLanguageTag(tag: string): AppLanguage {
-  const lower = tag.toLowerCase();
-  if (lower.startsWith("zh")) return "zh";
-  if (lower.startsWith("fr")) return "fr";
-  return "en";
-}
-
 function getSystemLanguage(): AppLanguage {
-  const first = Intl.DateTimeFormat().resolvedOptions().locale || "en";
-  return normalizeLanguageTag(first);
+  return "en";
 }
 
 function applyLocale(locale: AppLanguage) {
   i18n.locale = locale;
 }
 
-// 初始化：应用启动时就对齐系统语言，避免首屏闪一下默认语言
+// 初始化：应用启动时使用英文作为默认语言
 applyLocale(getSystemLanguage());
 
 export function useI18n() {
