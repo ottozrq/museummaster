@@ -19,13 +19,21 @@
   }
 
   function getChannelContext() {
+    // Keep analytics event payloads intentionally coarse: no free-text query
+    // params, no user identifiers, and no raw URL search strings.
     return {
-      utm_source: getQueryParam("utm_source"),
-      utm_medium: getQueryParam("utm_medium"),
-      utm_campaign: getQueryParam("utm_campaign"),
-      utm_content: getQueryParam("utm_content"),
-      utm_term: getQueryParam("utm_term"),
+      has_utm_source: getQueryParam("utm_source") ? "1" : "0",
+      has_utm_medium: getQueryParam("utm_medium") ? "1" : "0",
+      has_utm_campaign: getQueryParam("utm_campaign") ? "1" : "0",
     };
+  }
+
+  function getPageType() {
+    var path = window.location.pathname;
+    if (/^\/(?:zh|en|fr)\/?$/.test(path)) return "homepage";
+    if (/\/(?:zh|en|fr)\/[^?#]*-museum-guide\/?$/.test(path)) return "museum_guide";
+    if (/\/(?:zh|en|fr)\/[^?#]*guide\/?$/.test(path) || !!document.querySelector(".guide-page")) return "entity_page";
+    return "sitewide";
   }
 
   function getPageContext() {
@@ -33,6 +41,8 @@
       page: window.location.pathname,
       path: window.location.pathname,
       page_path: window.location.pathname,
+      source_path: window.location.pathname,
+      source_page_type: getPageType(),
       language: getLanguage(),
     }, getChannelContext());
   }
@@ -42,8 +52,11 @@
     window.umami.track(eventName, Object.assign(getPageContext(), props || {}));
   }
 
-  function isGuidePage() {
-    return /\/(?:zh|en|fr)\/[^?#]*guide\/?$/.test(window.location.pathname) || !!document.querySelector(".guide-page");
+  function getDownloadEventName(pageType) {
+    if (pageType === "homepage") return "homepage_download_click";
+    if (pageType === "museum_guide") return "guide_download_click";
+    if (pageType === "entity_page") return "entity_download_click";
+    return "download_click";
   }
 
   function isDownloadLink(link, text, href) {
@@ -75,10 +88,10 @@
 
   function getCtaLocation(link) {
     if (!link || !link.closest) return "unknown";
-    if (link.closest("header, .guide-hero, .hero, .hero-section")) return "hero";
+    if (link.closest("header, nav, .nav")) return "nav";
+    if (link.closest(".guide-hero, .hero, .hero-section")) return "hero";
     if (link.closest("footer, .site-footer, #download")) return "footer";
     if (link.closest(".guide-card, .guide-panel, .museum-card, .article-card, .card")) return "guide-card";
-    if (link.closest("nav, .nav")) return "nav";
     return "body";
   }
 
@@ -139,17 +152,23 @@
     var href = link.getAttribute("href") || "";
     var absoluteHref = link.href || href;
     var text = cleanText(link.textContent);
-    var guide = isGuidePage();
+    var pageType = getPageType();
+    var guide = pageType === "museum_guide" || pageType === "entity_page";
     var ctaLocation = getCtaLocation(link);
     var targetGuideUrl = getInternalGuideUrl(absoluteHref);
 
     if (isDownloadLink(link, text, absoluteHref)) {
-      track(guide ? "guide_download_click" : "download_click", Object.assign({
-        href: absoluteHref,
+      track(getDownloadEventName(pageType), Object.assign({
+        href_host: (function () {
+          try { return new URL(absoluteHref, window.location.href).host; } catch (e) { return ""; }
+        })(),
+        href_path: (function () {
+          try { return new URL(absoluteHref, window.location.href).pathname; } catch (e) { return href.split("?")[0].slice(0, 120); }
+        })(),
         source_path: window.location.pathname,
-        target_path: targetGuideUrl ? targetGuideUrl.pathname : "",
+        target_path: targetGuideUrl && targetGuideUrl.pathname !== window.location.pathname ? targetGuideUrl.pathname : "",
         text: text,
-        source_page_type: guide ? "guide" : "sitewide",
+        source_page_type: pageType,
         cta_location: ctaLocation,
       }, getDownloadTarget(link, absoluteHref)));
       return;
@@ -177,7 +196,7 @@
 
   window.addEventListener("toggle", function (event) {
     var details = event.target;
-    if (!details || details.tagName !== "DETAILS" || !details.open || !isGuidePage()) return;
+    if (!details || details.tagName !== "DETAILS" || !details.open || (getPageType() !== "museum_guide" && getPageType() !== "entity_page")) return;
     var summary = details.querySelector("summary");
     var parentText = cleanText(details.closest("section") && details.closest("section").textContent);
     track("route_selector_click", {
@@ -189,7 +208,7 @@
 
   window.addEventListener("click", function (event) {
     var routeCard = event.target && event.target.closest ? event.target.closest(".route-card") : null;
-    if (!routeCard || !isGuidePage()) return;
+    if (!routeCard || (getPageType() !== "museum_guide" && getPageType() !== "entity_page")) return;
     track("route_selector_click", {
       text: cleanText(routeCard.querySelector("h3") && routeCard.querySelector("h3").textContent),
       cta_location: "route-card",
