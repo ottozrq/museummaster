@@ -31,7 +31,7 @@
   function getPageType() {
     var path = window.location.pathname;
     if (/^\/(?:zh|en|fr)\/?$/.test(path)) return "homepage";
-    if (/\/(?:zh|en|fr)\/[^?#]*-museum-guide\/?$/.test(path)) return "museum_guide";
+    if (/\/(?:zh|en|fr)\/(?:[^?#]*-museum-guide|louvre-first-time-visitor-guide)\/?$/.test(path)) return "museum_guide";
     if (/\/(?:zh|en|fr)\/[^?#]*guide\/?$/.test(path) || !!document.querySelector(".guide-page")) return "entity_page";
     return "sitewide";
   }
